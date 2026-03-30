@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f8faf7" />
+    <title>ParkQuest — My Progress</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&family=Work+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="app app--scroll">
+      <header class="app-header app-header--sub">
+        <a href="index.html" class="icon-btn" aria-label="Back">
+          <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+        </a>
+        <h1 class="app-header__title app-header__title--center">My Progress</h1>
+        <a href="settings.html" class="avatar" aria-label="Profile">
+          <img
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQFaWMX9KrtxzjPzRL45nZCnwDrNzbU0dIsYVOQtBGLnMgTMRw-K693HoMIvHV0fjvX2aANMsHLtI1c2HRTKePKqg3HaXX1AMbRLkZ1tIZj4S4Qd3W0erR93NKuLc2JsyXKjLYaY20TMPQeP34F-l5B9yfT4kgyRRcp34iDu94K0NDampocg3yjWcH7utyZxbmjAZQXq6F2Y6bC_gv0dTbmWd_sQJLdI7fmBGcddv22zOv9G2tz2H793XpmNlooPGS3TWEaaWS19-o"
+            alt=""
+            width="40"
+            height="40"
+          />
+        </a>
+      </header>
+
+      <main class="subpage-main">
+        <div class="page-hero">
+          <p class="progress-hero-label">Adventure awaits</p>
+          <h2 class="progress-hero-title">You’re a Natural Explorer!</h2>
+        </div>
+
+        <section class="current-trail-card" aria-labelledby="current-trail-heading">
+          <p class="current-trail-card__label">Current trail</p>
+          <div class="current-trail-card__row">
+            <div>
+              <h3 id="current-trail-heading" class="current-trail-card__name">The Rainforest Adventure</h3>
+            </div>
+            <div class="current-trail-card__pct" aria-label="Progress 75 percent">75%</div>
+          </div>
+          <div class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar__fill"></div>
+          </div>
+          <p class="current-trail-card__foot">
+            <span class="material-symbols-outlined" aria-hidden="true">navigation</span>
+            1.2km remaining to Mt Coot-tha Summit
+          </p>
+        </section>
+
+        <section class="page-section" style="background: var(--surface)">
+          <h3 class="section-title" style="margin-bottom: 0.75rem">Saved parks</h3>
+          <div id="saved-parks-mount" class="saved-parks"></div>
+        </section>
+
+        <section class="page-section">
+          <div class="section-title-row">
+            <h3 class="section-title">Completed Missions</h3>
+            <a href="#" class="link-quiet">View all</a>
+          </div>
+          <div class="mission-grid">
+            <div class="mission-card">
+              <div class="mission-card__icon mission-card__icon--blue">
+                <span class="material-symbols-outlined" aria-hidden="true">search</span>
+              </div>
+              <h4 class="mission-card__title">Meet the Diprotodon</h4>
+              <p class="mission-card__sub">Found at Fossil Creek</p>
+            </div>
+            <div class="mission-card">
+              <div class="mission-card__icon mission-card__icon--green">
+                <span class="material-symbols-outlined" aria-hidden="true">eco</span>
+              </div>
+              <h4 class="mission-card__title">Hidden Ferns</h4>
+              <p class="mission-card__sub">Valley trail complete</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="page-section" style="background: var(--surface)">
+          <h3 class="section-title" style="margin-bottom: 0.75rem">Badges Earned</h3>
+          <div class="badge-row no-scrollbar">
+            <div class="badge-item">
+              <div class="badge-circle badge-circle--brown">
+                <span class="material-symbols-outlined" aria-hidden="true">pets</span>
+              </div>
+              <span>Wildlife Spotter</span>
+            </div>
+            <div class="badge-item">
+              <div class="badge-circle badge-circle--blue">
+                <span class="material-symbols-outlined" aria-hidden="true">explore</span>
+              </div>
+              <span>Trail Explorer</span>
+            </div>
+            <div class="badge-item">
+              <div class="badge-circle badge-circle--green">
+                <span class="material-symbols-outlined" aria-hidden="true">park</span>
+              </div>
+              <span>Tree Detective</span>
+            </div>
+            <div class="badge-item">
+              <div class="badge-circle badge-circle--orange">
+                <span class="material-symbols-outlined" aria-hidden="true">hiking</span>
+              </div>
+              <span>Adventurer</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="page-section">
+          <h3 class="section-title" style="margin-bottom: 0.75rem">Favourite Discoveries</h3>
+          <div class="discovery-grid">
+            <div class="discovery-card">
+              <img
+                src="https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=600&q=80"
+                alt="Blue butterfly on leaf"
+                width="400"
+                height="400"
+                loading="lazy"
+              />
+              <div class="discovery-card__label">Ulysses Butterfly</div>
+            </div>
+            <div class="discovery-card">
+              <img
+                src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=600&q=80"
+                alt="Large fig tree roots"
+                width="400"
+                height="400"
+                loading="lazy"
+              />
+              <div class="discovery-card__label">Ancient Fig Tree</div>
+            </div>
+          </div>
+        </section>
+
+        <div class="recommend-block">
+          <h3>Try another Brisbane park</h3>
+          <p>Ready for your next quest? These trails are nearby.</p>
+          <a href="trails.html" class="recommend-item">
+            <div class="recommend-item__icon recommend-item__icon--blue" aria-hidden="true">
+              <span class="material-symbols-outlined">account_balance</span>
+            </div>
+            <div class="recommend-item__body">
+              <p class="recommend-item__title">City Botanic Gardens Explorer</p>
+              <p class="recommend-item__meta">Easy · 2.5km · Riverside</p>
+            </div>
+            <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </a>
+          <a href="trails.html" class="recommend-item">
+            <div class="recommend-item__icon recommend-item__icon--green" aria-hidden="true">
+              <span class="material-symbols-outlined">route</span>
+            </div>
+            <div class="recommend-item__body">
+              <p class="recommend-item__title">New Farm Park Loop</p>
+              <p class="recommend-item__meta">Moderate · 3.8km · Floral</p>
+            </div>
+            <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </a>
+        </div>
+      </main>
+
+      <nav class="bottom-nav" aria-label="Primary">
+        <a class="bottom-nav__link" href="index.html">
+          <span class="material-symbols-outlined" aria-hidden="true">map</span>
+          Map
+        </a>
+        <a class="bottom-nav__link" href="trails.html">
+          <span class="material-symbols-outlined" aria-hidden="true">explore</span>
+          My Trails
+        </a>
+        <a class="bottom-nav__link is-active" href="progress.html">
+          <span class="material-symbols-outlined fill" aria-hidden="true">military_tech</span>
+          Rewards
+        </a>
+        <a class="bottom-nav__link" href="settings.html">
+          <span class="material-symbols-outlined" aria-hidden="true">settings</span>
+          Settings
+        </a>
+      </nav>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/navagation.js"></script>
+    <script src="js/favorites.js"></script>
+  </body>
+</html>

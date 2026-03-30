@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f8faf7" />
+    <title>ParkQuest — Map</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&family=Work+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div id="menu-root" class="drawer-overlay" aria-hidden="true">
+      <nav class="drawer" aria-label="Main menu">
+        <p class="drawer__title">Explore</p>
+        <ul class="drawer__list">
+          <li>
+            <a class="drawer__link" href="amenities.html">
+              <span class="material-symbols-outlined" aria-hidden="true">wc</span>
+              Amenities near you
+            </a>
+          </li>
+          <li>
+            <a class="drawer__link" href="trails.html">
+              <span class="material-symbols-outlined" aria-hidden="true">explore</span>
+              Trail themes
+            </a>
+          </li>
+          <li>
+            <a class="drawer__link" href="progress.html">
+              <span class="material-symbols-outlined" aria-hidden="true">military_tech</span>
+              Rewards &amp; progress
+            </a>
+          </li>
+          <li>
+            <a class="drawer__link" href="settings.html">
+              <span class="material-symbols-outlined" aria-hidden="true">settings</span>
+              Settings
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="app app--map">
+      <header class="app-header">
+        <div class="app-header__brand">
+          <button type="button" class="icon-btn" id="menu-open" aria-label="Open menu">
+            <span class="material-symbols-outlined" aria-hidden="true">menu</span>
+          </button>
+          <h1 class="app-header__title">ParkQuest</h1>
+        </div>
+        <a href="settings.html" class="avatar" aria-label="Profile">
+          <img
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQFaWMX9KrtxzjPzRL45nZCnwDrNzbU0dIsYVOQtBGLnMgTMRw-K693HoMIvHV0fjvX2aANMsHLtI1c2HRTKePKqg3HaXX1AMbRLkZ1tIZj4S4Qd3W0erR93NKuLc2JsyXKjLYaY20TMPQeP34F-l5B9yfT4kgyRRcp34iDu94K0NDampocg3yjWcH7utyZxbmjAZQXq6F2Y6bC_gv0dTbmWd_sQJLdI7fmBGcddv22zOv9G2tz2H793XpmNlooPGS3TWEaaWS19-o"
+            alt=""
+            width="40"
+            height="40"
+          />
+        </a>
+      </header>
+
+      <div id="map-toast" class="map-toast" role="status" aria-live="polite"></div>
+
+      <main class="map-main">
+        <div id="map-stage" class="map-stage">
+          <div id="park-map" class="park-leaflet-map" aria-label="Map of Brisbane parks (OpenStreetMap)"></div>
+          <div class="map-stage__gradient"></div>
+        </div>
+
+        <div class="map-ui">
+        <div class="search-shell map-ui__search">
+          <div class="search-bar" role="search">
+            <span class="material-symbols-outlined search-bar__icon" aria-hidden="true">search</span>
+            <input
+              class="search-bar__input"
+              type="search"
+              name="q"
+              placeholder="Find parks, trails or playgrounds..."
+              autocomplete="off"
+              aria-label="Search parks and places"
+              enterkeyhint="search"
+            />
+            <a
+              class="search-bar__icon search-bar__icon--muted icon-btn"
+              href="amenities.html"
+              aria-label="Amenities and filters"
+            >
+              <span class="material-symbols-outlined" aria-hidden="true">tune</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="chip-row no-scrollbar" role="toolbar" aria-label="Quick filters">
+          <button type="button" class="chip is-selected" data-chip data-filter="toilets">
+            <span class="material-symbols-outlined" aria-hidden="true">wc</span>
+            Toilets
+          </button>
+          <button type="button" class="chip" data-chip data-filter="water">
+            <span class="material-symbols-outlined" aria-hidden="true">water_drop</span>
+            Drinking Fountains
+          </button>
+          <button type="button" class="chip" data-chip data-filter="shade">
+            <span class="material-symbols-outlined" aria-hidden="true">umbrella</span>
+            Shade
+          </button>
+          <button type="button" class="chip" data-chip data-filter="seat">
+            <span class="material-symbols-outlined" aria-hidden="true">chair</span>
+            Seating
+          </button>
+          <button type="button" class="chip" data-chip data-filter="all">
+            <span class="material-symbols-outlined" aria-hidden="true">grid_view</span>
+            All parks
+          </button>
+        </div>
+
+        <div class="featured-wrap">
+          <article class="featured-card">
+            <div class="featured-card__thumb">
+              <img
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4a3A1jIVKOmVqIwi0aY5RxmlenUAgi5DbNxYHotvF9XVUeL8aCe22eplcVUWLW4hKiPMeZJnOtDnaPq6dcC4hkS7JXVyP7sALHvrNW4pEKcyy_MgXBUggWjTaYIvfJq-zkrpfeR7b7tuoPR0SCGQGDY6_FtWbuECjYEXTUTmkQ8rVDmiEU35APEQIvHLqZumYOHCsRCwQeqVrRFxbdmqq69BGUsen4VGXqXARga_6UgEF9pDtvyC7lsnwF4yscuw1wKFSNGWV1"
+                alt="City Botanic Gardens, palms and city skyline"
+                width="96"
+                height="96"
+              />
+            </div>
+            <div class="featured-card__body">
+              <div class="featured-card__top">
+                <div>
+                  <p class="featured-card__eyebrow">Featured Park</p>
+                  <h2 class="featured-card__title">City Botanic Gardens</h2>
+                  <p class="featured-card__meta">
+                    <span class="material-symbols-outlined" aria-hidden="true">location_on</span>
+                    Alice St, Brisbane City
+                  </p>
+                </div>
+                <div class="rating-pill">
+                  <span class="material-symbols-outlined fill" aria-hidden="true">star</span>
+                  <span>4.8</span>
+                </div>
+              </div>
+              <div class="featured-card__footer">
+                <div class="avatar-stack" aria-label="Visitors">
+                  <div class="avatar-stack__item">
+                    <img
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6yoh4PR4BGlE-ezWnpYwAoTgUhn6rrgcWsUfSWNh76ElJxJLM0lM-clAC2AGSiFED2lDmH1TKiZ2CzGi1WZYFmLy75pHcAJ2zSRgzvLmDBQQv3xukme57kk1vIoO_oY-O4AO0T-UeC9m5iYiUDjESaO6UkLWVIvHffMbOcTYyZPoIC5sb8fryFA1sULCC1MKrMq92Ww1EclyeURZV8dH4vGt48FkZ0ESgDbkuEZ77rAjIouxblwqhMhCHVDJB-2gbr4SIdshiBGfL"
+                      alt=""
+                      width="24"
+                      height="24"
+                    />
+                  </div>
+                  <div class="avatar-stack__item">
+                    <img
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuApE87p5vOK9Ch0HGt6YagwRbAzMCOIsClgfzUpVevcI_vxxq1uAkPweYWCq33WAhNH7NuTPvBdvdfdDQ9QjCKHKQ8bnk7pxmikVqCcHgAn6npQaJAP7z4P54Kz7ZQzYZ_d5_A8gdBpkmU3x_2BPJvQLCxrQBnL2nlgfFDp-HZWFSsvVlxRSqGhw7GYMgRUxylMySLRsak95MWiNYxt1RKSdNBwDHfRW6xgsOWuvD47LOSULCp0lDfwAI5c0OJqCw8GRpHjni1BwdI_"
+                      alt=""
+                      width="24"
+                      height="24"
+                    />
+                  </div>
+                  <div class="avatar-stack__more" aria-hidden="true">+12</div>
+                </div>
+                <div class="featured-card__actions">
+                  <button
+                    type="button"
+                    class="btn-fav"
+                    id="featured-fav"
+                    aria-pressed="false"
+                    aria-label="Save City Botanic Gardens"
+                  >
+                    <span class="material-symbols-outlined" aria-hidden="true">favorite_border</span>
+                  </button>
+                  <a class="btn-pill" href="trails.html">Explore Trail</a>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+        </div>
+      </main>
+
+      <nav class="bottom-nav" aria-label="Primary">
+        <a class="bottom-nav__link is-active" href="index.html">
+          <span class="material-symbols-outlined fill" aria-hidden="true">map</span>
+          Map
+        </a>
+        <a class="bottom-nav__link" href="trails.html">
+          <span class="material-symbols-outlined" aria-hidden="true">explore</span>
+          My Trails
+        </a>
+        <a class="bottom-nav__link" href="progress.html">
+          <span class="material-symbols-outlined" aria-hidden="true">military_tech</span>
+          Rewards
+        </a>
+        <a class="bottom-nav__link" href="settings.html">
+          <span class="material-symbols-outlined" aria-hidden="true">settings</span>
+          Settings
+        </a>
+      </nav>
+
+      <div class="fab-column">
+        <button type="button" class="fab fab--surface" id="fab-my-location" aria-label="Centre on my location">
+          <span class="material-symbols-outlined" aria-hidden="true">my_location</span>
+        </button>
+        <a class="fab fab--primary" href="amenities.html" aria-label="Add or view amenities">
+          <span class="material-symbols-outlined" aria-hidden="true">add</span>
+        </a>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/maps-config.js"></script>
+    <script src="js/maps.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/navagation.js"></script>
+  </body>
+</html>
