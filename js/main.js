@@ -40,16 +40,46 @@
 
   function setupFilterChips() {
     var filterChips = document.querySelectorAll("[data-chip]");
+    var allChip = document.querySelector('[data-chip][data-filter="all"]');
+
+    function setChipPressed(el, on) {
+      el.classList.toggle("is-selected", on);
+      el.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+
+    function anyAmenityChipSelected() {
+      for (var k = 0; k < filterChips.length; k++) {
+        var el = filterChips[k];
+        if (el.getAttribute("data-filter") === "all") continue;
+        if (el.classList.contains("is-selected")) return true;
+      }
+      return false;
+    }
+
+    function syncAllParksChip() {
+      if (!allChip) return;
+      var show = !anyAmenityChipSelected();
+      setChipPressed(allChip, show);
+    }
+
     for (var c = 0; c < filterChips.length; c++) {
       filterChips[c].addEventListener("click", function () {
-        for (var j = 0; j < filterChips.length; j++) {
-          filterChips[j].classList.remove("is-selected");
-        }
-        this.classList.add("is-selected");
         var f = this.getAttribute("data-filter");
-        document.dispatchEvent(
-          new CustomEvent("parkquest:amenity-filter", { detail: { filter: f } })
-        );
+        if (f === "all") {
+          for (var j = 0; j < filterChips.length; j++) {
+            var el = filterChips[j];
+            if (el.getAttribute("data-filter") === "all") {
+              setChipPressed(el, true);
+            } else {
+              setChipPressed(el, false);
+            }
+          }
+        } else {
+          var nowOn = !this.classList.contains("is-selected");
+          setChipPressed(this, nowOn);
+          syncAllParksChip();
+        }
+        document.dispatchEvent(new CustomEvent("parkquest:amenity-filter", { detail: { filter: f } }));
       });
     }
   }

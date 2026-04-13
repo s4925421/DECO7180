@@ -437,7 +437,13 @@
     }
   }
 
-  function applyBccLayerVisibility(filterKey) {
+  function bccAmenityChipActive(filterId) {
+    var btn = document.querySelector('[data-chip][data-filter="' + filterId + '"]');
+    return !!(btn && btn.classList.contains("is-selected"));
+  }
+
+  /** BCC facility layers follow chip toggles (independent multi-select). */
+  function applyBccAmenityLayersFromChips() {
     if (!map || !bccDataLoaded) return;
     function removeL(layer) {
       if (layer && map.hasLayer(layer)) map.removeLayer(layer);
@@ -451,22 +457,11 @@
     removeL(bccShadeLayer);
     removeL(bccSeatingLayer);
 
-    if (filterKey === "all") {
-      addL(bccToiletsLayer);
-      addL(bccFountainsLayer);
-      addL(bccShadeLayer);
-      addL(bccSeatingLayer);
-    } else if (filterKey === "accessible") {
-      addL(bccToiletsAccessibleLayer);
-    } else if (filterKey === "toilets") {
-      addL(bccToiletsLayer);
-    } else if (filterKey === "water") {
-      addL(bccFountainsLayer);
-    } else if (filterKey === "shade") {
-      addL(bccShadeLayer);
-    } else if (filterKey === "seat") {
-      addL(bccSeatingLayer);
-    }
+    if (bccAmenityChipActive("toilets")) addL(bccToiletsLayer);
+    if (bccAmenityChipActive("accessible")) addL(bccToiletsAccessibleLayer);
+    if (bccAmenityChipActive("water")) addL(bccFountainsLayer);
+    if (bccAmenityChipActive("shade")) addL(bccShadeLayer);
+    if (bccAmenityChipActive("seat")) addL(bccSeatingLayer);
   }
 
   function loadBccAmenitiesData() {
@@ -488,7 +483,7 @@
         populateBccOfficialParkLocations(arr[4]);
         bccDataLoaded = true;
         setBccLoading(false);
-        applyBccLayerVisibility(getSelectedFilter());
+        applyBccAmenityLayersFromChips();
         syncBccOfficialParkLocationsVisibility();
       })
       .catch(function () {
@@ -728,32 +723,15 @@
     m.openPopup();
   }
 
-  function applyAmenityFilter(filterKey) {
+  /** Curated park pins always visible; BCC toilets/fountains/etc. follow chip toggles. */
+  function applyAmenityFilter() {
     var PL = getPLACES();
     for (var i = 0; i < PL.length; i++) {
-      var p = PL[i];
-      var m = markersById[p.id];
+      var m = markersById[PL[i].id];
       if (!m || !map) continue;
-      var show;
-      if (filterKey === "all") {
-        show = true;
-      } else if (filterKey === "accessible") {
-        show = p.amenities && p.amenities.indexOf("accessible") !== -1;
-      } else {
-        show = p.amenities && p.amenities.indexOf(filterKey) !== -1;
-      }
-      if (show) {
-        if (!map.hasLayer(m)) m.addTo(map);
-      } else {
-        if (map.hasLayer(m)) m.remove();
-      }
+      if (!map.hasLayer(m)) m.addTo(map);
     }
-    applyBccLayerVisibility(filterKey);
-  }
-
-  function getSelectedFilter() {
-    var sel = document.querySelector("[data-chip].is-selected");
-    return sel ? sel.getAttribute("data-filter") : "toilets";
+    applyBccAmenityLayersFromChips();
   }
 
   function buildSafetyLayer() {
@@ -945,11 +923,8 @@
   }
 
   function setupFilterListener() {
-    document.addEventListener("parkquest:amenity-filter", function (e) {
-      var f = e.detail && e.detail.filter;
-      if (f && map) {
-        applyAmenityFilter(f);
-      }
+    document.addEventListener("parkquest:amenity-filter", function () {
+      if (map) applyAmenityFilter();
     });
   }
 
@@ -991,7 +966,7 @@
         markersById[place.id] = m;
       })(PL[i]);
     }
-    applyAmenityFilter(getSelectedFilter());
+    applyAmenityFilter();
   }
 
   function initLeafletMap() {
