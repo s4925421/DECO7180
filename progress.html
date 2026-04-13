@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body data-parkquest-nav="progress">
+    <div id="rewards-toast" class="map-toast" role="status" aria-live="polite"></div>
     <div class="app app--scroll">
       <header class="app-header app-header--sub">
         <a href="index.html" class="icon-btn" aria-label="Back">
@@ -62,59 +63,58 @@
           <div id="saved-parks-mount" class="saved-parks"></div>
         </section>
 
-        <section class="page-section leaderboard-section" aria-labelledby="leaderboard-heading" lang="zh-Hans">
+        <section class="page-section leaderboard-section" aria-labelledby="leaderboard-heading">
           <div class="section-title-row">
-            <h3 id="leaderboard-heading" class="section-title">公园好评榜</h3>
-            <span class="leaderboard-section__hint">本周热度</span>
+            <h3 id="leaderboard-heading" class="section-title">Park leaderboard</h3>
+            <span class="leaderboard-section__hint">Live average</span>
           </div>
-          <ol class="leaderboard-list">
-            <li class="leaderboard-list__item">
-              <span class="leaderboard-list__rank" aria-hidden="true">1</span>
-              <div class="leaderboard-list__body">
-                <p class="leaderboard-list__name">新农场公园</p>
-                <p class="leaderboard-list__meta">综合体验 · 4.9</p>
-              </div>
-              <span class="leaderboard-list__score" aria-label="评分 4.9">4.9</span>
-            </li>
-            <li class="leaderboard-list__item">
-              <span class="leaderboard-list__rank" aria-hidden="true">2</span>
-              <div class="leaderboard-list__body">
-                <p class="leaderboard-list__name">罗马街公园</p>
-                <p class="leaderboard-list__meta">亲子友好 · 4.8</p>
-              </div>
-              <span class="leaderboard-list__score" aria-label="评分 4.8">4.8</span>
-            </li>
-            <li class="leaderboard-list__item">
-              <span class="leaderboard-list__rank" aria-hidden="true">3</span>
-              <div class="leaderboard-list__body">
-                <p class="leaderboard-list__name">城市植物园</p>
-                <p class="leaderboard-list__meta">设施与卫生 · 4.7</p>
-              </div>
-              <span class="leaderboard-list__score" aria-label="评分 4.7">4.7</span>
-            </li>
-          </ol>
+          <p class="leaderboard-hint" id="leaderboard-select-hint">
+            <strong>Search or tap a park</strong> below to open the survey and comments. Your scores update this park’s rank.
+          </p>
+          <div class="leaderboard-search-wrap" role="search">
+            <span class="material-symbols-outlined leaderboard-search-wrap__icon" aria-hidden="true">search</span>
+            <input
+              type="search"
+              id="leaderboard-search"
+              class="leaderboard-search-input"
+              placeholder="Search by park or address"
+              autocomplete="off"
+              aria-label="Search parks"
+            />
+          </div>
+          <p id="leaderboard-empty" class="leaderboard-empty" hidden>No parks match — try another keyword.</p>
+          <div id="leaderboard-mount" class="leaderboard-mount"></div>
         </section>
 
-        <section class="page-section survey-section" aria-labelledby="survey-heading" lang="zh-Hans">
-          <h3 id="survey-heading" class="section-title">公园体验问卷</h3>
-          <p class="survey-intro">基于研究维度，为下一次游园提供参考。每题单选，选项由左至右由负向趋于正向。</p>
+        <div id="survey-comments-wrap" class="survey-comments-wrap" hidden>
+          <section class="page-section survey-section" aria-labelledby="survey-heading">
+            <div class="survey-selected-banner">
+              <p class="survey-selected-banner__eyebrow">Currently rating</p>
+              <h3 id="survey-selected-title" class="survey-selected-banner__title"></h3>
+              <p id="survey-selected-sub" class="survey-selected-banner__sub"></p>
+            </div>
+            <h3 id="survey-heading" class="section-title survey-section__form-title">Park experience survey</h3>
+            <p class="survey-intro">
+              This survey applies <strong>only to the park shown above</strong>. Each row is one question: one choice, left (negative) → right (positive). The average goes into the leaderboard.
+            </p>
 
-          <form class="survey-form" action="#" method="get">
+            <form id="rewards-survey-form" class="survey-form" action="#" method="post">
+            <input type="hidden" name="park_id" id="survey-park-id" value="" />
             <fieldset class="survey-fieldset">
               <legend class="survey-legend">
-                <span class="survey-legend__tag">环境感知</span>
-                <span id="survey-q-env" class="survey-question">视野开阔感如何？</span>
+                <span class="survey-legend__tag">Environment</span>
+                <span id="survey-q-env" class="survey-question">How open does the space feel?</span>
               </legend>
               <div class="survey-scale-labels">
-                <span>遮挡严重</span>
-                <span>中立</span>
-                <span>视野开阔</span>
+                <span>Very enclosed</span>
+                <span>Neutral</span>
+                <span>Very open</span>
               </div>
               <div class="survey-scale-radios" role="radiogroup" aria-labelledby="survey-q-env">
                 <label class="survey-radio survey-radio--lg">
                   <input type="radio" name="perception_open" value="1" class="sr-only" />
                   <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">1 — 遮挡严重一侧</span>
+                  <span class="sr-only">1 — very enclosed</span>
                 </label>
                 <label class="survey-radio survey-radio--sm">
                   <input type="radio" name="perception_open" value="2" class="sr-only" />
@@ -124,7 +124,7 @@
                 <label class="survey-radio survey-radio--dot">
                   <input type="radio" name="perception_open" value="3" class="sr-only" />
                   <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">3 — 中立</span>
+                  <span class="sr-only">3 — neutral</span>
                 </label>
                 <label class="survey-radio survey-radio--sm">
                   <input type="radio" name="perception_open" value="4" class="sr-only" />
@@ -134,26 +134,26 @@
                 <label class="survey-radio survey-radio--lg">
                   <input type="radio" name="perception_open" value="5" class="sr-only" />
                   <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">5 — 视野开阔一侧</span>
+                  <span class="sr-only">5 — very open</span>
                 </label>
               </div>
             </fieldset>
 
             <fieldset class="survey-fieldset">
               <legend class="survey-legend">
-                <span class="survey-legend__tag">设施卫生</span>
-                <span id="survey-q-hygiene" class="survey-question">整洁度如何？</span>
+                <span class="survey-legend__tag">Cleanliness</span>
+                <span id="survey-q-hygiene" class="survey-question">How clean are facilities and paths?</span>
               </legend>
               <div class="survey-scale-labels">
-                <span>急需维护</span>
-                <span>一般</span>
-                <span>非常干净</span>
+                <span>Needs attention</span>
+                <span>OK</span>
+                <span>Very clean</span>
               </div>
               <div class="survey-scale-radios" role="radiogroup" aria-labelledby="survey-q-hygiene">
                 <label class="survey-radio survey-radio--lg">
                   <input type="radio" name="hygiene_cleanliness" value="1" class="sr-only" />
                   <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">1 — 急需维护</span>
+                  <span class="sr-only">1 — needs attention</span>
                 </label>
                 <label class="survey-radio survey-radio--sm">
                   <input type="radio" name="hygiene_cleanliness" value="2" class="sr-only" />
@@ -163,7 +163,7 @@
                 <label class="survey-radio survey-radio--dot">
                   <input type="radio" name="hygiene_cleanliness" value="3" class="sr-only" />
                   <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">3 — 一般</span>
+                  <span class="sr-only">3 — OK</span>
                 </label>
                 <label class="survey-radio survey-radio--sm">
                   <input type="radio" name="hygiene_cleanliness" value="4" class="sr-only" />
@@ -173,26 +173,26 @@
                 <label class="survey-radio survey-radio--lg">
                   <input type="radio" name="hygiene_cleanliness" value="5" class="sr-only" />
                   <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">5 — 非常干净</span>
+                  <span class="sr-only">5 — very clean</span>
                 </label>
               </div>
             </fieldset>
 
             <fieldset class="survey-fieldset">
               <legend class="survey-legend">
-                <span class="survey-legend__tag">锻炼健身</span>
-                <span id="survey-q-fitness" class="survey-question">运动适宜度（跑步路径、器械等）？</span>
+                <span class="survey-legend__tag">Fitness</span>
+                <span id="survey-q-fitness" class="survey-question">How suitable for exercise (paths, equipment)?</span>
               </legend>
               <div class="survey-scale-labels">
-                <span>完全不适宜</span>
-                <span>中立</span>
-                <span>专业级体验</span>
+                <span>Not suitable</span>
+                <span>Neutral</span>
+                <span>Excellent</span>
               </div>
               <div class="survey-scale-radios" role="radiogroup" aria-labelledby="survey-q-fitness">
                 <label class="survey-radio survey-radio--lg">
                   <input type="radio" name="fitness_suitability" value="1" class="sr-only" />
                   <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">1 — 完全不适宜</span>
+                  <span class="sr-only">1 — not suitable</span>
                 </label>
                 <label class="survey-radio survey-radio--sm">
                   <input type="radio" name="fitness_suitability" value="2" class="sr-only" />
@@ -202,7 +202,7 @@
                 <label class="survey-radio survey-radio--dot">
                   <input type="radio" name="fitness_suitability" value="3" class="sr-only" />
                   <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">3 — 中立</span>
+                  <span class="sr-only">3 — neutral</span>
                 </label>
                 <label class="survey-radio survey-radio--sm">
                   <input type="radio" name="fitness_suitability" value="4" class="sr-only" />
@@ -212,26 +212,26 @@
                 <label class="survey-radio survey-radio--lg">
                   <input type="radio" name="fitness_suitability" value="5" class="sr-only" />
                   <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">5 — 专业级体验</span>
+                  <span class="sr-only">5 — excellent</span>
                 </label>
               </div>
             </fieldset>
 
             <fieldset class="survey-fieldset">
               <legend class="survey-legend">
-                <span class="survey-legend__tag">设施便捷</span>
-                <span id="survey-q-amenity" class="survey-question">寻找厕所、饮水机、座椅的难易度？</span>
+                <span class="survey-legend__tag">Amenities</span>
+                <span id="survey-q-amenity" class="survey-question">How easy to find toilets, drinking water, seating?</span>
               </legend>
               <div class="survey-scale-labels">
-                <span>非常困难</span>
-                <span>一般</span>
-                <span>随处可见</span>
+                <span>Very hard</span>
+                <span>OK</span>
+                <span>Easy everywhere</span>
               </div>
               <div class="survey-scale-radios" role="radiogroup" aria-labelledby="survey-q-amenity">
                 <label class="survey-radio survey-radio--lg">
                   <input type="radio" name="amenity_wayfinding" value="1" class="sr-only" />
                   <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">1 — 非常困难</span>
+                  <span class="sr-only">1 — very hard</span>
                 </label>
                 <label class="survey-radio survey-radio--sm">
                   <input type="radio" name="amenity_wayfinding" value="2" class="sr-only" />
@@ -241,7 +241,7 @@
                 <label class="survey-radio survey-radio--dot">
                   <input type="radio" name="amenity_wayfinding" value="3" class="sr-only" />
                   <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">3 — 一般</span>
+                  <span class="sr-only">3 — OK</span>
                 </label>
                 <label class="survey-radio survey-radio--sm">
                   <input type="radio" name="amenity_wayfinding" value="4" class="sr-only" />
@@ -251,26 +251,26 @@
                 <label class="survey-radio survey-radio--lg">
                   <input type="radio" name="amenity_wayfinding" value="5" class="sr-only" />
                   <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">5 — 随处可见</span>
+                  <span class="sr-only">5 — easy everywhere</span>
                 </label>
               </div>
             </fieldset>
 
             <fieldset class="survey-fieldset">
               <legend class="survey-legend">
-                <span class="survey-legend__tag">社会激活</span>
-                <span id="survey-q-social" class="survey-question">社区活跃感如何？</span>
+                <span class="survey-legend__tag">Social</span>
+                <span id="survey-q-social" class="survey-question">How lively does the park feel?</span>
               </legend>
               <div class="survey-scale-labels">
-                <span>空旷冷清</span>
-                <span>中立</span>
-                <span>人气十足</span>
+                <span>Very quiet</span>
+                <span>Neutral</span>
+                <span>Buzzing</span>
               </div>
               <div class="survey-scale-radios" role="radiogroup" aria-labelledby="survey-q-social">
                 <label class="survey-radio survey-radio--lg">
                   <input type="radio" name="social_activation" value="1" class="sr-only" />
                   <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">1 — 空旷冷清</span>
+                  <span class="sr-only">1 — very quiet</span>
                 </label>
                 <label class="survey-radio survey-radio--sm">
                   <input type="radio" name="social_activation" value="2" class="sr-only" />
@@ -280,7 +280,7 @@
                 <label class="survey-radio survey-radio--dot">
                   <input type="radio" name="social_activation" value="3" class="sr-only" />
                   <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">3 — 中立</span>
+                  <span class="sr-only">3 — neutral</span>
                 </label>
                 <label class="survey-radio survey-radio--sm">
                   <input type="radio" name="social_activation" value="4" class="sr-only" />
@@ -290,17 +290,38 @@
                 <label class="survey-radio survey-radio--lg">
                   <input type="radio" name="social_activation" value="5" class="sr-only" />
                   <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">5 — 人气十足</span>
+                  <span class="sr-only">5 — buzzing</span>
                 </label>
               </div>
             </fieldset>
 
             <div class="survey-actions">
-              <button type="submit" class="btn-pill survey-submit">提交评价</button>
-              <p class="survey-footnote">提交后数据仅用于改进推荐展示（演示原型）。</p>
+              <button type="submit" class="btn-pill survey-submit">Submit rating</button>
+              <p class="survey-footnote">
+                Scores and comments are stored in this browser (localStorage) for this demo. Everyone using this browser profile can see the same history.
+              </p>
             </div>
           </form>
-        </section>
+
+            <div class="park-comments">
+              <h4 class="park-comments__title">Visitor comments</h4>
+              <p class="park-comments__hint">Past notes for this park (local storage — prototype only).</p>
+              <div id="park-comments-list" class="park-comments__list" aria-live="polite"></div>
+              <form id="park-comment-form" class="park-comment-form">
+                <label class="park-comment-form__label" for="park-comment-input">Add a comment</label>
+                <textarea
+                  id="park-comment-input"
+                  class="park-comment-form__textarea"
+                  name="comment"
+                  rows="3"
+                  maxlength="800"
+                  placeholder="Share your experience at this park…"
+                ></textarea>
+                <button type="submit" class="btn-pill park-comment-form__submit">Post comment</button>
+              </form>
+            </div>
+          </section>
+        </div>
 
         <section class="page-section">
           <div class="section-title-row">
@@ -415,5 +436,6 @@
     <script src="js/main.js"></script>
     <script src="js/navagation.js"></script>
     <script src="js/favorites.js"></script>
+    <script src="js/rewards.js"></script>
   </body>
 </html>
