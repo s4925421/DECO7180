@@ -19,11 +19,18 @@
     "https://data.brisbane.qld.gov.au/api/explore/v2.1/catalog/datasets/";
   var BCC_DATASET_TOILETS = "public-toilets-in-brisbane";
   var BCC_DATASET_FOUNTAINS = "park-drinking-fountain-tap-locations";
+  var BCC_DATASET_SHADE = "park-shade-sails";
+  var BCC_DATASET_SEATING = "park-seating";
   var BCC_FETCH_LIMIT = 100;
+
+  /** In-memory cache: successful JSON per dataset (avoids repeat fetches e.g. if load runs again). */
+  var bccApiCache = {};
 
   var bccToiletsLayer = null;
   var bccToiletsAccessibleLayer = null;
   var bccFountainsLayer = null;
+  var bccShadeLayer = null;
+  var bccSeatingLayer = null;
   var bccDataLoaded = false;
 
   function escapeHtml(s) {
@@ -34,23 +41,33 @@
   }
 
   /**
-   * Fetch records from BCC Explore API.
+   * Fetch records from BCC Explore API (cached per dataset after first success).
    * @param {string} datasetId e.g. public-toilets-in-brisbane
    */
   function fetchAmenities(datasetId, limit) {
+    if (bccApiCache[datasetId] !== undefined) {
+      return Promise.resolve(bccApiCache[datasetId]);
+    }
     var lim = limit || BCC_FETCH_LIMIT;
     var url = BCC_API_BASE + encodeURIComponent(datasetId) + "/records?limit=" + lim;
-    return fetch(url).then(function (r) {
-      if (!r.ok) {
-        throw new Error("BCC API " + r.status);
-      }
-      return r.json();
-    });
+    return fetch(url)
+      .then(function (r) {
+        if (!r.ok) {
+          throw new Error("BCC API " + r.status);
+        }
+        return r.json();
+      })
+      .then(function (json) {
+        bccApiCache[datasetId] = json;
+        return json;
+      });
   }
 
   function extractLatLng(rec) {
     if (rec.geo_point_2d && typeof rec.geo_point_2d.lat === "number") {
-      return [rec.geo_point_2d.lat, rec.geo_point_2d.lon];
+      var g = rec.geo_point_2d;
+      var lon = typeof g.lon === "number" ? g.lon : typeof g.lng === "number" ? g.lng : null;
+      if (lon != null) return [g.lat, lon];
     }
     if (rec.geopoint && typeof rec.geopoint.lat === "number") {
       return [rec.geopoint.lat, rec.geopoint.lon];
@@ -81,6 +98,48 @@
       iconAnchor: [15, 30],
       popupAnchor: [0, -28],
     });
+  }
+
+  function iconBccShade() {
+    return L.divIcon({
+      className: "bcc-marker-icon",
+      html:
+        '<div class="bcc-marker bcc-marker--shade"><span class="material-symbols-outlined" aria-hidden="true">wb_sunny</span></div>',
+      iconSize: [30, 30],
+      iconAnchor: [15, 30],
+      popupAnchor: [0, -28],
+    });
+  }
+
+  function iconBccSeat() {
+    return L.divIcon({
+      className: "bcc-marker-icon",
+      html:
+        '<div class="bcc-marker bcc-marker--seat"><span class="material-symbols-outlined" aria-hidden="true">event_seat</span></div>',
+      iconSize: [30, 30],
+      iconAnchor: [15, 30],
+      popupAnchor: [0, -28],
+    });
+  }
+
+  function bccParkTitle(rec) {
+    return rec.park_name || rec.park || rec.name || rec.asset_name || "Park";
+  }
+
+  function bccLocationDescription(rec) {
+    var v =
+      rec.location_description ||
+      rec.location_description_text ||
+      rec.description ||
+      rec.item_description ||
+      rec.location ||
+      "";
+    return String(v).trim();
+  }
+
+  function bccSeatingMaterial(rec) {
+    var v = rec.material || rec.Material || rec.seat_material || rec.item_material || rec.surface_material || "";
+    return String(v).trim();
   }
 
   function buildBccToiletPopup(rec) {
@@ -132,6 +191,52 @@
     );
   }
 
+  function buildBccShadePopup(rec) {
+    var title = bccParkTitle(rec);
+    var loc = bccLocationDescription(rec);
+    var locHtml =
+      loc !== ""
+        ? '<p class="bcc-popup__highlight"><strong>Location</strong><br>' + escapeHtml(loc) + "</p>"
+        : '<p class="bcc-popup__highlight"><strong>Location</strong><br>Not listed in dataset — check on site.</p>';
+    return (
+      '<div class="bcc-popup gm-iw-parkquest gm-iw-parkquest--glass">' +
+      '<strong class="gm-iw-parkquest__title">' +
+      escapeHtml(title) +
+      "</strong>" +
+      '<p class="gm-iw-parkquest__addr">Shade sail</p>' +
+      locHtml +
+      '<p class="bcc-popup__source">Source: BCC Open Data · park shade sails.</p>' +
+      "</div>"
+    );
+  }
+
+  function buildBccSeatingPopup(rec) {
+    var title = bccParkTitle(rec);
+    var loc = bccLocationDescription(rec);
+    var mat = bccSeatingMaterial(rec);
+    var locHtml =
+      loc !== ""
+        ? '<p class="bcc-popup__highlight"><strong>Location</strong><br>' + escapeHtml(loc) + "</p>"
+        : '<p class="bcc-popup__highlight"><strong>Location</strong><br>Not listed in dataset — check on site.</p>';
+    var matHtml =
+      mat !== ""
+        ? '<p class="bcc-popup__highlight"><strong>Material</strong><br>' +
+          escapeHtml(mat) +
+          " — metal or dark surfaces can feel very hot in summer; consider shade or timing.</p>"
+        : '<p class="bcc-popup__highlight"><strong>Material</strong><br>Not listed — touch-test on hot days.</p>';
+    return (
+      '<div class="bcc-popup gm-iw-parkquest gm-iw-parkquest--glass">' +
+      '<strong class="gm-iw-parkquest__title">' +
+      escapeHtml(title) +
+      "</strong>" +
+      '<p class="gm-iw-parkquest__addr">Park seating</p>' +
+      locHtml +
+      matHtml +
+      '<p class="bcc-popup__source">Source: BCC Open Data · park seating.</p>' +
+      "</div>"
+    );
+  }
+
   function setBccLoading(on) {
     var el = document.getElementById("bcc-amenities-loading");
     if (!el) return;
@@ -153,10 +258,12 @@
     });
   }
 
-  function populateBccLayers(toiletJson, fountainJson) {
+  function populateBccLayers(toiletJson, fountainJson, shadeJson, seatingJson) {
     bccToiletsLayer = L.layerGroup();
     bccToiletsAccessibleLayer = L.layerGroup();
     bccFountainsLayer = L.layerGroup();
+    bccShadeLayer = L.layerGroup();
+    bccSeatingLayer = L.layerGroup();
 
     var tResults = (toiletJson && toiletJson.results) || [];
     var i;
@@ -212,6 +319,43 @@
         m.addTo(bccFountainsLayer);
       })(fResults[i]);
     }
+
+    var shadeResults = (shadeJson && shadeJson.results) || [];
+    for (i = 0; i < shadeResults.length; i++) {
+      (function (rec) {
+        var ll = extractLatLng(rec);
+        if (!ll) return;
+        var t = bccParkTitle(rec);
+        var m = L.marker(ll, { icon: iconBccShade(), title: t + " — shade" });
+        m.bindPopup(buildBccShadePopup(rec), {
+          maxWidth: 300,
+          className: "parkquest-popup parkquest-popup--glass",
+          closeButton: true,
+        });
+        bindBccMarkerA11y(m, "Shade sail at " + t + ". " + bccLocationDescription(rec));
+        m.addTo(bccShadeLayer);
+      })(shadeResults[i]);
+    }
+
+    var seatResults = (seatingJson && seatingJson.results) || [];
+    for (i = 0; i < seatResults.length; i++) {
+      (function (rec) {
+        var ll = extractLatLng(rec);
+        if (!ll) return;
+        var t = bccParkTitle(rec);
+        var m = L.marker(ll, { icon: iconBccSeat(), title: t + " — seating" });
+        m.bindPopup(buildBccSeatingPopup(rec), {
+          maxWidth: 300,
+          className: "parkquest-popup parkquest-popup--glass",
+          closeButton: true,
+        });
+        bindBccMarkerA11y(
+          m,
+          "Seating at " + t + ". " + bccLocationDescription(rec) + (bccSeatingMaterial(rec) ? ". Material: " + bccSeatingMaterial(rec) : "")
+        );
+        m.addTo(bccSeatingLayer);
+      })(seatResults[i]);
+    }
   }
 
   function applyBccLayerVisibility(filterKey) {
@@ -225,25 +369,42 @@
     removeL(bccToiletsLayer);
     removeL(bccToiletsAccessibleLayer);
     removeL(bccFountainsLayer);
+    removeL(bccShadeLayer);
+    removeL(bccSeatingLayer);
 
-    if (filterKey === "toilets" || filterKey === "all") {
+    if (filterKey === "all") {
       addL(bccToiletsLayer);
+      addL(bccFountainsLayer);
+      addL(bccShadeLayer);
+      addL(bccSeatingLayer);
     } else if (filterKey === "accessible") {
       addL(bccToiletsAccessibleLayer);
-    }
-    if (filterKey === "water" || filterKey === "all") {
+    } else if (filterKey === "toilets") {
+      addL(bccToiletsLayer);
+    } else if (filterKey === "water") {
       addL(bccFountainsLayer);
+    } else if (filterKey === "shade") {
+      addL(bccShadeLayer);
+    } else if (filterKey === "seat") {
+      addL(bccSeatingLayer);
     }
   }
 
   function loadBccAmenitiesData() {
     setBccLoading(true);
+    function emptyOnFail(p) {
+      return p.catch(function () {
+        return { results: [] };
+      });
+    }
     Promise.all([
-      fetchAmenities(BCC_DATASET_TOILETS, BCC_FETCH_LIMIT),
-      fetchAmenities(BCC_DATASET_FOUNTAINS, BCC_FETCH_LIMIT),
+      emptyOnFail(fetchAmenities(BCC_DATASET_TOILETS, BCC_FETCH_LIMIT)),
+      emptyOnFail(fetchAmenities(BCC_DATASET_FOUNTAINS, BCC_FETCH_LIMIT)),
+      emptyOnFail(fetchAmenities(BCC_DATASET_SHADE, BCC_FETCH_LIMIT)),
+      emptyOnFail(fetchAmenities(BCC_DATASET_SEATING, BCC_FETCH_LIMIT)),
     ])
       .then(function (arr) {
-        populateBccLayers(arr[0], arr[1]);
+        populateBccLayers(arr[0], arr[1], arr[2], arr[3]);
         bccDataLoaded = true;
         setBccLoading(false);
         applyBccLayerVisibility(getSelectedFilter());

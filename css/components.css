@@ -1389,6 +1389,16 @@ body.map-ready .featured-card {
   color: #fff;
 }
 
+.bcc-marker--shade {
+  background: linear-gradient(145deg, #c9a227, #f4e4a6);
+  color: #3d3200;
+}
+
+.bcc-marker--seat {
+  background: linear-gradient(145deg, #6d4c41, #a1887f);
+  color: #fff;
+}
+
 .bcc-popup__highlight {
   margin: 0.5rem 0 0;
   padding: 0.45rem 0.55rem;
