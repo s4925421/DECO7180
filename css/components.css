@@ -1338,3 +1338,75 @@ body.map-ready .featured-card {
   font-size: 0.6875rem;
   color: var(--primary-container);
 }
+
+/* BCC Open Data — loading strip */
+.bcc-amenities-loading {
+  margin: 0 0 0.65rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--on-primary-container);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--primary) 12%, var(--surface)), var(--surface-container-low));
+  animation: bcc-loading-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes bcc-loading-pulse {
+  50% {
+    opacity: 0.85;
+  }
+}
+
+/* BCC facility markers (Material icon inside) */
+.bcc-marker-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.bcc-marker {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-ambient);
+  border: 2px solid #fff;
+}
+
+.bcc-marker .material-symbols-outlined {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.bcc-marker--toilet {
+  background: linear-gradient(145deg, #5c4d7a, #8b7aad);
+  color: #fff;
+}
+
+.bcc-marker--fountain {
+  background: linear-gradient(145deg, var(--secondary), #4a9fd4);
+  color: #fff;
+}
+
+.bcc-popup__highlight {
+  margin: 0.5rem 0 0;
+  padding: 0.45rem 0.55rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--on-surface);
+  background: color-mix(in srgb, var(--primary-fixed) 35%, var(--surface));
+}
+
+.bcc-popup__highlight strong {
+  font-family: var(--font-display);
+  color: var(--primary);
+}
+
+.bcc-popup__source {
+  margin: 0.5rem 0 0;
+  font-size: 0.625rem;
+  color: var(--on-surface-variant);
+  line-height: 1.35;
+}

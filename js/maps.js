@@ -14,6 +14,247 @@
   var safetyLayerGroup = null;
   var safetyLayerVisible = false;
 
+  /** Brisbane City Council Open Data (Explore API v2.1) */
+  var BCC_API_BASE =
+    "https://data.brisbane.qld.gov.au/api/explore/v2.1/catalog/datasets/";
+  var BCC_DATASET_TOILETS = "public-toilets-in-brisbane";
+  var BCC_DATASET_FOUNTAINS = "park-drinking-fountain-tap-locations";
+  var BCC_FETCH_LIMIT = 100;
+
+  var bccToiletsLayer = null;
+  var bccToiletsAccessibleLayer = null;
+  var bccFountainsLayer = null;
+  var bccDataLoaded = false;
+
+  function escapeHtml(s) {
+    if (s == null || s === "") return "";
+    var d = document.createElement("div");
+    d.textContent = String(s);
+    return d.innerHTML;
+  }
+
+  /**
+   * Fetch records from BCC Explore API.
+   * @param {string} datasetId e.g. public-toilets-in-brisbane
+   */
+  function fetchAmenities(datasetId, limit) {
+    var lim = limit || BCC_FETCH_LIMIT;
+    var url = BCC_API_BASE + encodeURIComponent(datasetId) + "/records?limit=" + lim;
+    return fetch(url).then(function (r) {
+      if (!r.ok) {
+        throw new Error("BCC API " + r.status);
+      }
+      return r.json();
+    });
+  }
+
+  function extractLatLng(rec) {
+    if (rec.geo_point_2d && typeof rec.geo_point_2d.lat === "number") {
+      return [rec.geo_point_2d.lat, rec.geo_point_2d.lon];
+    }
+    if (rec.geopoint && typeof rec.geopoint.lat === "number") {
+      return [rec.geopoint.lat, rec.geopoint.lon];
+    }
+    if (typeof rec.latitude === "number" && typeof rec.longitude === "number") {
+      return [rec.latitude, rec.longitude];
+    }
+    return null;
+  }
+
+  function iconBccToilet() {
+    return L.divIcon({
+      className: "bcc-marker-icon",
+      html:
+        '<div class="bcc-marker bcc-marker--toilet"><span class="material-symbols-outlined" aria-hidden="true">wc</span></div>',
+      iconSize: [30, 30],
+      iconAnchor: [15, 30],
+      popupAnchor: [0, -28],
+    });
+  }
+
+  function iconBccFountain() {
+    return L.divIcon({
+      className: "bcc-marker-icon",
+      html:
+        '<div class="bcc-marker bcc-marker--fountain"><span class="material-symbols-outlined" aria-hidden="true">water_drop</span></div>',
+      iconSize: [30, 30],
+      iconAnchor: [15, 30],
+      popupAnchor: [0, -28],
+    });
+  }
+
+  function buildBccToiletPopup(rec) {
+    var name = rec.name || "Public toilet";
+    var facility = rec.facilitytype || "";
+    var hours = rec.openinghours || rec.opening_hours || "—";
+    var accYes = rec.accessible === "True" || rec.accessible === true;
+    var accText = accYes
+      ? "Yes — accessible cubicle listed"
+      : "Check on site — may have limited access";
+    var addr = [rec.address1, rec.town].filter(Boolean).join(", ");
+    return (
+      '<div class="bcc-popup gm-iw-parkquest gm-iw-parkquest--glass">' +
+      '<strong class="gm-iw-parkquest__title">' +
+      escapeHtml(name) +
+      "</strong>" +
+      '<p class="gm-iw-parkquest__addr">' +
+      escapeHtml(facility) +
+      (addr ? "<br>" + escapeHtml(addr) : "") +
+      "</p>" +
+      '<p class="bcc-popup__highlight"><strong>Opening hours</strong><br>' +
+      escapeHtml(hours) +
+      "</p>" +
+      '<p class="bcc-popup__highlight"><strong>Accessible toilet</strong><br>' +
+      escapeHtml(accText) +
+      "</p>" +
+      '<p class="bcc-popup__source">Source: BCC Open Data · updates when Council publishes changes.</p>' +
+      "</div>"
+    );
+  }
+
+  function buildBccFountainPopup(rec) {
+    var park = rec.park_name || "Park";
+    var desc = rec.item_description || "";
+    var typ = rec.item_type || "";
+    return (
+      '<div class="bcc-popup gm-iw-parkquest gm-iw-parkquest--glass">' +
+      '<strong class="gm-iw-parkquest__title">' +
+      escapeHtml(park) +
+      "</strong>" +
+      '<p class="gm-iw-parkquest__addr">' +
+      escapeHtml(desc) +
+      (typ ? " · " + escapeHtml(typ) : "") +
+      "</p>" +
+      '<p class="bcc-popup__highlight"><strong>Accessibility</strong><br>' +
+      "Wheelchair access to the tap is <strong>not listed</strong> in this dataset — choose paved paths nearby.</p>" +
+      '<p class="bcc-popup__source">Source: BCC Open Data · park drinking fountains &amp; taps.</p>' +
+      "</div>"
+    );
+  }
+
+  function setBccLoading(on) {
+    var el = document.getElementById("bcc-amenities-loading");
+    if (!el) return;
+    if (on) {
+      el.removeAttribute("hidden");
+      el.setAttribute("aria-busy", "true");
+    } else {
+      el.setAttribute("hidden", "");
+      el.setAttribute("aria-busy", "false");
+    }
+  }
+
+  function bindBccMarkerA11y(marker, label) {
+    marker.on("add", function () {
+      var el = marker.getElement();
+      if (!el) return;
+      el.setAttribute("role", "button");
+      el.setAttribute("aria-label", label);
+    });
+  }
+
+  function populateBccLayers(toiletJson, fountainJson) {
+    bccToiletsLayer = L.layerGroup();
+    bccToiletsAccessibleLayer = L.layerGroup();
+    bccFountainsLayer = L.layerGroup();
+
+    var tResults = (toiletJson && toiletJson.results) || [];
+    var i;
+    for (i = 0; i < tResults.length; i++) {
+      (function (rec) {
+        var ll = extractLatLng(rec);
+        if (!ll) return;
+        var m = L.marker(ll, { icon: iconBccToilet(), title: rec.name || "Toilet" });
+        m.bindPopup(buildBccToiletPopup(rec), {
+          maxWidth: 300,
+          className: "parkquest-popup parkquest-popup--glass",
+          closeButton: true,
+        });
+        var accYes = rec.accessible === "True" || rec.accessible === true;
+        var a11y =
+          "Public toilet, " +
+          (rec.name || "") +
+          ". Opening: " +
+          (rec.openinghours || "unknown") +
+          ". Accessible: " +
+          (accYes ? "yes" : "check on site") +
+          ".";
+        bindBccMarkerA11y(m, a11y);
+        m.addTo(bccToiletsLayer);
+        if (accYes) {
+          var m2 = L.marker(ll, { icon: iconBccToilet(), title: rec.name || "Toilet" });
+          m2.bindPopup(buildBccToiletPopup(rec), {
+            maxWidth: 300,
+            className: "parkquest-popup parkquest-popup--glass",
+            closeButton: true,
+          });
+          bindBccMarkerA11y(m2, a11y);
+          m2.addTo(bccToiletsAccessibleLayer);
+        }
+      })(tResults[i]);
+    }
+
+    var fResults = (fountainJson && fountainJson.results) || [];
+    for (i = 0; i < fResults.length; i++) {
+      (function (rec) {
+        var ll = extractLatLng(rec);
+        if (!ll) return;
+        var m = L.marker(ll, { icon: iconBccFountain(), title: rec.park_name || "Fountain" });
+        m.bindPopup(buildBccFountainPopup(rec), {
+          maxWidth: 300,
+          className: "parkquest-popup parkquest-popup--glass",
+          closeButton: true,
+        });
+        bindBccMarkerA11y(
+          m,
+          "Drinking fountain or tap at " + (rec.park_name || "park") + ". " + (rec.item_description || "")
+        );
+        m.addTo(bccFountainsLayer);
+      })(fResults[i]);
+    }
+  }
+
+  function applyBccLayerVisibility(filterKey) {
+    if (!map || !bccDataLoaded) return;
+    function removeL(layer) {
+      if (layer && map.hasLayer(layer)) map.removeLayer(layer);
+    }
+    function addL(layer) {
+      if (layer && !map.hasLayer(layer)) map.addLayer(layer);
+    }
+    removeL(bccToiletsLayer);
+    removeL(bccToiletsAccessibleLayer);
+    removeL(bccFountainsLayer);
+
+    if (filterKey === "toilets" || filterKey === "all") {
+      addL(bccToiletsLayer);
+    } else if (filterKey === "accessible") {
+      addL(bccToiletsAccessibleLayer);
+    }
+    if (filterKey === "water" || filterKey === "all") {
+      addL(bccFountainsLayer);
+    }
+  }
+
+  function loadBccAmenitiesData() {
+    setBccLoading(true);
+    Promise.all([
+      fetchAmenities(BCC_DATASET_TOILETS, BCC_FETCH_LIMIT),
+      fetchAmenities(BCC_DATASET_FOUNTAINS, BCC_FETCH_LIMIT),
+    ])
+      .then(function (arr) {
+        populateBccLayers(arr[0], arr[1]);
+        bccDataLoaded = true;
+        setBccLoading(false);
+        applyBccLayerVisibility(getSelectedFilter());
+      })
+      .catch(function () {
+        setBccLoading(false);
+        bccDataLoaded = false;
+        showToast("Could not load Brisbane Council facility data — parks still shown");
+      });
+  }
+
   function getPLACES() {
     return (window.PARKQUEST_DATA && window.PARKQUEST_DATA.PLACES) || [];
   }
@@ -264,6 +505,7 @@
         if (map.hasLayer(m)) m.remove();
       }
     }
+    applyBccLayerVisibility(filterKey);
   }
 
   function getSelectedFilter() {
@@ -550,6 +792,8 @@
     setupFilterListener();
     setupCptedChip();
     updateOfflineBanner();
+
+    loadBccAmenitiesData();
 
     map.on("moveend", saveMapView);
     map.on("zoomend", saveMapView);
