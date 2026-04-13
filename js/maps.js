@@ -21,6 +21,9 @@
   var BCC_DATASET_FOUNTAINS = "park-drinking-fountain-tap-locations";
   var BCC_DATASET_SHADE = "park-shade-sails";
   var BCC_DATASET_SEATING = "park-seating";
+  var BCC_DATASET_PARK_LOCATIONS = "park-locations";
+  /** Show BCC official park markers only when zoom is strictly greater than this (performance). */
+  var BCC_OFFICIAL_PARK_MIN_ZOOM = 13;
   var BCC_FETCH_LIMIT = 100;
 
   /** In-memory cache: successful JSON per dataset (avoids repeat fetches e.g. if load runs again). */
@@ -31,6 +34,8 @@
   var bccFountainsLayer = null;
   var bccShadeLayer = null;
   var bccSeatingLayer = null;
+  /** MarkerClusterGroup (or L.layerGroup fallback) for BCC park-locations. */
+  var bccParkLocationsLayer = null;
   var bccDataLoaded = false;
 
   function escapeHtml(s) {
@@ -210,6 +215,24 @@
     );
   }
 
+  function buildBccOfficialParkPopup(rec) {
+    var name = rec.item_name || "Park";
+    var street = rec.street_address || "";
+    var suburb = rec.suburb || "";
+    var addr = [street, suburb].filter(Boolean).join(", ");
+    return (
+      '<div class="bcc-popup gm-iw-parkquest gm-iw-parkquest--glass">' +
+      '<strong class="gm-iw-parkquest__title">' +
+      escapeHtml(name) +
+      "</strong>" +
+      '<p class="gm-iw-parkquest__addr">' +
+      (addr !== "" ? escapeHtml(addr) : "Address not listed in dataset") +
+      "</p>" +
+      '<p class="bcc-popup__source">Source: BCC Open Data · park locations.</p>' +
+      "</div>"
+    );
+  }
+
   function buildBccSeatingPopup(rec) {
     var title = bccParkTitle(rec);
     var loc = bccLocationDescription(rec);
@@ -358,6 +381,62 @@
     }
   }
 
+  function createBccParkLocationsLayerContainer() {
+    if (typeof L.markerClusterGroup === "function") {
+      return L.markerClusterGroup({
+        maxClusterRadius: 52,
+        spiderfyOnMaxZoom: true,
+        showCoverageOnHover: false,
+        zoomToBoundsOnClick: true,
+        disableClusteringAtZoom: 18,
+        chunkedLoading: true,
+        chunkInterval: 180,
+        chunkDelay: 40,
+      });
+    }
+    return L.layerGroup();
+  }
+
+  function populateBccOfficialParkLocations(parkJson) {
+    if (bccParkLocationsLayer && map && map.hasLayer(bccParkLocationsLayer)) {
+      map.removeLayer(bccParkLocationsLayer);
+    }
+    bccParkLocationsLayer = createBccParkLocationsLayerContainer();
+    var results = (parkJson && parkJson.results) || [];
+    var stubPlace = { featured: false, activationLevel: 0 };
+    var i;
+    for (i = 0; i < results.length; i++) {
+      (function (rec) {
+        var ll = extractLatLng(rec);
+        if (!ll) return;
+        var title = rec.item_name || "Park";
+        var m = L.marker(ll, {
+          icon: markerIcon(stubPlace),
+          title: title,
+          zIndexOffset: -400,
+        });
+        m.bindPopup(buildBccOfficialParkPopup(rec), {
+          maxWidth: 300,
+          className: "parkquest-popup parkquest-popup--glass",
+          closeButton: true,
+        });
+        var suburbPart = rec.suburb ? ", " + rec.suburb : "";
+        bindBccMarkerA11y(m, "Council park: " + title + suburbPart);
+        bccParkLocationsLayer.addLayer(m);
+      })(results[i]);
+    }
+  }
+
+  function syncBccOfficialParkLocationsVisibility() {
+    if (!map || !bccParkLocationsLayer) return;
+    var show = map.getZoom() > BCC_OFFICIAL_PARK_MIN_ZOOM;
+    if (show) {
+      if (!map.hasLayer(bccParkLocationsLayer)) map.addLayer(bccParkLocationsLayer);
+    } else {
+      if (map.hasLayer(bccParkLocationsLayer)) map.removeLayer(bccParkLocationsLayer);
+    }
+  }
+
   function applyBccLayerVisibility(filterKey) {
     if (!map || !bccDataLoaded) return;
     function removeL(layer) {
@@ -402,12 +481,15 @@
       emptyOnFail(fetchAmenities(BCC_DATASET_FOUNTAINS, BCC_FETCH_LIMIT)),
       emptyOnFail(fetchAmenities(BCC_DATASET_SHADE, BCC_FETCH_LIMIT)),
       emptyOnFail(fetchAmenities(BCC_DATASET_SEATING, BCC_FETCH_LIMIT)),
+      emptyOnFail(fetchAmenities(BCC_DATASET_PARK_LOCATIONS, BCC_FETCH_LIMIT)),
     ])
       .then(function (arr) {
         populateBccLayers(arr[0], arr[1], arr[2], arr[3]);
+        populateBccOfficialParkLocations(arr[4]);
         bccDataLoaded = true;
         setBccLoading(false);
         applyBccLayerVisibility(getSelectedFilter());
+        syncBccOfficialParkLocationsVisibility();
       })
       .catch(function () {
         setBccLoading(false);
@@ -958,6 +1040,7 @@
 
     map.on("moveend", saveMapView);
     map.on("zoomend", saveMapView);
+    map.on("zoomend", syncBccOfficialParkLocationsVisibility);
 
     window.addEventListener("resize", function () {
       if (map) map.invalidateSize();

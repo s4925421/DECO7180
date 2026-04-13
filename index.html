@@ -16,6 +16,14 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+    />
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body data-parkquest-nav="map" data-parkquest-drawer="true">
@@ -82,7 +90,7 @@
             aria-live="polite"
             aria-busy="true"
           >
-            Loading Brisbane City Council facilities (toilets, fountains, shade, seating)…
+            Loading Brisbane City Council facilities (parks, toilets, fountains, shade, seating)…
           </div>
 
           <div class="chip-row no-scrollbar" role="toolbar" aria-label="Quick filters">
@@ -211,6 +219,7 @@
     <script src="js/data-store.js"></script>
     <script src="js/ui-loader.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
     <script src="js/maps-config.js"></script>
     <script src="js/maps.js"></script>
     <script src="js/main.js"></script>

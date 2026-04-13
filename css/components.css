@@ -1061,6 +1061,22 @@ body.map-ready .featured-card {
   animation: pq-marker-pulse 2s ease-in-out infinite;
 }
 
+/* BCC official parks: Leaflet.markercluster (theme-aligned) */
+.marker-cluster-small,
+.marker-cluster-medium,
+.marker-cluster-large {
+  background-color: color-mix(in srgb, var(--primary) 55%, transparent);
+}
+
+.marker-cluster-small div,
+.marker-cluster-medium div,
+.marker-cluster-large div {
+  background-color: var(--primary);
+  color: var(--on-primary);
+  font-weight: 700;
+  font-family: var(--font-display, inherit);
+}
+
 /* High-visibility toggle chip (independent from amenity chips) */
 .chip--cpted {
   border: 1px solid color-mix(in srgb, var(--outline-variant) 25%, transparent);
