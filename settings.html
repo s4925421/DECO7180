@@ -17,7 +17,7 @@
     />
     <link rel="stylesheet" href="css/style.css" />
   </head>
-  <body>
+  <body data-parkquest-nav="settings">
     <div class="app app--scroll">
       <header class="app-header app-header--sub">
         <a href="index.html" class="icon-btn" aria-label="Back">
@@ -53,26 +53,11 @@
         </section>
       </main>
 
-      <nav class="bottom-nav" aria-label="Primary">
-        <a class="bottom-nav__link" href="index.html">
-          <span class="material-symbols-outlined" aria-hidden="true">map</span>
-          Map
-        </a>
-        <a class="bottom-nav__link" href="trails.html">
-          <span class="material-symbols-outlined" aria-hidden="true">explore</span>
-          My Trails
-        </a>
-        <a class="bottom-nav__link" href="progress.html">
-          <span class="material-symbols-outlined" aria-hidden="true">military_tech</span>
-          Rewards
-        </a>
-        <a class="bottom-nav__link is-active" href="settings.html">
-          <span class="material-symbols-outlined fill" aria-hidden="true">settings</span>
-          Settings
-        </a>
-      </nav>
+      <div id="parkquest-bottom-nav-root"></div>
     </div>
 
+    <script src="js/data-store.js"></script>
+    <script src="js/ui-loader.js"></script>
     <script src="js/main.js"></script>
     <script src="js/navagation.js"></script>
   </body>

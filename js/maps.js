@@ -3,45 +3,7 @@
 
   var STORAGE_FAV = "parkquest_favorites";
   var STORAGE_LAST = "parkquest_map_last_view";
-
-  var PLACES = [
-    {
-      id: "roma",
-      title: "Roma Street Parkland",
-      lat: -27.4658,
-      lng: 153.0235,
-      amenities: ["toilets", "water", "shade", "seat"],
-      featured: false,
-      address: "Parkland Blvd, Brisbane City",
-    },
-    {
-      id: "southbank",
-      title: "South Bank Parklands",
-      lat: -27.4753,
-      lng: 153.0211,
-      amenities: ["toilets", "water", "shade", "seat"],
-      featured: false,
-      address: "Little Stanley St, South Brisbane",
-    },
-    {
-      id: "botanic",
-      title: "City Botanic Gardens",
-      lat: -27.4758,
-      lng: 153.0306,
-      amenities: ["toilets", "water", "shade", "seat"],
-      featured: true,
-      address: "Alice St, Brisbane City",
-    },
-    {
-      id: "newfarm",
-      title: "New Farm Park",
-      lat: -27.468,
-      lng: 153.0515,
-      amenities: ["water", "shade", "seat"],
-      featured: false,
-      address: "Brunswick St, New Farm",
-    },
-  ];
+  var STORAGE_OFFLINE = "parkquest_offline";
 
   var BRISBANE = [-27.47, 153.025];
   var DEFAULT_ZOOM = 13;
@@ -49,12 +11,20 @@
   var map = null;
   var markersById = {};
   var searchMarker = null;
+  var safetyLayerGroup = null;
+  var safetyLayerVisible = false;
+
+  function getPLACES() {
+    return (window.PARKQUEST_DATA && window.PARKQUEST_DATA.PLACES) || [];
+  }
 
   function placeById(id) {
-    for (var i = 0; i < PLACES.length; i++) {
-      if (PLACES[i].id === id) {
-        return PLACES[i];
-      }
+    if (window.PARKQUEST_DATA && window.PARKQUEST_DATA.placeById) {
+      return window.PARKQUEST_DATA.placeById(id);
+    }
+    var PL = getPLACES();
+    for (var i = 0; i < PL.length; i++) {
+      if (PL[i].id === id) return PL[i];
     }
     return null;
   }
@@ -85,6 +55,32 @@
     }
     setFavorites(list);
     return i === -1;
+  }
+
+  function setOffline(flag) {
+    try {
+      if (flag) {
+        localStorage.setItem(STORAGE_OFFLINE, "1");
+      } else {
+        localStorage.removeItem(STORAGE_OFFLINE);
+      }
+    } catch (e) {}
+    updateOfflineBanner();
+  }
+
+  function isOffline() {
+    return localStorage.getItem(STORAGE_OFFLINE) === "1";
+  }
+
+  function updateOfflineBanner() {
+    var el = document.getElementById("offline-banner");
+    if (!el) return;
+    if (isOffline()) {
+      el.removeAttribute("hidden");
+      el.setAttribute("aria-live", "polite");
+    } else {
+      el.setAttribute("hidden", "");
+    }
   }
 
   function saveMapView() {
@@ -119,13 +115,31 @@
     }, 3200);
   }
 
+  function getExpectedActivityText(place) {
+    var h = new Date().getHours();
+    var al = typeof place.activationLevel === "number" ? place.activationLevel : 0.5;
+    var peak = (h >= 7 && h <= 9) || (h >= 11 && h <= 14) || (h >= 17 && h <= 19);
+    if (peak && al >= 0.75) {
+      return "Expected activity now: High — busy with walkers and families.";
+    }
+    if (peak && al >= 0.5) {
+      return "Expected activity now: Moderate — steady foot traffic.";
+    }
+    if (!peak && al >= 0.6) {
+      return "Expected activity now: Calmer — quieter window.";
+    }
+    return "Expected activity now: Light — peaceful time to explore.";
+  }
+
   function markerIcon(place) {
+    var pulse =
+      typeof place.activationLevel === "number" && place.activationLevel >= 0.65
+        ? " leaflet-marker-pq__dot--pulse"
+        : "";
+    var feat = place.featured ? " leaflet-marker-pq__dot--featured" : "";
     return L.divIcon({
       className: "leaflet-marker-pq",
-      html:
-        '<div class="leaflet-marker-pq__dot' +
-        (place.featured ? " leaflet-marker-pq__dot--featured" : "") +
-        '"></div>',
+      html: '<div class="leaflet-marker-pq__dot' + feat + pulse + '"></div>',
       iconSize: place.featured ? [22, 22] : [18, 18],
       iconAnchor: place.featured ? [11, 11] : [9, 9],
       popupAnchor: [0, -10],
@@ -134,6 +148,8 @@
 
   function buildPopupHtml(place) {
     var fav = isFavorite(place.id);
+    var maint = place.maintenance && place.maintenance.label ? place.maintenance.label : "Status: Routine checks 🟢";
+    var activityLine = getExpectedActivityText(place);
     var osmView =
       "https://www.openstreetmap.org/?mlat=" +
       place.lat +
@@ -148,14 +164,28 @@
       place.lat +
       "%2C" +
       place.lng;
+    var pathHint = place.pathComfortNote
+      ? '<p class="gm-iw-parkquest__path-hint" role="note"><span class="gm-iw-parkquest__path-hint-icon" aria-hidden="true">✓</span> ' +
+        place.pathComfortNote +
+        "</p>"
+      : "";
+
     return (
-      '<div class="gm-iw-parkquest">' +
+      '<div class="gm-iw-parkquest gm-iw-parkquest--glass">' +
       '<strong class="gm-iw-parkquest__title">' +
       place.title +
       "</strong>" +
       '<p class="gm-iw-parkquest__addr">' +
       place.address +
       "</p>" +
+      '<div class="gm-iw-parkquest__status-block">' +
+      '<p class="gm-iw-parkquest__maintenance"><span class="gm-iw-parkquest__badge">Maintenance</span> ' +
+      maint +
+      "</p>" +
+      '<p class="gm-iw-parkquest__activity">' +
+      activityLine +
+      "</p>" +
+      "</div>" +
       '<p class="gm-iw-parkquest__amenities">Amenities: ' +
       place.amenities.join(", ") +
       "</p>" +
@@ -165,8 +195,9 @@
       '" target="_blank" rel="noopener">OpenStreetMap</a>' +
       '<a class="gm-iw-parkquest__link" href="' +
       osmDir +
-      '" target="_blank" rel="noopener">Directions</a>' +
+      '" target="_blank" rel="noopener">Directions (OSRM)</a>' +
       "</div>" +
+      pathHint +
       '<button type="button" class="gm-iw-parkquest__fav" data-fav-place="' +
       place.id +
       '">' +
@@ -214,19 +245,23 @@
   }
 
   function applyAmenityFilter(filterKey) {
-    for (var i = 0; i < PLACES.length; i++) {
-      var p = PLACES[i];
+    var PL = getPLACES();
+    for (var i = 0; i < PL.length; i++) {
+      var p = PL[i];
       var m = markersById[p.id];
       if (!m || !map) continue;
-      var show = filterKey === "all" || p.amenities.indexOf(filterKey) !== -1;
-      if (show) {
-        if (!map.hasLayer(m)) {
-          m.addTo(map);
-        }
+      var show;
+      if (filterKey === "all") {
+        show = true;
+      } else if (filterKey === "accessible") {
+        show = p.amenities && p.amenities.indexOf("accessible") !== -1;
       } else {
-        if (map.hasLayer(m)) {
-          m.remove();
-        }
+        show = p.amenities && p.amenities.indexOf(filterKey) !== -1;
+      }
+      if (show) {
+        if (!map.hasLayer(m)) m.addTo(map);
+      } else {
+        if (map.hasLayer(m)) m.remove();
       }
     }
   }
@@ -234,6 +269,51 @@
   function getSelectedFilter() {
     var sel = document.querySelector("[data-chip].is-selected");
     return sel ? sel.getAttribute("data-filter") : "toilets";
+  }
+
+  function buildSafetyLayer() {
+    safetyLayerGroup = L.layerGroup();
+    var PL = getPLACES();
+    for (var i = 0; i < PL.length; i++) {
+      var p = PL[i];
+      if (!p.highVisibility) continue;
+      var r = p.visibilityRadiusM || 200;
+      L.circle([p.lat, p.lng], {
+        radius: r,
+        color: "#2d6a4f",
+        fillColor: "#95d4b3",
+        fillOpacity: 0.18,
+        weight: 1,
+        opacity: 0.55,
+        className: "pq-safety-circle",
+      }).addTo(safetyLayerGroup);
+    }
+  }
+
+  function setSafetyLayerVisible(on) {
+    safetyLayerVisible = on;
+    if (!map || !safetyLayerGroup) return;
+    if (on) {
+      map.addLayer(safetyLayerGroup);
+    } else {
+      map.removeLayer(safetyLayerGroup);
+    }
+    var chip = document.getElementById("chip-cpted-visibility");
+    if (chip) {
+      chip.classList.toggle("is-selected", on);
+      chip.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+  }
+
+  function setupCptedChip() {
+    var chip = document.getElementById("chip-cpted-visibility");
+    if (!chip) return;
+    chip.addEventListener("click", function () {
+      setSafetyLayerVisible(!safetyLayerVisible);
+      showToast(
+        safetyLayerVisible ? "Showing high-visibility zones (CPTED)" : "High-visibility overlay off"
+      );
+    });
   }
 
   function syncFeaturedFavoriteButton() {
@@ -252,9 +332,7 @@
   var featuredCardSetup = false;
 
   function setupFeaturedCard() {
-    if (featuredCardSetup) {
-      return;
-    }
+    if (featuredCardSetup) return;
     featuredCardSetup = true;
     var btn = document.getElementById("featured-fav");
     if (btn) {
@@ -294,6 +372,10 @@
     input.addEventListener("keydown", function (e) {
       if (e.key !== "Enter") return;
       e.preventDefault();
+      if (isOffline()) {
+        showToast("Offline — search unavailable. Browse saved parks from Rewards.");
+        return;
+      }
       var q = (input.value || "").trim();
       if (!q) return;
 
@@ -307,6 +389,7 @@
           return r.json();
         })
         .then(function (data) {
+          setOffline(false);
           if (!data.features || !data.features.length) {
             showToast("No results — try another search");
             return;
@@ -331,7 +414,8 @@
           showToast("Showing search result");
         })
         .catch(function () {
-          showToast("Search failed — check your connection");
+          setOffline(true);
+          showToast("You appear offline — showing saved parks only from Rewards");
         });
     });
   }
@@ -384,17 +468,35 @@
     });
   }
 
+  function setMarkerA11y(marker, place) {
+    marker.on("add", function () {
+      var el = marker.getElement();
+      if (!el) return;
+      el.setAttribute("role", "button");
+      var label =
+        place.title +
+        ". " +
+        (place.cptedNote || "Park location.") +
+        " Activation level " +
+        Math.round((place.activationLevel || 0) * 100) +
+        " percent.";
+      el.setAttribute("aria-label", label);
+    });
+  }
+
   function initMarkers() {
     markersById = {};
-    for (var i = 0; i < PLACES.length; i++) {
+    var PL = getPLACES();
+    for (var i = 0; i < PL.length; i++) {
       (function (place) {
         var m = L.marker([place.lat, place.lng], {
           icon: markerIcon(place),
           title: place.title,
         });
+        setMarkerA11y(m, place);
         m.bindPopup(buildPopupHtml(place), {
-          maxWidth: 280,
-          className: "parkquest-popup",
+          maxWidth: 300,
+          className: "parkquest-popup parkquest-popup--glass",
           closeButton: true,
         });
         m.addTo(map);
@@ -402,7 +504,7 @@
           m.setPopupContent(buildPopupHtml(place));
         });
         markersById[place.id] = m;
-      })(PLACES[i]);
+      })(PL[i]);
     }
     applyAmenityFilter(getSelectedFilter());
   }
@@ -415,6 +517,11 @@
 
     var el = document.getElementById("park-map");
     if (!el) return;
+
+    if (!getPLACES().length) {
+      showToast("Park data not loaded");
+      return;
+    }
 
     var last = loadMapView();
     var center = last ? [last.lat, last.lng] : BRISBANE;
@@ -435,39 +542,33 @@
       maxZoom: 19,
     }).addTo(map);
 
+    buildSafetyLayer();
     initMarkers();
     bindPopupFavoriteHandlers();
     setupSearch();
     setupGeolocationFab();
     setupFilterListener();
+    setupCptedChip();
+    updateOfflineBanner();
 
     map.on("moveend", saveMapView);
     map.on("zoomend", saveMapView);
 
     window.addEventListener("resize", function () {
-      if (map) {
-        map.invalidateSize();
-      }
+      if (map) map.invalidateSize();
     });
 
     setTimeout(function () {
-      if (map) {
-        map.invalidateSize();
-      }
+      if (map) map.invalidateSize();
     }, 200);
 
     document.body.classList.add("map-ready");
     var stage = document.getElementById("map-stage");
-    if (stage) {
-      stage.classList.remove("map-stage--fallback-no-key");
-    }
+    if (stage) stage.classList.remove("map-stage--fallback-no-key");
   }
 
   document.addEventListener("DOMContentLoaded", function () {
-    if (!document.getElementById("park-map")) {
-      return;
-    }
-
+    if (!document.getElementById("park-map")) return;
     setupFeaturedCard();
     initLeafletMap();
   });

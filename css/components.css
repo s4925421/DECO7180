@@ -1043,3 +1043,298 @@ body.map-ready .featured-card {
 .leaflet-popup-tip-container {
   margin-top: -1px;
 }
+
+/* CPTED: higher activation → subtle pulse on marker */
+@keyframes pq-marker-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(15, 82, 56, 0.45);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(15, 82, 56, 0);
+    transform: scale(1.06);
+  }
+}
+
+.leaflet-marker-pq__dot--pulse {
+  animation: pq-marker-pulse 2s ease-in-out infinite;
+}
+
+/* High-visibility toggle chip (independent from amenity chips) */
+.chip--cpted {
+  border: 1px solid color-mix(in srgb, var(--outline-variant) 25%, transparent);
+}
+
+.chip--cpted.is-selected {
+  background: color-mix(in srgb, var(--inverse-primary) 35%, var(--surface));
+  color: var(--primary);
+}
+
+/* Offline search banner */
+.offline-banner {
+  margin: 0 0 0.75rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--on-secondary-container);
+  background: color-mix(in srgb, var(--secondary-container) 22%, var(--surface));
+}
+
+/* Glass-style map popup content */
+.gm-iw-parkquest--glass {
+  background: color-mix(in srgb, var(--surface-container-lowest) 88%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--radius-md);
+  padding: 0.15rem 0;
+}
+
+.leaflet-popup.parkquest-popup--glass .leaflet-popup-content-wrapper {
+  background: color-mix(in srgb, #f8faf7 85%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  border: 1px solid color-mix(in srgb, var(--outline-variant) 15%, transparent);
+}
+
+.gm-iw-parkquest__status-block {
+  margin: 0.5rem 0 0;
+  padding: 0.5rem 0.65rem;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--surface-container-low) 90%, transparent);
+}
+
+.gm-iw-parkquest__badge {
+  display: inline-block;
+  font-size: 0.5625rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-right: 0.25rem;
+}
+
+.gm-iw-parkquest__maintenance,
+.gm-iw-parkquest__activity {
+  margin: 0.25rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: var(--on-surface);
+}
+
+.gm-iw-parkquest__maintenance:first-child {
+  margin-top: 0;
+}
+
+.gm-iw-parkquest__path-hint {
+  margin: 0.65rem 0 0;
+  padding: 0.45rem 0.55rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  color: var(--on-surface-variant);
+  background: color-mix(in srgb, var(--secondary-fixed) 35%, var(--surface));
+  display: flex;
+  gap: 0.35rem;
+  align-items: flex-start;
+}
+
+.gm-iw-parkquest__path-hint-icon {
+  flex-shrink: 0;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+/* Activity stream (index) */
+.activity-stream {
+  margin-bottom: 0.75rem;
+  pointer-events: auto;
+}
+
+.activity-stream__header {
+  margin-bottom: 0.5rem;
+}
+
+.activity-stream__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: var(--on-surface);
+}
+
+.activity-stream__sub {
+  margin: 0.2rem 0 0;
+  font-size: 0.75rem;
+  color: var(--on-surface-variant);
+}
+
+.activity-stream__empty {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--on-surface-variant);
+  line-height: 1.4;
+}
+
+.activity-stream__scroll {
+  display: flex;
+  gap: 0.65rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  margin: 0 -1.25rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.activity-stream__card {
+  flex: 0 0 auto;
+  width: 11.5rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: var(--radius-md);
+  background: var(--surface-container-lowest);
+  box-shadow: var(--shadow-ambient);
+}
+
+.activity-stream__card-park {
+  margin: 0;
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.activity-stream__card-title {
+  margin: 0.35rem 0 0;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--on-surface);
+}
+
+.activity-stream__live {
+  display: inline-block;
+  margin-top: 0.45rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--on-primary);
+  background: linear-gradient(145deg, var(--primary), var(--primary-container));
+  padding: 0.2rem 0.45rem;
+  border-radius: var(--radius-pill);
+}
+
+/* Amenities page — active now */
+.active-now-banner {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  margin: 0 1.25rem 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--surface-container-lowest) 92%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-ambient);
+  border: 1px solid color-mix(in srgb, var(--outline-variant) 12%, transparent);
+}
+
+.active-now-banner__icon {
+  font-size: 1.75rem;
+  color: var(--on-surface-variant);
+}
+
+.active-now-banner__icon--on {
+  color: var(--primary);
+}
+
+.active-now-banner__title {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.active-now-banner__text {
+  margin: 0.25rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--on-surface-variant);
+}
+
+/* Featured card — active tag */
+.featured-active-tag-wrap {
+  margin-bottom: 0.5rem;
+}
+
+.featured-active-tag {
+  display: block;
+  font-size: 0.6875rem;
+  line-height: 1.35;
+  padding: 0.35rem 0.5rem;
+  border-radius: var(--radius-sm);
+}
+
+.featured-active-tag--live {
+  background: color-mix(in srgb, var(--secondary-container) 28%, var(--surface));
+  color: var(--on-secondary-container);
+  font-weight: 600;
+}
+
+.featured-active-tag--quiet {
+  background: var(--surface-container-high);
+  color: var(--on-surface-variant);
+}
+
+/* FAB — kids quest hint bubble */
+.fab-hint-bubble {
+  max-width: 11.5rem;
+  margin-bottom: 0.5rem;
+  pointer-events: auto;
+}
+
+.fab-hint-bubble__link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  padding: 0.65rem 0.75rem;
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--surface-container-lowest) 82%, transparent);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-card);
+  border: 1px solid color-mix(in srgb, var(--outline-variant) 18%, transparent);
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  color: var(--on-surface);
+  transition: transform 0.12s ease;
+}
+
+.fab-hint-bubble__link:active {
+  transform: scale(0.98);
+}
+
+.fab-hint-bubble__badge {
+  display: inline-block;
+  margin-bottom: 0.35rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.5625rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: color-mix(in srgb, var(--primary-fixed) 70%, white);
+  color: var(--primary);
+}
+
+.fab-hint-bubble__cta {
+  display: block;
+  margin-top: 0.4rem;
+  font-weight: 700;
+  font-size: 0.6875rem;
+  color: var(--primary-container);
+}

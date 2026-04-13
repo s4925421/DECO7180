@@ -2,12 +2,13 @@
   "use strict";
 
   var KEY = "parkquest_favorites";
-  var LABELS = {
-    roma: "Roma Street Parkland",
-    southbank: "South Bank Parklands",
-    botanic: "City Botanic Gardens",
-    newfarm: "New Farm Park",
-  };
+
+  function getLabels() {
+    if (window.PARKQUEST_DATA && typeof window.PARKQUEST_DATA.getLabels === "function") {
+      return window.PARKQUEST_DATA.getLabels();
+    }
+    return {};
+  }
 
   function renderSavedParks() {
     var mount = document.getElementById("saved-parks-mount");
@@ -19,6 +20,8 @@
     } catch (e) {
       ids = [];
     }
+
+    var LABELS = getLabels();
 
     mount.innerHTML = "";
     if (!ids.length) {
