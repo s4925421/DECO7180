@@ -1,12 +1,12 @@
 # ParkQuest — Mobile Web Prototype
 
-A mobile-first static website for discovering parks and trails in Brisbane, Australia. The UI follows an **“Organic Navigator”** design direction: forest greens, soft surfaces, rounded cards, and glass-style navigation—implemented with plain **HTML, CSS, and JavaScript** (no framework).
+A mobile-first static website for discovering parks and activities in Brisbane, Australia. The UI follows an **“Organic Navigator”** design direction: forest greens, soft surfaces, rounded cards, and glass-style navigation—implemented with plain **HTML, CSS, and JavaScript** (no framework).
 
 ---
 
 ## Current Status
 
-The prototype is **functionally complete** for core flows: map exploration, amenity-oriented filters, trail browsing, progress/rewards-style screens, settings, and cross-page navigation with a persistent bottom tab bar. Interactive map data uses **Leaflet** with **OpenStreetMap** tiles (no API key required). Search uses the **Photon** geocoding API (OSM-based, browser-friendly) to resolve place names to coordinates.
+The prototype is **functionally complete** for core flows: map exploration, amenity-oriented filters, live activity browsing, progress/rewards-style screens, settings, and cross-page navigation with a persistent bottom tab bar. Interactive map data uses **Leaflet** with **OpenStreetMap** tiles (no API key required). Search uses the **Photon** geocoding API (OSM-based, browser-friendly) to resolve place names to coordinates.
 
 ---
 
@@ -29,7 +29,7 @@ The prototype is **functionally complete** for core flows: map exploration, amen
 Prototype/
 ├── index.html          # Map home (Leaflet map, search, chips, featured park)
 ├── amenities.html      # Amenities list + illustrative map block
-├── trails.html         # Trail themes with filter chips
+├── activity.html       # Live events: list + mini map + location modal
 ├── progress.html       # Progress, missions, badges, saved parks
 ├── settings.html       # Preferences / about
 ├── css/
@@ -42,7 +42,7 @@ Prototype/
 │   ├── maps-config.js  # Optional tile URL / map config
 │   ├── main.js         # Drawer menu, amenity chip events
 │   ├── favorites.js    # Renders saved parks on progress page
-│   ├── script.js       # Trail list filter chips (trails page)
+│   ├── activity.js     # BCC live events feed and status logic
 │   └── navagation.js   # Lightweight global hook (`js-ready` class)
 ├── Image/              # Design reference screenshots (optional)
 └── model/              # Design documentation and planning artifacts
@@ -56,11 +56,11 @@ Prototype/
 |------|---------|
 | **index.html** | Interactive map, quick filters (toilets, water, shade, seating, all parks), featured park card, side drawer, FABs (locate me, link to amenities) |
 | **amenities.html** | Static “facilities near you” list with SVG park illustration |
-| **trails.html** | Scrollable trail cards; filter chips (short walk, educational, most active) |
+| **activity.html** | Live BCC park events with status labels, list timeline, mini map, and location modal |
 | **progress.html** | Gamified progress UI; **Saved parks** list populated from `localStorage` |
 | **settings.html** | Placeholder preferences and about text |
 
-Bottom navigation links **Map**, **My Trails**, **Rewards**, and **Settings** across pages; the active tab is marked with `is-active` in HTML.
+Bottom navigation links **Map**, **Activity**, **Rewards**, and **Settings** across pages; the active tab is marked with `is-active` in HTML.
 
 ---
 
@@ -111,7 +111,7 @@ Targets modern mobile browsers (Chromium, Safari, Firefox) with support for:
 ## Known Limitations
 
 - Search depends on third-party **Photon** availability and network access.
-- Trail cards and some content use remote images (e.g. Unsplash) for demo visuals.
+- Some cards and content use remote images (e.g. Unsplash) for demo visuals.
 - The site is a **front-end prototype**; there is no backend or user accounts.
 
 ---

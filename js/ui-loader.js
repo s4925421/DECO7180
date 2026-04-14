@@ -1,6 +1,6 @@
 /**
  * Injects shared drawer (map page only) and bottom navigation without a build step.
- * Set on <body>: data-parkquest-nav="map|trails|progress|settings"
+ * Set on <body>: data-parkquest-nav="map|activity|progress|settings"
  * Optional: data-parkquest-drawer="true" for hamburger menu markup.
  */
 (function () {
@@ -12,7 +12,7 @@
     '<p class="drawer__title">Explore</p>' +
     '<ul class="drawer__list">' +
     '<li><a class="drawer__link" href="amenities.html"><span class="material-symbols-outlined" aria-hidden="true">wc</span>Amenities near you</a></li>' +
-    '<li><a class="drawer__link" href="trails.html"><span class="material-symbols-outlined" aria-hidden="true">explore</span>Trail themes</a></li>' +
+    '<li><a class="drawer__link" href="activity.html"><span class="material-symbols-outlined" aria-hidden="true">local_activity</span>Live activity</a></li>' +
     '<li><a class="drawer__link" href="progress.html"><span class="material-symbols-outlined" aria-hidden="true">military_tech</span>Rewards &amp; progress</a></li>' +
     '<li><a class="drawer__link" href="settings.html"><span class="material-symbols-outlined" aria-hidden="true">settings</span>Settings</a></li>' +
     "</ul></nav></div>";
@@ -40,7 +40,13 @@
     return (
       '<nav class="bottom-nav" aria-label="Primary navigation">' +
       navLink("index.html", "map", "Map", active === "map", active === "map") +
-      navLink("trails.html", "explore", "My Trails", active === "trails", active === "trails") +
+      navLink(
+        "activity.html",
+        "local_activity",
+        "Activity",
+        active === "activity",
+        active === "activity"
+      ) +
       navLink("progress.html", "military_tech", "Rewards", active === "progress", active === "progress") +
       navLink("settings.html", "settings", "Settings", active === "settings", active === "settings") +
       "</nav>"
