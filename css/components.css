@@ -2040,14 +2040,9 @@ button.leaderboard-list__item.is-selected {
   transform: scale(0.992);
 }
 
-.activity-item__row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.5rem;
-}
-
 .activity-item__title {
+  display: block;
+  margin: 0;
   font-family: var(--font-display);
   font-size: 0.9375rem;
   font-weight: 700;
@@ -2067,6 +2062,10 @@ button.leaderboard-list__item.is-selected {
   font-size: 0.75rem;
   line-height: 1.35;
   color: var(--on-surface-variant);
+}
+
+.activity-item__status-wrap {
+  margin-top: 0.45rem;
 }
 
 .activity-status {

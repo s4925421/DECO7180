@@ -32,7 +32,7 @@
     gap: 12px;
 }
 
-/* 隐藏原始 radio，自定义圆形按钮 */
+/* Hide native radio and draw custom circle */
 input[type="radio"] {
     appearance: none;
     border: 2px solid var(--primary-green);
@@ -46,18 +46,18 @@ input[type="radio"]:checked {
     transform: scale(1.1);
 }
 
-/* 按钮尺寸定义 */
+/* Button size variants */
 .btn--large { width: 28px; height: 28px; }
 .btn--small { width: 18px; height: 18px; }
 .btn--dot   { width: 6px;  height: 6px;  background: #ccc; border: none !important; }
 
-/* 标签样式 */
+/* Label styles */
 .label {
     position: absolute;
     font-size: 11px;
     color: #666;
     bottom: -20px;
 }
-.label--left   { left: 10px; color: #d32f2f; } /* 负向态度用微红色标识 */
+.label--left   { left: 10px; color: #d32f2f; } /* Slight red tint for negative pole */
 .label--center { left: 50%; transform: translateX(-50%); }
 .label--right  { right: 10px; color: var(--primary-green); }

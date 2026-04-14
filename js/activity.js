@@ -4,6 +4,7 @@
   var API_URL =
     "https://data.brisbane.qld.gov.au/api/explore/v2.1/catalog/datasets/brisbane-parks-events/records?limit=50";
   var REFRESH_MS = 60000;
+  var MAX_EVENTS_VISIBLE = 10;
 
   var liveCardsEl = null;
   var listEl = null;
@@ -67,14 +68,14 @@
     if (startDate && endDate && now >= startDate && now <= endDate) {
       return {
         code: "live",
-        label: "🟢 进行中 (Live)",
+        label: "🟢 Live",
         className: "activity-status activity-status--live",
       };
     }
     if (startDate && now < startDate) {
       return {
         code: "upcoming",
-        label: "🕒 即将开始",
+        label: "🕒 Starting soon",
         className: "activity-status activity-status--soon",
       };
     }
@@ -138,6 +139,15 @@
     var ta = a.start ? a.start.getTime() : Number.MAX_SAFE_INTEGER;
     var tb = b.start ? b.start.getTime() : Number.MAX_SAFE_INTEGER;
     return ta - tb;
+  }
+
+  function cmpByNearestNow(now) {
+    return function (a, b) {
+      var ta = a.start ? Math.abs(a.start.getTime() - now.getTime()) : Number.MAX_SAFE_INTEGER;
+      var tb = b.start ? Math.abs(b.start.getTime() - now.getTime()) : Number.MAX_SAFE_INTEGER;
+      if (ta !== tb) return ta - tb;
+      return cmpByStart(a, b);
+    };
   }
 
   function timeLabel(ev) {
@@ -243,23 +253,13 @@
     var html = "";
     for (var i = 0; i < events.length; i++) {
       var ev = events[i];
-      var social = ev.expected
-        ? "Expected participants: " + escapeHtml(ev.expected)
-        : "Activity type: " + escapeHtml(ev.type);
       html +=
         '<button class="activity-item" type="button" data-event-id="' +
         escapeHtml(ev.id) +
         '">' +
-        '<div class="activity-item__row">' +
         '<strong class="activity-item__title">' +
         escapeHtml(ev.title) +
         "</strong>" +
-        '<span class="' +
-        ev.status.className +
-        '">' +
-        ev.status.label +
-        "</span>" +
-        "</div>" +
         '<p class="activity-item__park">' +
         escapeHtml(ev.park) +
         "</p>" +
@@ -269,8 +269,14 @@
         escapeHtml(durationLabel(ev)) +
         "</p>" +
         '<p class="activity-item__social">' +
-        social +
+        "Activity type: " +
+        escapeHtml(ev.type) +
         "</p>" +
+        '<div class="activity-item__status-wrap"><span class="' +
+        ev.status.className +
+        '">' +
+        ev.status.label +
+        "</span></div>" +
         "</button>";
     }
     listEl.innerHTML = html;
@@ -307,7 +313,8 @@
         for (var i = 0; i < raw.length; i++) {
           events.push(normalizeEvent(raw[i], now));
         }
-        events.sort(cmpByStart);
+        events.sort(cmpByNearestNow(now));
+        events = events.slice(0, MAX_EVENTS_VISIBLE);
         renderLiveCards(events);
         renderList(events);
         if (events.length && events[0].latLng) focusMiniMap(events[0]);
