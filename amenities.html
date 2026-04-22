@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#f8faf7" />
-    <title>ParkQuest — Short Adventures</title>
+    <title>ParkQuest — Choose a Short Adventure</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -17,13 +17,13 @@
     />
     <link rel="stylesheet" href="css/style.css" />
   </head>
-  <body data-parkquest-nav="map">
+  <body data-parkquest-nav="explore">
     <div class="app app--scroll">
       <header class="app-header app-header--sub">
         <a href="index.html" class="icon-btn" aria-label="Back to map">
           <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
         </a>
-        <h1 class="app-header__title app-header__title--center">Short Adventures</h1>
+        <h1 class="app-header__title app-header__title--center">ParkQuest</h1>
         <a href="index.html" class="icon-btn" aria-label="Open map">
           <span class="material-symbols-outlined" aria-hidden="true">map</span>
         </a>
@@ -31,44 +31,43 @@
 
       <main class="subpage-main">
         <div class="page-hero page-hero--tight">
-          <p class="short-adventure-step">Step 1</p>
           <h2 class="page-headline">Choose a short adventure</h2>
-          <p class="page-subline">Perfect trails for your next discovery.</p>
-          <p class="short-adventure-intro">
-            Pick a family-friendly walk with clear timing, distance and practical amenities so your visit feels easy
-            from the start.
-          </p>
+          <p class="page-subline">Short, family-friendly trails for an easy day out.</p>
         </div>
 
-        <section class="page-section" style="padding-top: 0">
+        <div class="active-now-banner">
+          <span class="material-symbols-outlined active-now-banner__icon active-now-banner__icon--on" aria-hidden="true">family_restroom</span>
+          <div>
+            <strong class="active-now-banner__title">Made for quick family decisions</strong>
+            <p class="active-now-banner__text">
+              Wildlife Spotter Trail is highlighted because it is short, easy, and has toilets, drinking water, and shade along the route.
+            </p>
+          </div>
+        </div>
+
+        <section class="page-section short-adventure-section" style="padding-top: 0">
           <div class="trail-list">
-            <article class="trail-card trail-card--featured">
+            <article class="trail-card trail-card--selected">
               <div class="trail-card__image-wrap">
                 <img
                   class="trail-card__image"
-                  src="https://images.unsplash.com/photo-1455218873509-8097305ee378?auto=format&fit=crop&w=1000&q=80"
-                  alt="Woodland creek path in daytime shade"
+                  src="Image/tree-plant-trail.png"
+                  alt="Forest stream trail scene for Wildlife Spotter Trail"
                 />
-                <span class="trail-card__badge">BEST FOR AGES 6-10</span>
+                <span class="trail-card__badge">Best for ages 6-10</span>
               </div>
               <div class="trail-card__body">
                 <h3 class="trail-card__title">Wildlife Spotter Trail</h3>
-                <p class="trail-card__desc">Short, easy loop with playful signs and gentle paths for quick daytime visits.</p>
-                <p class="trail-card__quick-meta">
-                  <span><span class="material-symbols-outlined" aria-hidden="true">schedule</span> 15 mins</span>
-                  <span><span class="material-symbols-outlined" aria-hidden="true">straighten</span> 0.8 km</span>
+                <p class="trail-card__desc">A short, easy loop with birds, creek views, and gentle walking paths for families.</p>
+                <p class="trail-card__stats">
+                  <span><span class="material-symbols-outlined" aria-hidden="true">schedule</span>15 mins</span>
+                  <span><span class="material-symbols-outlined" aria-hidden="true">route</span>0.8 km</span>
                 </p>
                 <div class="trail-card__footer">
-                  <div class="trail-card__amenities" aria-label="Amenities on this trail">
-                    <span class="trail-amenity-pill" title="Toilets nearby">
-                      <span class="material-symbols-outlined" aria-hidden="true">wc</span>
-                    </span>
-                    <span class="trail-amenity-pill" title="Drinking water available">
-                      <span class="material-symbols-outlined" aria-hidden="true">water_drop</span>
-                    </span>
-                    <span class="trail-amenity-pill" title="Shaded areas available">
-                      <span class="material-symbols-outlined" aria-hidden="true">wb_shade</span>
-                    </span>
+                  <div class="trail-card__amenities" aria-label="Amenities available on this trail">
+                    <span class="trail-amenity"><span class="material-symbols-outlined" aria-hidden="true">wc</span></span>
+                    <span class="trail-amenity"><span class="material-symbols-outlined" aria-hidden="true">water_drop</span></span>
+                    <span class="trail-amenity"><span class="material-symbols-outlined" aria-hidden="true">wb_sunny</span></span>
                   </div>
                   <a class="trail-card__cta" href="progress.html" aria-label="Choose Wildlife Spotter Trail">
                     <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
@@ -81,26 +80,22 @@
               <div class="trail-card__image-wrap">
                 <img
                   class="trail-card__image"
-                  src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1000&q=80"
-                  alt="Large green leaves on a family walking path"
+                  src="Image/tree-plant-trail.png"
+                  alt="Large leaf trail scene for Giant Plant Hunt"
                 />
-                <span class="trail-card__badge">GREAT FOR A QUICK VISIT</span>
+                <span class="trail-card__badge">Great for a quick visit</span>
               </div>
               <div class="trail-card__body">
                 <h3 class="trail-card__title">Giant Plant Hunt</h3>
-                <p class="trail-card__desc">Easy flat track where kids can spot oversized leaves and textured plants.</p>
-                <p class="trail-card__quick-meta">
-                  <span><span class="material-symbols-outlined" aria-hidden="true">schedule</span> 10 mins</span>
-                  <span><span class="material-symbols-outlined" aria-hidden="true">straighten</span> 0.5 km</span>
+                <p class="trail-card__desc">A playful mini adventure to spot huge leaves and fun textures close to the main path.</p>
+                <p class="trail-card__stats">
+                  <span><span class="material-symbols-outlined" aria-hidden="true">schedule</span>10 mins</span>
+                  <span><span class="material-symbols-outlined" aria-hidden="true">route</span>0.5 km</span>
                 </p>
                 <div class="trail-card__footer">
-                  <div class="trail-card__amenities" aria-label="Amenities on this trail">
-                    <span class="trail-amenity-pill" title="Shaded areas available">
-                      <span class="material-symbols-outlined" aria-hidden="true">wb_shade</span>
-                    </span>
-                    <span class="trail-amenity-pill" title="Benches nearby">
-                      <span class="material-symbols-outlined" aria-hidden="true">chair</span>
-                    </span>
+                  <div class="trail-card__amenities" aria-label="Amenities available on this trail">
+                    <span class="trail-amenity"><span class="material-symbols-outlined" aria-hidden="true">wb_sunny</span></span>
+                    <span class="trail-amenity"><span class="material-symbols-outlined" aria-hidden="true">chair</span></span>
                   </div>
                   <a class="trail-card__cta" href="progress.html" aria-label="Choose Giant Plant Hunt">
                     <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
@@ -113,29 +108,23 @@
               <div class="trail-card__image-wrap">
                 <img
                   class="trail-card__image"
-                  src="https://images.unsplash.com/photo-1437482078695-73f5ca6c96e2?auto=format&fit=crop&w=1000&q=80"
-                  alt="Calm river trail with trees and wide path"
+                  src="Image/tree-plant-trail.png"
+                  alt="River path scene for River Explorer Trail"
                 />
-                <span class="trail-card__badge">EASY FOR FAMILIES</span>
+                <span class="trail-card__badge">Easy for families</span>
               </div>
               <div class="trail-card__body">
                 <h3 class="trail-card__title">River Explorer Trail</h3>
-                <p class="trail-card__desc">Simple riverside walk with open views, smooth paths and relaxed pacing.</p>
-                <p class="trail-card__quick-meta">
-                  <span><span class="material-symbols-outlined" aria-hidden="true">schedule</span> 20 mins</span>
-                  <span><span class="material-symbols-outlined" aria-hidden="true">straighten</span> 1.2 km</span>
+                <p class="trail-card__desc">A calm riverside walk with clear pathways and plenty of rest points for little explorers.</p>
+                <p class="trail-card__stats">
+                  <span><span class="material-symbols-outlined" aria-hidden="true">schedule</span>20 mins</span>
+                  <span><span class="material-symbols-outlined" aria-hidden="true">route</span>1.2 km</span>
                 </p>
                 <div class="trail-card__footer">
-                  <div class="trail-card__amenities" aria-label="Amenities on this trail">
-                    <span class="trail-amenity-pill" title="Drinking water available">
-                      <span class="material-symbols-outlined" aria-hidden="true">water_drop</span>
-                    </span>
-                    <span class="trail-amenity-pill" title="Toilets nearby">
-                      <span class="material-symbols-outlined" aria-hidden="true">wc</span>
-                    </span>
-                    <span class="trail-amenity-pill" title="Accessible path">
-                      <span class="material-symbols-outlined" aria-hidden="true">accessible</span>
-                    </span>
+                  <div class="trail-card__amenities" aria-label="Amenities available on this trail">
+                    <span class="trail-amenity"><span class="material-symbols-outlined" aria-hidden="true">water_drop</span></span>
+                    <span class="trail-amenity"><span class="material-symbols-outlined" aria-hidden="true">wc</span></span>
+                    <span class="trail-amenity"><span class="material-symbols-outlined" aria-hidden="true">accessible</span></span>
                   </div>
                   <a class="trail-card__cta" href="progress.html" aria-label="Choose River Explorer Trail">
                     <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>

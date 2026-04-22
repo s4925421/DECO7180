@@ -1,121 +1,148 @@
-# ParkQuest — Mobile Web Prototype
+# ParkQuest - Guided Family Trail Prototype
 
-A mobile-first static website for discovering parks and activities in Brisbane, Australia. The UI follows an **“Organic Navigator”** design direction: forest greens, soft surfaces, rounded cards, and glass-style navigation—implemented with plain **HTML, CSS, and JavaScript** (no framework).
+ParkQuest is a mobile-first web prototype for short, family-friendly park adventures.
+The current project focuses on a complete **6-step journey** from choosing a trail to finishing with a reward and quick reflection.
+
+This is a static front-end prototype built with plain HTML and CSS, designed for lightweight user testing and concept validation.
 
 ---
 
-## Current Status
+## Current Project Scope
 
-The prototype is **functionally complete** for core flows: map exploration, amenity-oriented filters, live activity browsing, progress/rewards-style screens, settings, and cross-page navigation with a persistent bottom tab bar. Interactive map data uses **Leaflet** with **OpenStreetMap** tiles (no API key required). Search uses the **Photon** geocoding API (OSM-based, browser-friendly) to resolve place names to coordinates.
+The implemented flow now follows this end-to-end structure:
+
+1. **Choose a short adventure** (`amenities.html`)
+2. **Review the trail before starting** (`progress.html`)
+3. **Follow the route** (`activity.html`)
+4. **Reach a discovery stop** (`discovery.html`)
+5. **Check practical support** (`support.html`)
+6. **Finish the short trail** (`completion.html`)
+
+Design intent across all steps:
+
+- Low uncertainty at start (duration, distance, facilities visible)
+- Guidance without over-directing (calm route support)
+- Short playful discovery moments for parent + child
+- Practical comfort support during the walk
+- Clear closure and motivation to return
 
 ---
 
 ## Tech Stack
 
 | Layer | Technology |
-|--------|------------|
+|---|---|
 | Structure | Semantic HTML5 |
-| Styling | Modular CSS (`base`, `layout`, `components` via `style.css`) |
-| Behaviour | Vanilla JavaScript (IIFE modules, no bundler) |
-| Map | [Leaflet 1.9](https://leafletjs.com/) + OSM raster tiles |
+| Styling | Modular CSS (`base.css`, `layout.css`, `components.css` via `style.css`) |
+| Interactions | Simple HTML navigation and button states (no runtime app logic required) |
 | Fonts & icons | Google Fonts (Plus Jakarta Sans, Work Sans), Material Symbols Outlined |
-| Reference assets | `model/DESIGN.md`, `model/code.html` (design notes & legacy Tailwind reference) |
 
 ---
 
-## Project Structure
+## Repository Structure (Current)
 
-```
+```txt
 Prototype/
-├── index.html          # Map home (Leaflet map, search, chips, featured park)
-├── amenities.html      # Amenities list + illustrative map block
-├── activity.html       # Live events: list + mini map + location modal
-├── progress.html       # Progress, missions, badges, saved parks
-├── settings.html       # Preferences / about
+├── amenities.html          # Step 1: choose a short adventure
+├── progress.html           # Step 2: trail overview before start
+├── activity.html           # Step 3: route guidance map + next stop card
+├── discovery.html          # Step 4: checkpoint mini challenge
+├── support.html            # Step 5: practical amenities support
+├── completion.html         # Step 6: completion reward + quick feedback
 ├── css/
-│   ├── base.css        # Design tokens, reset, typography
-│   ├── layout.css      # App shell, map stage, navigation, drawer
-│   ├── components.css# UI components (cards, chips, popups, etc.)
-│   └── style.css       # Imports the above
+│   ├── base.css            # Tokens, typography, reset
+│   ├── layout.css          # App shell, headers, nav, page layout
+│   ├── components.css      # All page components for step 1-6
+│   └── style.css           # CSS entry file (imports all CSS modules)
 ├── js/
-│   ├── maps.js         # Leaflet map, markers, popups, geolocation, search
-│   ├── maps-config.js  # Optional tile URL / map config
-│   ├── main.js         # Drawer menu, amenity chip events
-│   ├── favorites.js    # Renders saved parks on progress page
-│   ├── activity.js     # BCC live events feed and status logic
-│   └── navagation.js   # Lightweight global hook (`js-ready` class)
-├── Image/              # Design reference screenshots (optional)
-└── model/              # Design documentation and planning artifacts
+│   └── modules.js/         # Reserved folder (no active JS modules in current flow)
+└── README.md
 ```
 
 ---
 
-## Pages Overview
+## Step-by-Step Page Notes
 
-| Page | Purpose |
-|------|---------|
-| **index.html** | Interactive map, quick filters (toilets, water, shade, seating, all parks), featured park card, side drawer, FABs (locate me, link to amenities) |
-| **amenities.html** | Static “facilities near you” list with SVG park illustration |
-| **activity.html** | Live BCC park events with status labels, list timeline, mini map, and location modal |
-| **progress.html** | Gamified progress UI; **Saved parks** list populated from `localStorage` |
-| **settings.html** | Placeholder preferences and about text |
+### Step 1 - `amenities.html`
+- Presents short trail choices for quick family decision-making
+- Highlights trail length, distance, and key amenities icons
+- Emphasizes confidence: short, simple, family-friendly
 
-Bottom navigation links **Map**, **Activity**, **Rewards**, and **Settings** across pages; the active tab is marked with `is-active` in HTML.
+### Step 2 - `progress.html`
+- Reframed as **Trail Overview**
+- Shows 20-minute context, loop mini map, and 3 discovery stops
+- Includes practical essentials before committing to start
 
----
+### Step 3 - `activity.html`
+- Main guided route screen
+- Focuses on "Next stop", remaining distance/time, and minimal map controls
+- Keeps cognitive load low so users can focus on the park
 
-## Map & Data
+### Step 4 - `discovery.html`
+- Checkpoint activity with one short playful prompt
+- Includes audio option and skip option
+- Encourages shared parent-child interaction with minimal reading
 
-- **Tiles**: Default OSM endpoint `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png` (configurable in `js/maps-config.js`).
-- **Markers**: Four Brisbane-area points of interest (e.g. Roma Street Parkland, South Bank, City Botanic Gardens, New Farm Park) with amenity tags used for chip filtering.
-- **Popups**: Links to OpenStreetMap view and OSRM-based directions; “Save park” syncs with `localStorage` (`parkquest_favorites`).
-- **Search**: Enter key submits a query to Photon (`photon.komoot.io`), biased toward Brisbane; results pan/zoom the map and drop a temporary marker.
-- **Geolocation**: “My location” FAB centers the map when the user grants permission.
+### Step 5 - `support.html`
+- "Make your visit easier" support view
+- Shows nearby toilets, water, shade, and accessibility with walking times
+- Marks whether support points are on-route or nearby
 
----
-
-## Local Development
-
-1. Serve the folder over **HTTP** (Leaflet and `fetch` behave more reliably than `file://`). Examples:
-   - **VS Code / Cursor**: “Live Server” or similar extension.
-   - **Python**: `python -m http.server 8080` from the project root.
-   - **Node**: `npx serve .`
-2. Open `http://localhost:<port>/index.html` (or the server root).
-
-No build step or package manager is required.
+### Step 6 - `completion.html`
+- Clear closure with reward badge ("Nature Explorer")
+- Two low-effort reflection questions
+- Encourages repeat use with "Try another trail"
 
 ---
 
-## Configuration
+## User Flow Links (Implemented)
 
-**`js/maps-config.js`** — optional. Exposes `window.PARKQUEST_MAP_CONFIG` with a `tileUrl` string. Replace the default OSM template if you use another compatible XYZ tile provider.
-
----
-
-## Design Notes
-
-- Colour tokens and “no harsh 1px dividers” guidance are documented in `model/DESIGN.md`.
-- Reference mockups live under `Image/`; they informed layout and tone but are not required at runtime.
+- `amenities.html` -> `progress.html`
+- `progress.html` -> `activity.html` (Start trail)
+- `activity.html` -> `discovery.html` (I'm here)
+- `activity.html` -> `support.html` (Make visit easier)
+- `discovery.html` -> `completion.html` (Try the challenge)
+- `completion.html` -> `amenities.html` (Try another trail)
 
 ---
 
-## Browser Support
+## Run Locally
 
-Targets modern mobile browsers (Chromium, Safari, Firefox) with support for:
+Because this is a static prototype, any simple HTTP server works.
 
-- CSS custom properties, `backdrop-filter` (navigation bar), `color-mix` (where used)
-- `fetch`, `localStorage`, `navigator.geolocation`
+Examples:
+
+- Python: `python -m http.server 8080`
+- Node: `npx serve .`
+- Cursor / VSCode: Live Server extension
+
+Then open:
+
+- `http://localhost:8080/amenities.html` (recommended start for current flow), or
+- any specific page directly.
+
+No build step, package manager, or backend is required.
 
 ---
 
 ## Known Limitations
 
-- Search depends on third-party **Photon** availability and network access.
-- Some cards and content use remote images (e.g. Unsplash) for demo visuals.
-- The site is a **front-end prototype**; there is no backend or user accounts.
+- Some buttons are intentionally lightweight and non-persistent (prototype behavior)
+- No backend, authentication, analytics, or data storage
+- Some image assets are remote demo images
+- A few legacy script tags may still exist in older pages, but the current flow works as a static UI prototype
+
+---
+
+## Next Suggested Enhancements
+
+- Add lightweight state persistence (current trail, completed stops, feedback choices)
+- Replace demo map illustrations with real geospatial data
+- Add accessibility pass (focus states, keyboard flow, contrast checks, alt text polish)
+- Add bilingual content support if needed for testing
 
 ---
 
 ## License
 
-Content and code are provided as a **prototype** for evaluation or extension. Map data © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright). Respect Nominatim/Photon/OSM [usage policies](https://operations.osmfoundation.org/policies/) if you scale traffic or add server-side geocoding.
+Prototype code and content are for concept demonstration and iterative design/testing.

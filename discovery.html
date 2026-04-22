@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f8faf7" />
+    <title>ParkQuest — Discovery Stop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&family=Work+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body data-parkquest-nav="explore">
+    <div class="app app--scroll">
+      <header class="app-header app-header--sub">
+        <a href="activity.html" class="icon-btn" aria-label="Back to trail route">
+          <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+        </a>
+        <h1 class="app-header__title app-header__title--center">Mountain Creek Trail</h1>
+        <a href="settings.html" class="icon-btn" aria-label="Open profile">
+          <span class="material-symbols-outlined" aria-hidden="true">account_circle</span>
+        </a>
+      </header>
+
+      <main class="subpage-main discovery-stop-main">
+        <section class="page-hero page-hero--tight discovery-stop-hero">
+          <p class="discovery-stop-badge">Checkpoint reached</p>
+          <h2 class="discovery-stop-title">Discovery stop: Spot a wildlife clue</h2>
+        </section>
+
+        <section class="discovery-card" aria-label="Discovery challenge prompt">
+          <div class="discovery-card__image-wrap">
+            <img
+              src="https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=900&q=80"
+              alt="Butterfly resting on a green leaf"
+              width="700"
+              height="500"
+              loading="lazy"
+            />
+            <p class="discovery-card__prompt">Can you find 2 places nearby where animals might hide?</p>
+          </div>
+        </section>
+
+        <section class="discovery-actions">
+          <a class="discovery-action discovery-action--primary" href="completion.html">Try the challenge</a>
+          <button class="discovery-action discovery-action--secondary" type="button">
+            <span class="material-symbols-outlined" aria-hidden="true">volume_up</span>
+            Hear it out loud
+          </button>
+          <a class="discovery-action--skip" href="activity.html">Skip for now</a>
+        </section>
+
+        <section class="discovery-quick-aids" aria-label="Nearby practical support">
+          <article class="discovery-quick-aids__item">
+            <span class="material-symbols-outlined" aria-hidden="true">wc</span>
+            <p><small>Toilet</small><strong>3 min away</strong></p>
+          </article>
+          <article class="discovery-quick-aids__item">
+            <span class="material-symbols-outlined" aria-hidden="true">park</span>
+            <p><small>Shelter</small><strong>Shade nearby</strong></p>
+          </article>
+        </section>
+      </main>
+
+      <nav class="bottom-nav" aria-label="Primary">
+        <a class="bottom-nav__link is-active" href="discovery.html">
+          <span class="material-symbols-outlined" aria-hidden="true">explore</span>
+          <span>Discover</span>
+        </a>
+        <a class="bottom-nav__link" href="activity.html">
+          <span class="material-symbols-outlined" aria-hidden="true">map</span>
+          <span>Map</span>
+        </a>
+        <a class="bottom-nav__link" href="progress.html">
+          <span class="material-symbols-outlined" aria-hidden="true">favorite</span>
+          <span>Saved</span>
+        </a>
+        <a class="bottom-nav__link" href="settings.html">
+          <span class="material-symbols-outlined" aria-hidden="true">person</span>
+          <span>Profile</span>
+        </a>
+      </nav>
+    </div>
+  </body>
+</html>

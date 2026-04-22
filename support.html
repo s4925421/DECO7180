@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f8faf7" />
+    <title>ParkQuest — Make your visit easier</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&family=Work+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body data-parkquest-nav="support">
+    <div class="app app--scroll">
+      <header class="app-header app-header--sub">
+        <a href="activity.html" class="icon-btn" aria-label="Back to trail">
+          <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+        </a>
+        <h1 class="app-header__title app-header__title--center">Make your visit easier</h1>
+        <a href="#" class="icon-btn" aria-label="Info">
+          <span class="material-symbols-outlined" aria-hidden="true">info</span>
+        </a>
+      </header>
+
+      <main class="subpage-main support-main">
+        <section class="support-map-card" aria-label="Nearby places mini map">
+          <svg class="support-map-card__svg" viewBox="0 0 360 240" role="img" aria-label="Current location and nearby amenities">
+            <defs>
+              <linearGradient id="supportBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#6ea58d" />
+                <stop offset="100%" stop-color="#496f64" />
+              </linearGradient>
+            </defs>
+            <rect width="360" height="240" fill="url(#supportBg)" />
+            <g opacity="0.15" stroke="#ffffff" stroke-width="2">
+              <path d="M-40 30 C60 10, 160 40, 260 20 C320 8, 380 22, 420 12" />
+              <path d="M-40 70 C80 42, 190 86, 290 66 C360 52, 400 76, 430 70" />
+              <path d="M-40 120 C70 95, 180 132, 300 118 C365 110, 400 130, 430 125" />
+              <path d="M-40 170 C90 146, 190 194, 305 172 C370 160, 400 186, 430 178" />
+            </g>
+            <circle cx="180" cy="118" r="8" fill="#ffffff" />
+            <circle cx="180" cy="118" r="16" fill="none" stroke="#ffffff" opacity="0.65" />
+            <circle cx="125" cy="90" r="15" fill="#ffffff" opacity="0.95" />
+            <text x="125" y="96" text-anchor="middle" font-size="15" fill="#0f5238">🚻</text>
+            <circle cx="255" cy="115" r="15" fill="#ffffff" opacity="0.95" />
+            <text x="255" y="121" text-anchor="middle" font-size="15" fill="#006399">🥤</text>
+            <rect x="16" y="168" width="328" height="56" rx="18" fill="#ffffff" opacity="0.95" />
+            <circle cx="42" cy="196" r="18" fill="#95d4b3" />
+            <text x="42" y="201" text-anchor="middle" font-size="14" fill="#0f5238">◎</text>
+            <text x="66" y="190" font-size="11" letter-spacing="1" font-weight="700" fill="#404943">CURRENT LOCATION</text>
+            <text x="66" y="208" font-size="22" font-weight="700" fill="#191c1b">Banksia Trail East</text>
+          </svg>
+        </section>
+
+        <section class="page-section support-list-section">
+          <div class="section-title-row">
+            <h2 class="section-title support-list-title">Helpful nearby places</h2>
+            <span class="support-count-badge">4 nearby</span>
+          </div>
+
+          <div class="support-list">
+            <article class="support-item-card">
+              <div class="support-item-card__top">
+                <div class="support-item-card__icon"><span class="material-symbols-outlined" aria-hidden="true">wc</span></div>
+                <span class="support-item-card__tag">On your trail</span>
+              </div>
+              <h3 class="support-item-card__title">Nearest Toilet</h3>
+              <p class="support-item-card__meta"><span class="material-symbols-outlined" aria-hidden="true">directions_walk</span>2 min walk</p>
+            </article>
+
+            <article class="support-item-card">
+              <div class="support-item-card__top">
+                <div class="support-item-card__icon"><span class="material-symbols-outlined" aria-hidden="true">water_drop</span></div>
+                <span class="support-item-card__tag support-item-card__tag--muted">Nearby</span>
+              </div>
+              <h3 class="support-item-card__title">Drinking Fountain</h3>
+              <p class="support-item-card__meta"><span class="material-symbols-outlined" aria-hidden="true">directions_walk</span>4 min walk</p>
+            </article>
+
+            <article class="support-item-card">
+              <div class="support-item-card__top">
+                <div class="support-item-card__icon"><span class="material-symbols-outlined" aria-hidden="true">park</span></div>
+                <span class="support-item-card__tag">On your trail</span>
+              </div>
+              <h3 class="support-item-card__title">Shaded Rest Area</h3>
+              <p class="support-item-card__meta"><span class="material-symbols-outlined" aria-hidden="true">directions_walk</span>3 min walk</p>
+            </article>
+
+            <article class="support-item-card">
+              <div class="support-item-card__top">
+                <div class="support-item-card__icon"><span class="material-symbols-outlined" aria-hidden="true">accessible</span></div>
+                <span class="support-item-card__tag support-item-card__tag--muted">Main path</span>
+              </div>
+              <h3 class="support-item-card__title">Accessible Route Option</h3>
+              <p class="support-item-card__meta"><span class="material-symbols-outlined" aria-hidden="true">trip</span>1 min away</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="support-footer">
+          <a class="btn-pill support-back-btn" href="activity.html">
+            <span class="material-symbols-outlined" aria-hidden="true">navigation</span>
+            Back to trail
+          </a>
+          <p class="support-footer__hint">Safe exploring. Helpful places are close, so you can continue with less uncertainty.</p>
+        </section>
+      </main>
+
+      <nav class="bottom-nav" aria-label="Primary">
+        <a class="bottom-nav__link" href="amenities.html">
+          <span class="material-symbols-outlined" aria-hidden="true">explore</span>
+          <span>Explore</span>
+        </a>
+        <a class="bottom-nav__link" href="activity.html">
+          <span class="material-symbols-outlined" aria-hidden="true">map</span>
+          <span>Map</span>
+        </a>
+        <a class="bottom-nav__link is-active" href="support.html">
+          <span class="material-symbols-outlined" aria-hidden="true">help</span>
+          <span>Support</span>
+        </a>
+        <a class="bottom-nav__link" href="settings.html">
+          <span class="material-symbols-outlined" aria-hidden="true">person</span>
+          <span>Profile</span>
+        </a>
+      </nav>
+    </div>
+  </body>
+</html>

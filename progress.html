@@ -17,64 +17,70 @@
     />
     <link rel="stylesheet" href="css/style.css" />
   </head>
-  <body>
+  <body data-parkquest-nav="missions">
+    <div id="rewards-toast" class="map-toast" role="status" aria-live="polite"></div>
     <div class="app app--scroll">
       <header class="app-header app-header--sub">
-        <a href="amenities.html" class="icon-btn" aria-label="Back">
+        <a href="amenities.html" class="icon-btn" aria-label="Back to trail list">
           <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
         </a>
-        <h1 class="app-header__title app-header__title--center trail-overview-header">Trail Overview</h1>
-        <button type="button" class="icon-btn" aria-label="Share trail">
+        <h1 class="app-header__title app-header__title--center">Trail Overview</h1>
+        <a href="#" class="icon-btn" aria-label="Share trail">
           <span class="material-symbols-outlined" aria-hidden="true">share</span>
-        </button>
+        </a>
       </header>
 
-      <main class="subpage-main">
-        <section class="page-hero page-hero--tight">
-          <h2 class="trail-overview-title">Wildlife Spotter Trail</h2>
-          <p class="trail-overview-sub">A 20-minute walk with 3 discovery stops</p>
-          <div class="trail-overview-meta">
-            <span class="trail-overview-meta__pill">
-              <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
-              20 mins
-            </span>
-            <span class="trail-overview-meta__pill">
-              <span class="material-symbols-outlined" aria-hidden="true">straighten</span>
-              1.2 km
-            </span>
+      <main class="subpage-main trail-overview-main">
+        <div class="page-hero page-hero--tight">
+          <h2 class="trail-overview__title">Wildlife Spotter Trail</h2>
+          <p class="trail-overview__subtitle">A 20-minute walk with 3 discovery stops.</p>
+          <div class="trail-overview__meta">
+            <span><span class="material-symbols-outlined" aria-hidden="true">schedule</span>20 mins</span>
+            <span><span class="material-symbols-outlined" aria-hidden="true">route</span>1.2 km</span>
           </div>
+        </div>
+
+        <section class="trail-map-card" aria-label="Mini map with loop route and 3 stops">
+          <svg class="trail-map-card__svg" viewBox="0 0 360 200" role="img" aria-label="Loop route with 3 numbered discovery stops">
+            <defs>
+              <linearGradient id="trailGridBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#99d2ab" />
+                <stop offset="100%" stop-color="#7dbb97" />
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="360" height="200" fill="url(#trailGridBg)" />
+            <g opacity="0.22" stroke="#ffffff" stroke-width="1">
+              <path d="M0 30 H360 M0 70 H360 M0 110 H360 M0 150 H360" />
+              <path d="M60 0 V200 M120 0 V200 M180 0 V200 M240 0 V200 M300 0 V200" />
+            </g>
+            <path
+              d="M80 48 C118 20, 194 18, 252 54 C285 78, 287 133, 232 156 C190 175, 120 170, 90 140 C66 116, 56 80, 80 48"
+              fill="none"
+              stroke="#2d6a4f"
+              stroke-width="6"
+              stroke-dasharray="11 8"
+              stroke-linecap="round"
+            />
+            <g>
+              <circle cx="90" cy="92" r="13" fill="#2d6a4f" />
+              <text x="90" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">1</text>
+            </g>
+            <g>
+              <circle cx="255" cy="102" r="13" fill="#2d6a4f" />
+              <text x="255" y="106" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">2</text>
+            </g>
+            <g>
+              <circle cx="148" cy="145" r="13" fill="#2d6a4f" />
+              <text x="148" y="149" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">3</text>
+            </g>
+            <rect x="16" y="16" rx="8" ry="8" width="90" height="28" fill="#ffffff" opacity="0.9" />
+            <text x="61" y="34" text-anchor="middle" font-size="11" font-weight="700" fill="#0f5238">LIVE ROUTE</text>
+          </svg>
         </section>
 
-        <section class="page-section trail-overview-section">
-          <div class="trail-mini-map" aria-label="Live route mini map with three stops">
-            <span class="trail-mini-map__badge">Live route</span>
-            <svg viewBox="0 0 360 220" class="trail-mini-map__svg" role="img" aria-hidden="true">
-              <rect x="0" y="0" width="360" height="220" fill="#8fc8a3" />
-              <g stroke="#ffffff" stroke-opacity="0.3">
-                <path d="M0 24 H360 M0 64 H360 M0 104 H360 M0 144 H360 M0 184 H360" />
-                <path d="M36 0 V220 M96 0 V220 M156 0 V220 M216 0 V220 M276 0 V220 M336 0 V220" />
-              </g>
-              <path
-                d="M72 88 C102 50, 162 42, 220 64 C256 78, 286 118, 256 156 C220 188, 144 190, 98 164 C72 146, 64 114, 72 88 Z"
-                fill="none"
-                stroke="#2b6651"
-                stroke-width="5"
-                stroke-linecap="round"
-                stroke-dasharray="10 8"
-              />
-              <circle cx="86" cy="95" r="12" fill="#3c7d65" />
-              <circle cx="262" cy="118" r="12" fill="#3c7d65" />
-              <circle cx="138" cy="168" r="12" fill="#3c7d65" />
-              <text x="82" y="100" fill="#fff" font-size="10" font-weight="700">1</text>
-              <text x="258" y="123" fill="#fff" font-size="10" font-weight="700">2</text>
-              <text x="134" y="173" fill="#fff" font-size="10" font-weight="700">3</text>
-            </svg>
-          </div>
-        </section>
-
-        <section class="page-section trail-overview-section trail-essentials">
-          <h3 class="trail-overview-section__title">Trail Essentials</h3>
-          <div class="trail-essentials-grid">
+        <section class="page-section trail-essentials">
+          <h3 class="section-title">Trail Essentials</h3>
+          <div class="trail-essentials__grid">
             <article class="trail-essential-card">
               <span class="material-symbols-outlined" aria-hidden="true">wc</span>
               <p class="trail-essential-card__label">Toilet</p>
@@ -86,7 +92,7 @@
               <p class="trail-essential-card__value">Nearby</p>
             </article>
             <article class="trail-essential-card">
-              <span class="material-symbols-outlined" aria-hidden="true">wb_shade</span>
+              <span class="material-symbols-outlined" aria-hidden="true">wb_sunny</span>
               <p class="trail-essential-card__label">Shade</p>
               <p class="trail-essential-card__value">On path</p>
             </article>
@@ -98,55 +104,48 @@
           </div>
         </section>
 
-        <section class="page-section trail-overview-section trail-steps">
-          <h3 class="trail-overview-section__title">What you'll do</h3>
-          <ol class="trail-steps-list">
-            <li class="trail-step-item">
-              <span class="trail-step-item__num">1</span>
+        <section class="page-section trail-steps">
+          <h3 class="section-title">What you'll do</h3>
+          <ol class="trail-steps__list">
+            <li class="trail-step">
+              <span class="trail-step__index">1</span>
               <div>
-                <p class="trail-step-item__title">Follow the path</p>
-                <p class="trail-step-item__desc">Stay on the marked green loop through the paperbark forest.</p>
+                <p class="trail-step__title">Follow the path</p>
+                <p class="trail-step__desc">Stay on the marked green loop through the paperbark forest.</p>
               </div>
             </li>
-            <li class="trail-step-item">
-              <span class="trail-step-item__num">2</span>
+            <li class="trail-step">
+              <span class="trail-step__index">2</span>
               <div>
-                <p class="trail-step-item__title">Find discovery stops</p>
-                <p class="trail-step-item__desc">Keep an eye out for the 3 numbered wooden posts along the trail.</p>
+                <p class="trail-step__title">Find discovery stops</p>
+                <p class="trail-step__desc">Keep an eye out for the 3 numbered stops along the trail.</p>
               </div>
             </li>
-            <li class="trail-step-item">
-              <span class="trail-step-item__num">3</span>
+            <li class="trail-step">
+              <span class="trail-step__index">3</span>
               <div>
-                <p class="trail-step-item__title">Complete one quick challenge</p>
-                <p class="trail-step-item__desc">Snap a photo of a local bird or insect at any stop to finish.</p>
+                <p class="trail-step__title">Complete one quick challenge</p>
+                <p class="trail-step__desc">Snap a photo of a local bird or insect at any stop.</p>
               </div>
             </li>
           </ol>
-          <a href="survey.html" class="btn-pill trail-start-btn">Start trail</a>
+        </section>
+
+        <section class="trail-start-wrap">
+          <a class="btn-pill trail-start-btn" href="activity.html">
+            <span class="material-symbols-outlined" aria-hidden="true">play_arrow</span>
+            Start trail
+          </a>
+          <p class="trail-start-note">Easy to begin, short to complete, and practical facilities are already nearby.</p>
         </section>
       </main>
 
-      <nav class="bottom-nav" aria-label="Primary navigation">
-        <a class="bottom-nav__link" href="index.html">
-          <span class="material-symbols-outlined" aria-hidden="true">explore</span>
-          Discover
-        </a>
-        <a class="bottom-nav__link is-active" href="amenities.html">
-          <span class="material-symbols-outlined fill" aria-hidden="true">route</span>
-          Trails
-        </a>
-        <a class="bottom-nav__link" href="progress.html">
-          <span class="material-symbols-outlined" aria-hidden="true">bookmark</span>
-          Saved
-        </a>
-        <a class="bottom-nav__link" href="settings.html">
-          <span class="material-symbols-outlined" aria-hidden="true">person</span>
-          Profile
-        </a>
-      </nav>
+      <div id="parkquest-bottom-nav-root"></div>
     </div>
 
+    <script src="js/data-store.js"></script>
+    <script src="js/ui-loader.js"></script>
+    <script src="js/main.js"></script>
     <script src="js/navagation.js"></script>
   </body>
 </html>

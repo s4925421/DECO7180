@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#f8faf7" />
-    <title>ParkQuest - Live Activity</title>
+    <title>ParkQuest — Follow the Route</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -15,61 +15,104 @@
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="css/style.css" />
   </head>
-  <body data-parkquest-nav="activity">
-    <div id="activity-toast" class="map-toast" role="status" aria-live="polite"></div>
-    <div class="app app--scroll">
-      <header class="app-header app-header--sub">
-        <a href="index.html" class="icon-btn" aria-label="Back">
+  <body data-parkquest-nav="trails">
+    <div class="app app--map">
+      <header class="app-header trail-guide-header">
+        <a href="progress.html" class="icon-btn" aria-label="Back to trail overview">
           <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
         </a>
-        <h1 class="app-header__title app-header__title--center">Live Activity</h1>
-        <button type="button" class="icon-btn" aria-label="Location">
-          <span class="material-symbols-outlined" aria-hidden="true">my_location</span>
-        </button>
+        <h1 class="app-header__title">ParkQuest</h1>
+        <a href="settings.html" class="avatar" aria-label="Profile">
+          <img
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQFaWMX9KrtxzjPzRL45nZCnwDrNzbU0dIsYVOQtBGLnMgTMRw-K693HoMIvHV0fjvX2aANMsHLtI1c2HRTKePKqg3HaXX1AMbRLkZ1tIZj4S4Qd3W0erR93NKuLc2JsyXKjLYaY20TMPQeP34F-l5B9yfT4kgyRRcp34iDu94K0NDampocg3yjWcH7utyZxbmjAZQXq6F2Y6bC_gv0dTbmWd_sQJLdI7fmBGcddv22zOv9G2tz2H793XpmNlooPGS3TWEaaWS19-o"
+            alt=""
+            width="40"
+            height="40"
+          />
+        </a>
       </header>
 
-      <main class="subpage-main">
-        <section class="page-section activity-page__hero">
-          <h2 class="section-title">Active parks now</h2>
-          <p class="activity-page__sub">Live cards show social presence and safer, more familiar spaces.</p>
-          <div id="activity-live-cards" class="activity-live-cards no-scrollbar" aria-live="polite"></div>
+      <main class="map-main trail-guide-main">
+        <section class="trail-guide-map" aria-label="Guided trail map">
+          <svg class="trail-guide-map__svg" viewBox="0 0 420 760" role="img" aria-label="Current route to next stop">
+            <defs>
+              <linearGradient id="guideBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#d6e7d3" />
+                <stop offset="100%" stop-color="#c3d9c2" />
+              </linearGradient>
+            </defs>
+            <rect width="420" height="760" fill="url(#guideBg)" />
+            <ellipse cx="240" cy="390" rx="180" ry="110" fill="#9ebdaf" opacity="0.32" />
+            <ellipse cx="220" cy="520" rx="160" ry="95" fill="#89b2aa" opacity="0.28" />
+            <path d="M-10 300 C80 210, 150 188, 230 210 C310 234, 400 208, 430 158" fill="none" stroke="#ffffff" stroke-width="15" opacity="0.55" />
+            <path d="M220 650 C215 570, 200 480, 210 390 C220 300, 240 240, 265 180" fill="none" stroke="#2d6a4f" stroke-width="8" stroke-linecap="round" />
+            <circle cx="262" cy="176" r="25" fill="#0f5238" />
+            <path d="M262 165 L267 176 L279 177 L270 185 L273 197 L262 190 L251 197 L254 185 L245 177 L257 176 Z" fill="#ffffff" />
+            <rect x="202" y="210" width="124" height="32" rx="16" fill="#ffffff" opacity="0.94" />
+            <text x="264" y="231" text-anchor="middle" font-size="16" font-weight="700" fill="#1f4f3c">THE ANCIENT FIG</text>
+            <circle cx="122" cy="320" r="20" fill="#ffffff" opacity="0.95" />
+            <text x="122" y="327" text-anchor="middle" font-size="18" fill="#0f5238">🚻</text>
+            <circle cx="266" cy="448" r="20" fill="#ffffff" opacity="0.95" />
+            <text x="266" y="455" text-anchor="middle" font-size="18" fill="#006399">🥤</text>
+            <circle cx="214" cy="578" r="15" fill="#ffffff" stroke="#0f5238" stroke-width="4" />
+            <circle cx="214" cy="578" r="7" fill="#0f5238" />
+          </svg>
+
+          <div class="trail-guide-map__actions">
+            <button type="button" class="trail-map-btn" aria-label="Center on my location">
+              <span class="material-symbols-outlined" aria-hidden="true">my_location</span>
+            </button>
+            <button type="button" class="trail-map-btn" aria-label="Show amenities">
+              <span class="material-symbols-outlined" aria-hidden="true">layers</span>
+            </button>
+          </div>
         </section>
 
-        <section class="page-section activity-page__map-list" aria-labelledby="activity-list-title">
-          <div class="section-title-row">
-            <h2 id="activity-list-title" class="section-title">Events timeline</h2>
-            <span id="activity-last-updated" class="leaderboard-section__hint">Updating...</span>
+        <section class="trail-journey-card" aria-label="Current journey status">
+          <p class="trail-journey-card__eyebrow">Current journey</p>
+          <div class="trail-journey-card__head">
+            <h2 class="trail-journey-card__title">Next stop: Look for the fig tree</h2>
+            <div class="trail-journey-card__icon" aria-hidden="true">
+              <span class="material-symbols-outlined">forest</span>
+            </div>
           </div>
-
-          <div class="activity-mini-map-wrap">
-            <div id="activity-mini-map" class="activity-mini-map" aria-label="Mini map for selected event"></div>
+          <div class="trail-journey-card__stats">
+            <div class="trail-journey-stat">
+              <span class="material-symbols-outlined" aria-hidden="true">straighten</span>
+              <p><small>Distance</small><strong>200m left</strong></p>
+            </div>
+            <div class="trail-journey-stat">
+              <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+              <p><small>Estimate</small><strong>3 mins</strong></p>
+            </div>
           </div>
-
-          <div id="activity-event-list" class="activity-event-list" aria-live="polite"></div>
+          <div class="trail-journey-card__actions">
+            <a class="trail-journey-btn trail-journey-btn--ghost" href="support.html">Make visit easier</a>
+            <a class="trail-journey-btn trail-journey-btn--solid" href="discovery.html">I'm here</a>
+          </div>
         </section>
       </main>
 
-      <div id="parkquest-bottom-nav-root"></div>
+      <nav class="bottom-nav" aria-label="Primary">
+        <a class="bottom-nav__link" href="amenities.html">
+          <span class="material-symbols-outlined" aria-hidden="true">explore</span>
+          <span>Explore</span>
+        </a>
+        <a class="bottom-nav__link is-active" href="activity.html">
+          <span class="material-symbols-outlined" aria-hidden="true">map</span>
+          <span>Trails</span>
+        </a>
+        <a class="bottom-nav__link" href="progress.html">
+          <span class="material-symbols-outlined" aria-hidden="true">bookmark</span>
+          <span>Saved</span>
+        </a>
+        <a class="bottom-nav__link" href="settings.html">
+          <span class="material-symbols-outlined" aria-hidden="true">person</span>
+          <span>Profile</span>
+        </a>
+      </nav>
     </div>
-
-    <dialog id="activity-location-modal" class="activity-modal">
-      <form method="dialog" class="activity-modal__form">
-        <div class="activity-modal__head">
-          <h3 id="activity-modal-title" class="activity-modal__title">Park location detail</h3>
-          <button type="submit" class="icon-btn" aria-label="Close">
-            <span class="material-symbols-outlined" aria-hidden="true">close</span>
-          </button>
-        </div>
-        <p id="activity-modal-body" class="activity-modal__body"></p>
-      </form>
-    </dialog>
-
-    <script src="js/ui-loader.js"></script>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="js/activity.js"></script>
-    <script src="js/navagation.js"></script>
   </body>
 </html>
