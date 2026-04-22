@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#f8faf7" />
-    <title>ParkQuest — My Progress</title>
+    <title>ParkQuest — Trail Overview</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -17,425 +17,136 @@
     />
     <link rel="stylesheet" href="css/style.css" />
   </head>
-  <body data-parkquest-nav="progress">
-    <div id="rewards-toast" class="map-toast" role="status" aria-live="polite"></div>
+  <body>
     <div class="app app--scroll">
       <header class="app-header app-header--sub">
-        <a href="index.html" class="icon-btn" aria-label="Back">
+        <a href="amenities.html" class="icon-btn" aria-label="Back">
           <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
         </a>
-        <h1 class="app-header__title app-header__title--center">My Progress</h1>
-        <a href="settings.html" class="avatar" aria-label="Profile">
-          <img
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQFaWMX9KrtxzjPzRL45nZCnwDrNzbU0dIsYVOQtBGLnMgTMRw-K693HoMIvHV0fjvX2aANMsHLtI1c2HRTKePKqg3HaXX1AMbRLkZ1tIZj4S4Qd3W0erR93NKuLc2JsyXKjLYaY20TMPQeP34F-l5B9yfT4kgyRRcp34iDu94K0NDampocg3yjWcH7utyZxbmjAZQXq6F2Y6bC_gv0dTbmWd_sQJLdI7fmBGcddv22zOv9G2tz2H793XpmNlooPGS3TWEaaWS19-o"
-            alt=""
-            width="40"
-            height="40"
-          />
-        </a>
+        <h1 class="app-header__title app-header__title--center trail-overview-header">Trail Overview</h1>
+        <button type="button" class="icon-btn" aria-label="Share trail">
+          <span class="material-symbols-outlined" aria-hidden="true">share</span>
+        </button>
       </header>
 
       <main class="subpage-main">
-        <div class="page-hero">
-          <p class="progress-hero-label">Adventure awaits</p>
-          <h2 class="progress-hero-title">You’re a Natural Explorer!</h2>
-        </div>
-
-        <section class="current-trail-card" aria-labelledby="current-trail-heading">
-          <p class="current-trail-card__label">Current activity</p>
-          <div class="current-trail-card__row">
-            <div>
-              <h3 id="current-trail-heading" class="current-trail-card__name">Weekend Family Movement Class</h3>
-            </div>
-            <div class="current-trail-card__pct" aria-label="Progress 75 percent">75%</div>
-          </div>
-          <div class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
-            <div class="progress-bar__fill"></div>
-          </div>
-          <p class="current-trail-card__foot">
-            <span class="material-symbols-outlined" aria-hidden="true">navigation</span>
-            Starts in 20 mins at New Farm Park
-          </p>
-        </section>
-
-        <section class="page-section" style="background: var(--surface)">
-          <h3 class="section-title" style="margin-bottom: 0.75rem">Saved parks</h3>
-          <div id="saved-parks-mount" class="saved-parks"></div>
-        </section>
-
-        <section class="page-section leaderboard-section" aria-labelledby="leaderboard-heading">
-          <div class="section-title-row">
-            <h3 id="leaderboard-heading" class="section-title">Park leaderboard</h3>
-            <span class="leaderboard-section__hint">Live average</span>
-          </div>
-          <p class="leaderboard-hint" id="leaderboard-select-hint">
-            <strong>Search or tap a park</strong> below to open the survey and comments. Your scores update this park’s rank.
-          </p>
-          <div class="leaderboard-search-wrap" role="search">
-            <span class="material-symbols-outlined leaderboard-search-wrap__icon" aria-hidden="true">search</span>
-            <input
-              type="search"
-              id="leaderboard-search"
-              class="leaderboard-search-input"
-              placeholder="Search by park or address"
-              autocomplete="off"
-              aria-label="Search parks"
-            />
-          </div>
-          <p id="leaderboard-empty" class="leaderboard-empty" hidden>No parks match — try another keyword.</p>
-          <div id="leaderboard-mount" class="leaderboard-mount"></div>
-        </section>
-
-        <div id="survey-comments-wrap" class="survey-comments-wrap" hidden>
-          <section class="page-section survey-section" aria-labelledby="survey-heading">
-            <div class="survey-selected-banner">
-              <p class="survey-selected-banner__eyebrow">Currently rating</p>
-              <h3 id="survey-selected-title" class="survey-selected-banner__title"></h3>
-              <p id="survey-selected-sub" class="survey-selected-banner__sub"></p>
-            </div>
-            <h3 id="survey-heading" class="section-title survey-section__form-title">Park experience survey</h3>
-            <p class="survey-intro">
-              This survey applies <strong>only to the park shown above</strong>. Each row is one question: one choice, left (negative) → right (positive). The average goes into the leaderboard.
-            </p>
-
-            <form id="rewards-survey-form" class="survey-form" action="#" method="post">
-            <input type="hidden" name="park_id" id="survey-park-id" value="" />
-            <fieldset class="survey-fieldset">
-              <legend class="survey-legend">
-                <span class="survey-legend__tag">Environment</span>
-                <span id="survey-q-env" class="survey-question">How open does the space feel?</span>
-              </legend>
-              <div class="survey-scale-labels">
-                <span>Very enclosed</span>
-                <span>Neutral</span>
-                <span>Very open</span>
-              </div>
-              <div class="survey-scale-radios" role="radiogroup" aria-labelledby="survey-q-env">
-                <label class="survey-radio survey-radio--lg">
-                  <input type="radio" name="perception_open" value="1" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">1 — very enclosed</span>
-                </label>
-                <label class="survey-radio survey-radio--sm">
-                  <input type="radio" name="perception_open" value="2" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">2</span>
-                </label>
-                <label class="survey-radio survey-radio--dot">
-                  <input type="radio" name="perception_open" value="3" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">3 — neutral</span>
-                </label>
-                <label class="survey-radio survey-radio--sm">
-                  <input type="radio" name="perception_open" value="4" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">4</span>
-                </label>
-                <label class="survey-radio survey-radio--lg">
-                  <input type="radio" name="perception_open" value="5" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">5 — very open</span>
-                </label>
-              </div>
-            </fieldset>
-
-            <fieldset class="survey-fieldset">
-              <legend class="survey-legend">
-                <span class="survey-legend__tag">Cleanliness</span>
-                <span id="survey-q-hygiene" class="survey-question">How clean are facilities and paths?</span>
-              </legend>
-              <div class="survey-scale-labels">
-                <span>Needs attention</span>
-                <span>OK</span>
-                <span>Very clean</span>
-              </div>
-              <div class="survey-scale-radios" role="radiogroup" aria-labelledby="survey-q-hygiene">
-                <label class="survey-radio survey-radio--lg">
-                  <input type="radio" name="hygiene_cleanliness" value="1" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">1 — needs attention</span>
-                </label>
-                <label class="survey-radio survey-radio--sm">
-                  <input type="radio" name="hygiene_cleanliness" value="2" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">2</span>
-                </label>
-                <label class="survey-radio survey-radio--dot">
-                  <input type="radio" name="hygiene_cleanliness" value="3" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">3 — OK</span>
-                </label>
-                <label class="survey-radio survey-radio--sm">
-                  <input type="radio" name="hygiene_cleanliness" value="4" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">4</span>
-                </label>
-                <label class="survey-radio survey-radio--lg">
-                  <input type="radio" name="hygiene_cleanliness" value="5" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">5 — very clean</span>
-                </label>
-              </div>
-            </fieldset>
-
-            <fieldset class="survey-fieldset">
-              <legend class="survey-legend">
-                <span class="survey-legend__tag">Fitness</span>
-                <span id="survey-q-fitness" class="survey-question">How suitable for exercise (paths, equipment)?</span>
-              </legend>
-              <div class="survey-scale-labels">
-                <span>Not suitable</span>
-                <span>Neutral</span>
-                <span>Excellent</span>
-              </div>
-              <div class="survey-scale-radios" role="radiogroup" aria-labelledby="survey-q-fitness">
-                <label class="survey-radio survey-radio--lg">
-                  <input type="radio" name="fitness_suitability" value="1" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">1 — not suitable</span>
-                </label>
-                <label class="survey-radio survey-radio--sm">
-                  <input type="radio" name="fitness_suitability" value="2" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">2</span>
-                </label>
-                <label class="survey-radio survey-radio--dot">
-                  <input type="radio" name="fitness_suitability" value="3" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">3 — neutral</span>
-                </label>
-                <label class="survey-radio survey-radio--sm">
-                  <input type="radio" name="fitness_suitability" value="4" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">4</span>
-                </label>
-                <label class="survey-radio survey-radio--lg">
-                  <input type="radio" name="fitness_suitability" value="5" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">5 — excellent</span>
-                </label>
-              </div>
-            </fieldset>
-
-            <fieldset class="survey-fieldset">
-              <legend class="survey-legend">
-                <span class="survey-legend__tag">Amenities</span>
-                <span id="survey-q-amenity" class="survey-question">How easy to find toilets, drinking water, seating?</span>
-              </legend>
-              <div class="survey-scale-labels">
-                <span>Very hard</span>
-                <span>OK</span>
-                <span>Easy everywhere</span>
-              </div>
-              <div class="survey-scale-radios" role="radiogroup" aria-labelledby="survey-q-amenity">
-                <label class="survey-radio survey-radio--lg">
-                  <input type="radio" name="amenity_wayfinding" value="1" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">1 — very hard</span>
-                </label>
-                <label class="survey-radio survey-radio--sm">
-                  <input type="radio" name="amenity_wayfinding" value="2" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">2</span>
-                </label>
-                <label class="survey-radio survey-radio--dot">
-                  <input type="radio" name="amenity_wayfinding" value="3" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">3 — OK</span>
-                </label>
-                <label class="survey-radio survey-radio--sm">
-                  <input type="radio" name="amenity_wayfinding" value="4" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">4</span>
-                </label>
-                <label class="survey-radio survey-radio--lg">
-                  <input type="radio" name="amenity_wayfinding" value="5" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">5 — easy everywhere</span>
-                </label>
-              </div>
-            </fieldset>
-
-            <fieldset class="survey-fieldset">
-              <legend class="survey-legend">
-                <span class="survey-legend__tag">Social</span>
-                <span id="survey-q-social" class="survey-question">How lively does the park feel?</span>
-              </legend>
-              <div class="survey-scale-labels">
-                <span>Very quiet</span>
-                <span>Neutral</span>
-                <span>Buzzing</span>
-              </div>
-              <div class="survey-scale-radios" role="radiogroup" aria-labelledby="survey-q-social">
-                <label class="survey-radio survey-radio--lg">
-                  <input type="radio" name="social_activation" value="1" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">1 — very quiet</span>
-                </label>
-                <label class="survey-radio survey-radio--sm">
-                  <input type="radio" name="social_activation" value="2" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">2</span>
-                </label>
-                <label class="survey-radio survey-radio--dot">
-                  <input type="radio" name="social_activation" value="3" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">3 — neutral</span>
-                </label>
-                <label class="survey-radio survey-radio--sm">
-                  <input type="radio" name="social_activation" value="4" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">4</span>
-                </label>
-                <label class="survey-radio survey-radio--lg">
-                  <input type="radio" name="social_activation" value="5" class="sr-only" />
-                  <span class="survey-radio__ui" aria-hidden="true"></span>
-                  <span class="sr-only">5 — buzzing</span>
-                </label>
-              </div>
-            </fieldset>
-
-            <div class="survey-actions">
-              <button type="submit" class="btn-pill survey-submit">Submit rating</button>
-              <p class="survey-footnote">
-                Scores and comments are stored in this browser (localStorage) for this demo. Everyone using this browser profile can see the same history.
-              </p>
-            </div>
-          </form>
-
-            <div class="park-comments">
-              <h4 class="park-comments__title">Visitor comments</h4>
-              <p class="park-comments__hint">Past notes for this park (local storage — prototype only).</p>
-              <div id="park-comments-list" class="park-comments__list" aria-live="polite"></div>
-              <form id="park-comment-form" class="park-comment-form">
-                <label class="park-comment-form__label" for="park-comment-input">Add a comment</label>
-                <textarea
-                  id="park-comment-input"
-                  class="park-comment-form__textarea"
-                  name="comment"
-                  rows="3"
-                  maxlength="800"
-                  placeholder="Share your experience at this park…"
-                ></textarea>
-                <button type="submit" class="btn-pill park-comment-form__submit">Post comment</button>
-              </form>
-            </div>
-          </section>
-        </div>
-
-        <section class="page-section">
-          <div class="section-title-row">
-            <h3 class="section-title">Completed Missions</h3>
-            <a href="#" class="link-quiet">View all</a>
-          </div>
-          <div class="mission-grid">
-            <div class="mission-card">
-              <div class="mission-card__icon mission-card__icon--blue">
-                <span class="material-symbols-outlined" aria-hidden="true">search</span>
-              </div>
-              <h4 class="mission-card__title">Meet the Diprotodon</h4>
-              <p class="mission-card__sub">Found at Fossil Creek</p>
-            </div>
-            <div class="mission-card">
-              <div class="mission-card__icon mission-card__icon--green">
-                <span class="material-symbols-outlined" aria-hidden="true">eco</span>
-              </div>
-              <h4 class="mission-card__title">Hidden Ferns</h4>
-              <p class="mission-card__sub">Valley circuit completed</p>
-            </div>
+        <section class="page-hero page-hero--tight">
+          <h2 class="trail-overview-title">Wildlife Spotter Trail</h2>
+          <p class="trail-overview-sub">A 20-minute walk with 3 discovery stops</p>
+          <div class="trail-overview-meta">
+            <span class="trail-overview-meta__pill">
+              <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+              20 mins
+            </span>
+            <span class="trail-overview-meta__pill">
+              <span class="material-symbols-outlined" aria-hidden="true">straighten</span>
+              1.2 km
+            </span>
           </div>
         </section>
 
-        <section class="page-section" style="background: var(--surface)">
-          <h3 class="section-title" style="margin-bottom: 0.75rem">Badges Earned</h3>
-          <div class="badge-row no-scrollbar">
-            <div class="badge-item">
-              <div class="badge-circle badge-circle--brown">
-                <span class="material-symbols-outlined" aria-hidden="true">pets</span>
-              </div>
-              <span>Wildlife Spotter</span>
-            </div>
-            <div class="badge-item">
-              <div class="badge-circle badge-circle--blue">
-                <span class="material-symbols-outlined" aria-hidden="true">explore</span>
-              </div>
-              <span>Trail Explorer</span>
-            </div>
-            <div class="badge-item">
-              <div class="badge-circle badge-circle--green">
-                <span class="material-symbols-outlined" aria-hidden="true">park</span>
-              </div>
-              <span>Tree Detective</span>
-            </div>
-            <div class="badge-item">
-              <div class="badge-circle badge-circle--orange">
-                <span class="material-symbols-outlined" aria-hidden="true">hiking</span>
-              </div>
-              <span>Adventurer</span>
-            </div>
-          </div>
-        </section>
-
-        <section class="page-section">
-          <h3 class="section-title" style="margin-bottom: 0.75rem">Favourite Discoveries</h3>
-          <div class="discovery-grid">
-            <div class="discovery-card">
-              <img
-                src="https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=600&q=80"
-                alt="Blue butterfly on leaf"
-                width="400"
-                height="400"
-                loading="lazy"
+        <section class="page-section trail-overview-section">
+          <div class="trail-mini-map" aria-label="Live route mini map with three stops">
+            <span class="trail-mini-map__badge">Live route</span>
+            <svg viewBox="0 0 360 220" class="trail-mini-map__svg" role="img" aria-hidden="true">
+              <rect x="0" y="0" width="360" height="220" fill="#8fc8a3" />
+              <g stroke="#ffffff" stroke-opacity="0.3">
+                <path d="M0 24 H360 M0 64 H360 M0 104 H360 M0 144 H360 M0 184 H360" />
+                <path d="M36 0 V220 M96 0 V220 M156 0 V220 M216 0 V220 M276 0 V220 M336 0 V220" />
+              </g>
+              <path
+                d="M72 88 C102 50, 162 42, 220 64 C256 78, 286 118, 256 156 C220 188, 144 190, 98 164 C72 146, 64 114, 72 88 Z"
+                fill="none"
+                stroke="#2b6651"
+                stroke-width="5"
+                stroke-linecap="round"
+                stroke-dasharray="10 8"
               />
-              <div class="discovery-card__label">Ulysses Butterfly</div>
-            </div>
-            <div class="discovery-card">
-              <img
-                src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=600&q=80"
-                alt="Large fig tree roots"
-                width="400"
-                height="400"
-                loading="lazy"
-              />
-              <div class="discovery-card__label">Ancient Fig Tree</div>
-            </div>
+              <circle cx="86" cy="95" r="12" fill="#3c7d65" />
+              <circle cx="262" cy="118" r="12" fill="#3c7d65" />
+              <circle cx="138" cy="168" r="12" fill="#3c7d65" />
+              <text x="82" y="100" fill="#fff" font-size="10" font-weight="700">1</text>
+              <text x="258" y="123" fill="#fff" font-size="10" font-weight="700">2</text>
+              <text x="134" y="173" fill="#fff" font-size="10" font-weight="700">3</text>
+            </svg>
           </div>
         </section>
 
-        <div class="recommend-block">
-          <h3>Try another Brisbane park</h3>
-          <p>Ready for your next outing? These live activities are nearby.</p>
-          <a href="activity.html" class="recommend-item">
-            <div class="recommend-item__icon recommend-item__icon--blue" aria-hidden="true">
-              <span class="material-symbols-outlined">account_balance</span>
-            </div>
-            <div class="recommend-item__body">
-              <p class="recommend-item__title">City Botanic Gardens Explorer</p>
-              <p class="recommend-item__meta">Easy · 2.5km · Riverside</p>
-            </div>
-            <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
-          </a>
-          <a href="activity.html" class="recommend-item">
-            <div class="recommend-item__icon recommend-item__icon--green" aria-hidden="true">
-              <span class="material-symbols-outlined">route</span>
-            </div>
-            <div class="recommend-item__body">
-              <p class="recommend-item__title">New Farm Park Loop</p>
-              <p class="recommend-item__meta">Moderate · 3.8km · Floral</p>
-            </div>
-            <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
-          </a>
-        </div>
+        <section class="page-section trail-overview-section trail-essentials">
+          <h3 class="trail-overview-section__title">Trail Essentials</h3>
+          <div class="trail-essentials-grid">
+            <article class="trail-essential-card">
+              <span class="material-symbols-outlined" aria-hidden="true">wc</span>
+              <p class="trail-essential-card__label">Toilet</p>
+              <p class="trail-essential-card__value">2 min walk</p>
+            </article>
+            <article class="trail-essential-card">
+              <span class="material-symbols-outlined" aria-hidden="true">water_drop</span>
+              <p class="trail-essential-card__label">Water</p>
+              <p class="trail-essential-card__value">Nearby</p>
+            </article>
+            <article class="trail-essential-card">
+              <span class="material-symbols-outlined" aria-hidden="true">wb_shade</span>
+              <p class="trail-essential-card__label">Shade</p>
+              <p class="trail-essential-card__value">On path</p>
+            </article>
+            <article class="trail-essential-card">
+              <span class="material-symbols-outlined" aria-hidden="true">accessible</span>
+              <p class="trail-essential-card__label">Path</p>
+              <p class="trail-essential-card__value">Accessible</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="page-section trail-overview-section trail-steps">
+          <h3 class="trail-overview-section__title">What you'll do</h3>
+          <ol class="trail-steps-list">
+            <li class="trail-step-item">
+              <span class="trail-step-item__num">1</span>
+              <div>
+                <p class="trail-step-item__title">Follow the path</p>
+                <p class="trail-step-item__desc">Stay on the marked green loop through the paperbark forest.</p>
+              </div>
+            </li>
+            <li class="trail-step-item">
+              <span class="trail-step-item__num">2</span>
+              <div>
+                <p class="trail-step-item__title">Find discovery stops</p>
+                <p class="trail-step-item__desc">Keep an eye out for the 3 numbered wooden posts along the trail.</p>
+              </div>
+            </li>
+            <li class="trail-step-item">
+              <span class="trail-step-item__num">3</span>
+              <div>
+                <p class="trail-step-item__title">Complete one quick challenge</p>
+                <p class="trail-step-item__desc">Snap a photo of a local bird or insect at any stop to finish.</p>
+              </div>
+            </li>
+          </ol>
+          <a href="survey.html" class="btn-pill trail-start-btn">Start trail</a>
+        </section>
       </main>
 
-      <div id="parkquest-bottom-nav-root"></div>
+      <nav class="bottom-nav" aria-label="Primary navigation">
+        <a class="bottom-nav__link" href="index.html">
+          <span class="material-symbols-outlined" aria-hidden="true">explore</span>
+          Discover
+        </a>
+        <a class="bottom-nav__link is-active" href="amenities.html">
+          <span class="material-symbols-outlined fill" aria-hidden="true">route</span>
+          Trails
+        </a>
+        <a class="bottom-nav__link" href="progress.html">
+          <span class="material-symbols-outlined" aria-hidden="true">bookmark</span>
+          Saved
+        </a>
+        <a class="bottom-nav__link" href="settings.html">
+          <span class="material-symbols-outlined" aria-hidden="true">person</span>
+          Profile
+        </a>
+      </nav>
     </div>
 
-    <script src="js/data-store.js"></script>
-    <script src="js/ui-loader.js"></script>
-    <script src="js/main.js"></script>
     <script src="js/navagation.js"></script>
-    <script src="js/favorites.js"></script>
-    <script src="js/rewards.js"></script>
   </body>
 </html>

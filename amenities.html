@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#f8faf7" />
-    <title>ParkQuest — Amenities</title>
+    <title>ParkQuest — Short Adventures</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -23,7 +23,7 @@
         <a href="index.html" class="icon-btn" aria-label="Back to map">
           <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
         </a>
-        <h1 class="app-header__title app-header__title--center">Amenities</h1>
+        <h1 class="app-header__title app-header__title--center">Short Adventures</h1>
         <a href="index.html" class="icon-btn" aria-label="Open map">
           <span class="material-symbols-outlined" aria-hidden="true">map</span>
         </a>
@@ -31,129 +31,117 @@
 
       <main class="subpage-main">
         <div class="page-hero page-hero--tight">
-          <h2 class="page-headline">Make your visit easier</h2>
-          <p class="page-subline">Finding the essentials nearby.</p>
-        </div>
-
-        <div id="amenities-active-now"></div>
-
-        <div class="amenities-map-block" aria-hidden="true">
-          <svg class="amenities-map-block__art" viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice">
-            <defs>
-              <linearGradient id="grass" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color: #c5e6d4" />
-                <stop offset="100%" style="stop-color: #8fbf9f" />
-              </linearGradient>
-              <linearGradient id="water" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" style="stop-color: #a8d4ef" />
-                <stop offset="100%" style="stop-color: #7eb8d9" />
-              </linearGradient>
-            </defs>
-            <rect width="400" height="220" fill="url(#grass)" />
-            <ellipse cx="120" cy="100" rx="70" ry="45" fill="url(#water)" opacity="0.95" />
-            <path
-              d="M 40 180 Q 120 160 200 175 T 360 165"
-              fill="none"
-              stroke="#d4c4a8"
-              stroke-width="10"
-              stroke-linecap="round"
-            />
-            <path
-              d="M 280 40 Q 320 80 300 130"
-              fill="none"
-              stroke="#e8dcc4"
-              stroke-width="8"
-              stroke-linecap="round"
-            />
-            <circle cx="320" cy="50" r="18" fill="#2d6a4f" opacity="0.35" />
-            <circle cx="60" cy="60" r="22" fill="#0f5238" opacity="0.25" />
-            <g transform="translate(200, 90)">
-              <rect x="-18" y="-14" width="36" height="28" rx="8" fill="#fff" opacity="0.95" />
-              <path d="M-8 4 L0 -6 L8 4 Z" fill="#006399" />
-            </g>
-            <g transform="translate(100, 140)">
-              <circle r="14" fill="#0f5238" />
-              <path d="M-5 -2 L5 -2 L0 6 Z" fill="#fff" transform="translate(0,1)" />
-            </g>
-            <g transform="translate(300, 150)">
-              <rect x="-20" y="-12" width="40" height="24" rx="6" fill="#fff" opacity="0.95" />
-              <circle cx="-6" cy="0" r="3" fill="#0f5238" />
-              <circle cx="6" cy="0" r="3" fill="#0f5238" />
-            </g>
-          </svg>
+          <p class="short-adventure-step">Step 1</p>
+          <h2 class="page-headline">Choose a short adventure</h2>
+          <p class="page-subline">Perfect trails for your next discovery.</p>
+          <p class="short-adventure-intro">
+            Pick a family-friendly walk with clear timing, distance and practical amenities so your visit feels easy
+            from the start.
+          </p>
         </div>
 
         <section class="page-section" style="padding-top: 0">
-          <div class="amenity-list">
-            <article class="amenity-card">
-              <div class="amenity-card__icon amenity-card__icon--mint">
-                <span class="material-symbols-outlined" aria-hidden="true">wc</span>
+          <div class="trail-list">
+            <article class="trail-card trail-card--featured">
+              <div class="trail-card__image-wrap">
+                <img
+                  class="trail-card__image"
+                  src="https://images.unsplash.com/photo-1455218873509-8097305ee378?auto=format&fit=crop&w=1000&q=80"
+                  alt="Woodland creek path in daytime shade"
+                />
+                <span class="trail-card__badge">BEST FOR AGES 6-10</span>
               </div>
-              <div class="amenity-card__body">
-                <h3 class="amenity-card__title">Toilets</h3>
-                <p class="amenity-card__meta">
-                  <span class="material-symbols-outlined" aria-hidden="true">directions_walk</span>
-                  2 min walk ·
-                  <span class="material-symbols-outlined" aria-hidden="true">accessible</span>
+              <div class="trail-card__body">
+                <h3 class="trail-card__title">Wildlife Spotter Trail</h3>
+                <p class="trail-card__desc">Short, easy loop with playful signs and gentle paths for quick daytime visits.</p>
+                <p class="trail-card__quick-meta">
+                  <span><span class="material-symbols-outlined" aria-hidden="true">schedule</span> 15 mins</span>
+                  <span><span class="material-symbols-outlined" aria-hidden="true">straighten</span> 0.8 km</span>
                 </p>
+                <div class="trail-card__footer">
+                  <div class="trail-card__amenities" aria-label="Amenities on this trail">
+                    <span class="trail-amenity-pill" title="Toilets nearby">
+                      <span class="material-symbols-outlined" aria-hidden="true">wc</span>
+                    </span>
+                    <span class="trail-amenity-pill" title="Drinking water available">
+                      <span class="material-symbols-outlined" aria-hidden="true">water_drop</span>
+                    </span>
+                    <span class="trail-amenity-pill" title="Shaded areas available">
+                      <span class="material-symbols-outlined" aria-hidden="true">wb_shade</span>
+                    </span>
+                  </div>
+                  <a class="trail-card__cta" href="progress.html" aria-label="Choose Wildlife Spotter Trail">
+                    <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+                  </a>
+                </div>
               </div>
-              <span class="amenity-badge amenity-badge--open">OPEN</span>
             </article>
 
-            <article class="amenity-card">
-              <div class="amenity-card__icon amenity-card__icon--blue">
-                <span class="material-symbols-outlined" aria-hidden="true">water_drop</span>
+            <article class="trail-card">
+              <div class="trail-card__image-wrap">
+                <img
+                  class="trail-card__image"
+                  src="https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1000&q=80"
+                  alt="Large green leaves on a family walking path"
+                />
+                <span class="trail-card__badge">GREAT FOR A QUICK VISIT</span>
               </div>
-              <div class="amenity-card__body">
-                <h3 class="amenity-card__title">Drinking Fountain</h3>
-                <p class="amenity-card__meta">
-                  <span class="material-symbols-outlined" aria-hidden="true">directions_walk</span>
-                  1 min walk
+              <div class="trail-card__body">
+                <h3 class="trail-card__title">Giant Plant Hunt</h3>
+                <p class="trail-card__desc">Easy flat track where kids can spot oversized leaves and textured plants.</p>
+                <p class="trail-card__quick-meta">
+                  <span><span class="material-symbols-outlined" aria-hidden="true">schedule</span> 10 mins</span>
+                  <span><span class="material-symbols-outlined" aria-hidden="true">straighten</span> 0.5 km</span>
                 </p>
+                <div class="trail-card__footer">
+                  <div class="trail-card__amenities" aria-label="Amenities on this trail">
+                    <span class="trail-amenity-pill" title="Shaded areas available">
+                      <span class="material-symbols-outlined" aria-hidden="true">wb_shade</span>
+                    </span>
+                    <span class="trail-amenity-pill" title="Benches nearby">
+                      <span class="material-symbols-outlined" aria-hidden="true">chair</span>
+                    </span>
+                  </div>
+                  <a class="trail-card__cta" href="progress.html" aria-label="Choose Giant Plant Hunt">
+                    <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+                  </a>
+                </div>
               </div>
-              <span class="amenity-badge amenity-badge--route">On your route</span>
             </article>
 
-            <article class="amenity-card">
-              <div class="amenity-card__icon amenity-card__icon--peach">
-                <span class="material-symbols-outlined" aria-hidden="true">chair</span>
+            <article class="trail-card">
+              <div class="trail-card__image-wrap">
+                <img
+                  class="trail-card__image"
+                  src="https://images.unsplash.com/photo-1437482078695-73f5ca6c96e2?auto=format&fit=crop&w=1000&q=80"
+                  alt="Calm river trail with trees and wide path"
+                />
+                <span class="trail-card__badge">EASY FOR FAMILIES</span>
               </div>
-              <div class="amenity-card__body">
-                <h3 class="amenity-card__title">Shaded Seating</h3>
-                <p class="amenity-card__meta">
-                  <span class="material-symbols-outlined" aria-hidden="true">directions_walk</span>
-                  4 min walk
+              <div class="trail-card__body">
+                <h3 class="trail-card__title">River Explorer Trail</h3>
+                <p class="trail-card__desc">Simple riverside walk with open views, smooth paths and relaxed pacing.</p>
+                <p class="trail-card__quick-meta">
+                  <span><span class="material-symbols-outlined" aria-hidden="true">schedule</span> 20 mins</span>
+                  <span><span class="material-symbols-outlined" aria-hidden="true">straighten</span> 1.2 km</span>
                 </p>
+                <div class="trail-card__footer">
+                  <div class="trail-card__amenities" aria-label="Amenities on this trail">
+                    <span class="trail-amenity-pill" title="Drinking water available">
+                      <span class="material-symbols-outlined" aria-hidden="true">water_drop</span>
+                    </span>
+                    <span class="trail-amenity-pill" title="Toilets nearby">
+                      <span class="material-symbols-outlined" aria-hidden="true">wc</span>
+                    </span>
+                    <span class="trail-amenity-pill" title="Accessible path">
+                      <span class="material-symbols-outlined" aria-hidden="true">accessible</span>
+                    </span>
+                  </div>
+                  <a class="trail-card__cta" href="progress.html" aria-label="Choose River Explorer Trail">
+                    <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+                  </a>
+                </div>
               </div>
-              <span class="amenity-badge amenity-badge--muted">Nearby</span>
-            </article>
-
-            <article class="amenity-card">
-              <div class="amenity-card__icon amenity-card__icon--leaf">
-                <span class="material-symbols-outlined" aria-hidden="true">restaurant</span>
-              </div>
-              <div class="amenity-card__body">
-                <h3 class="amenity-card__title">Picnic Area</h3>
-                <p class="amenity-card__meta">
-                  <span class="material-symbols-outlined" aria-hidden="true">directions_walk</span>
-                  5 min walk
-                </p>
-              </div>
-              <span class="amenity-badge amenity-badge--muted">Quiet area</span>
-            </article>
-
-            <article class="amenity-card">
-              <div class="amenity-card__icon amenity-card__icon--gray">
-                <span class="material-symbols-outlined" aria-hidden="true">accessible</span>
-              </div>
-              <div class="amenity-card__body">
-                <h3 class="amenity-card__title">Accessible Path</h3>
-                <p class="amenity-card__meta">
-                  <span class="material-symbols-outlined" aria-hidden="true">map</span>
-                  Paved route
-                </p>
-              </div>
-              <span class="amenity-badge amenity-badge--muted">Nearby</span>
             </article>
           </div>
         </section>
