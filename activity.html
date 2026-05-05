@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f8faf7" />
+    <title>Park Quest — Map</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&family=Work+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      /* Map legend card (replaces trail-journey-card) */
+      .map-legend-card {
+        position: absolute;
+        left: 0.85rem;
+        right: 0.85rem;
+        bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom, 0) + 0.55rem);
+        border-radius: var(--radius-2xl);
+        background: color-mix(in srgb, var(--surface-container-lowest) 94%, transparent);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        box-shadow: var(--shadow-card);
+        padding: 0.9rem 1.1rem 0.85rem;
+        z-index: 10;
+      }
+      .map-legend-card__title {
+        margin: 0 0 0.6rem;
+        font-family: var(--font-display);
+        font-size: 0.9375rem;
+        font-weight: 800;
+        color: var(--primary);
+      }
+      .map-filter-row {
+        display: flex;
+        gap: 0.4rem;
+        overflow-x: auto;
+        margin: 0 -1.1rem;
+        padding: 0 1.1rem 0.1rem;
+        scrollbar-width: none;
+      }
+      .map-filter-row::-webkit-scrollbar { display: none; }
+      .map-filter-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.42rem 0.85rem;
+        border-radius: var(--radius-pill);
+        border: none;
+        font-family: var(--font-display);
+        font-size: 0.75rem;
+        font-weight: 700;
+        white-space: nowrap;
+        flex-shrink: 0;
+        background: var(--surface-container-high);
+        color: var(--on-surface-variant);
+        cursor: pointer;
+        transition: background 0.18s ease, color 0.18s ease, transform 0.12s ease;
+      }
+      .map-filter-chip:active { transform: scale(0.94); }
+      .map-filter-chip.is-selected {
+        background: var(--primary);
+        color: var(--on-primary);
+      }
+      .map-legend-hint {
+        margin: 0.55rem 0 0;
+        font-size: 0.75rem;
+        color: var(--on-surface-variant);
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+      }
+      .map-legend-hint .material-symbols-outlined { font-size: 0.9rem; color: var(--primary); }
+
+      /* Pulsing my-location dot */
+      @keyframes loc-pulse {
+        0%,100% { r: 8; opacity: 1; }
+        50% { r: 13; opacity: 0.3; }
+      }
+      #my-location-ring { animation: loc-pulse 1.8s ease-in-out infinite; }
+    </style>
+  </head>
+  <body data-parkquest-nav="map">
+    <div class="app app--map">
+      <header class="app-header trail-guide-header">
+        <div style="width:2.5rem;"></div>
+        <h1 class="app-header__title">Park Quest</h1>
+        <button class="icon-btn" id="btn-my-loc" aria-label="Show my location">
+          <span class="material-symbols-outlined" aria-hidden="true">my_location</span>
+        </button>
+      </header>
+
+      <main class="map-main trail-guide-main">
+
+        <!-- ── Full illustrated park map ── -->
+        <section class="trail-guide-map" aria-label="Brisbane City Botanic Gardens facilities map">
+          <svg id="park-map-svg" class="trail-guide-map__svg"
+               viewBox="0 0 420 620" preserveAspectRatio="xMidYMid slice"
+               role="img" aria-label="Illustrated map of Brisbane City Botanic Gardens showing toilets, drinking fountains, seating, picnic areas, café, accessible facilities and Trail Quest stops">
+            <defs>
+              <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#ddd8d0"/>
+                <stop offset="100%" stop-color="#d4cec6"/>
+              </linearGradient>
+              <linearGradient id="parkGrad" x1="0" y1="0" x2="0.4" y2="1">
+                <stop offset="0%" stop-color="#72b882"/>
+                <stop offset="55%" stop-color="#5ea470"/>
+                <stop offset="100%" stop-color="#4e9462"/>
+              </linearGradient>
+              <linearGradient id="riverGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#74b8d8"/>
+                <stop offset="100%" stop-color="#4e9abe"/>
+              </linearGradient>
+              <linearGradient id="lagoonGrad" x1="0" y1="0" x2="0.3" y2="1">
+                <stop offset="0%" stop-color="#85cce4"/>
+                <stop offset="100%" stop-color="#5ab0cd"/>
+              </linearGradient>
+              <filter id="shadow-sm">
+                <feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.22"/>
+              </filter>
+            </defs>
+
+            <!-- ── City/road background ── -->
+            <rect width="420" height="620" fill="url(#bgGrad)"/>
+
+            <!-- CBD buildings (left strip, outside park) -->
+            <rect x="0" y="0" width="32" height="500" fill="#ccc6bc"/>
+            <rect x="2" y="4" width="24" height="58" rx="2" fill="#bfb8ae"/>
+            <rect x="2" y="70" width="22" height="50" rx="2" fill="#c5beb4"/>
+            <rect x="2" y="128" width="24" height="44" rx="2" fill="#c0b9ae"/>
+            <rect x="2" y="180" width="20" height="52" rx="2" fill="#c8c1b7"/>
+            <rect x="2" y="240" width="24" height="40" rx="2" fill="#bdb6ab"/>
+            <rect x="2" y="288" width="22" height="55" rx="2" fill="#c3bcb2"/>
+            <rect x="2" y="352" width="20" height="46" rx="2" fill="#c0b9ae"/>
+            <rect x="2" y="406" width="24" height="42" rx="2" fill="#bcb5aa"/>
+
+            <!-- Alice Street road band -->
+            <rect x="0" y="52" width="420" height="18" fill="#ccc6bb"/>
+            <line x1="0" y1="61" x2="420" y2="61" stroke="#b8b2a5" stroke-width="1" stroke-dasharray="24,12" opacity="0.55"/>
+
+            <!-- Top-right road area (outside park, east) -->
+            <rect x="390" y="0" width="30" height="420" fill="#ccc6bc"/>
+            <rect x="393" y="5" width="24" height="60" rx="2" fill="#c0b9ae"/>
+            <rect x="393" y="75" width="24" height="45" rx="2" fill="#c5beb3"/>
+            <rect x="393" y="128" width="24" height="50" rx="2" fill="#bdb6aa"/>
+
+            <!-- ── PARK BODY ── -->
+            <path d="M 32,68 L 390,68 L 393,265 L 376,534
+                     C 350,612 258,644 162,623
+                     C 93,608 30,562 28,482 Z"
+                  fill="url(#parkGrad)"/>
+
+            <!-- Park perimeter path (edge walkway) -->
+            <path d="M 32,68 L 390,68 L 393,265 L 376,534
+                     C 350,612 258,644 162,623
+                     C 93,608 30,562 28,482 Z"
+                  fill="none" stroke="#3d7a52" stroke-width="2" opacity="0.35"/>
+
+            <!-- Subtle park grid texture -->
+            <g opacity="0.04" stroke="#000" stroke-width="0.7">
+              <path d="M32,125 L390,122 M32,188 L392,185 M32,258 L392,256"/>
+              <path d="M105,68 L92,540 M175,68 L162,580 M245,68 L232,610 M315,68 L303,556 M365,68 L372,510"/>
+            </g>
+
+            <!-- ── Lawn / open areas (lighter green ellipses) ── -->
+            <ellipse cx="200" cy="255" rx="102" ry="72" fill="#86cd9a" opacity="0.48"/>
+            <ellipse cx="185" cy="550" rx="88" ry="50" fill="#86cd9a" opacity="0.42"/>
+            <ellipse cx="373" cy="422" rx="48" ry="68" fill="#86cd9a" opacity="0.38"/>
+            <ellipse cx="105" cy="340" rx="42" ry="38" fill="#86cd9a" opacity="0.35"/>
+
+            <!-- ── Tree clusters ── -->
+            <g opacity="0.6"><circle cx="88" cy="175" r="30" fill="#3c7850"/><circle cx="72" cy="188" r="20" fill="#3c7850"/><circle cx="105" cy="165" r="17" fill="#3c7850"/></g>
+            <g opacity="0.55"><circle cx="352" cy="188" r="26" fill="#3c7850"/><circle cx="366" cy="178" r="17" fill="#3c7850"/></g>
+            <g opacity="0.58"><circle cx="140" cy="448" r="36" fill="#3c7850"/><circle cx="118" cy="438" r="21" fill="#3c7850"/><circle cx="158" cy="462" r="17" fill="#3c7850"/></g>
+            <g opacity="0.5"><circle cx="282" cy="455" r="28" fill="#3c7850"/><circle cx="265" cy="465" r="17" fill="#3c7850"/></g>
+            <g opacity="0.46"><circle cx="60" cy="400" r="22" fill="#3c7850"/><circle cx="50" cy="413" r="14" fill="#3c7850"/></g>
+            <g opacity="0.44"><circle cx="348" cy="462" r="19" fill="#3c7850"/></g>
+            <g opacity="0.48"><circle cx="212" cy="145" r="18" fill="#3c7850"/><circle cx="200" cy="155" r="13" fill="#3c7850"/></g>
+            <g opacity="0.45"><circle cx="308" cy="488" r="16" fill="#3c7850"/><circle cx="322" cy="480" r="12" fill="#3c7850"/></g>
+
+            <!-- ── OAKMAN'S LAGOON ── -->
+            <path d="M 268,298 C 276,272 308,262 338,270 C 366,278 384,300 383,325
+                     C 382,350 364,368 336,370 C 308,372 274,358 265,336
+                     C 258,318 262,308 268,298 Z"
+                  fill="url(#lagoonGrad)" opacity="0.9"/>
+            <!-- Lagoon shimmer -->
+            <ellipse cx="325" cy="316" rx="32" ry="22" fill="none" stroke="#fff" stroke-width="1.2" opacity="0.4"/>
+            <ellipse cx="325" cy="316" rx="20" ry="13" fill="none" stroke="#fff" stroke-width="0.8" opacity="0.3"/>
+            <!-- Lagoon lily pads -->
+            <ellipse cx="300" cy="340" rx="7" ry="5" fill="#4a8a5a" opacity="0.5"/>
+            <ellipse cx="345" cy="348" rx="6" ry="4" fill="#4a8a5a" opacity="0.45"/>
+            <!-- Lagoon label -->
+            <text x="325" y="312" text-anchor="middle" font-family="'Work Sans',sans-serif" font-size="6.5" font-weight="700" fill="#155a7a" opacity="0.85">OAKMAN'S LAGOON</text>
+
+            <!-- ── PATHS NETWORK ── -->
+            <!-- Main N-S spine -->
+            <path d="M 212,68 C 210,135 207,200 205,268 C 203,336 200,398 200,462 C 200,514 202,558 206,590"
+                  fill="none" stroke="#c8be7a" stroke-width="9" stroke-linecap="round" opacity="0.88"/>
+            <!-- Main E-W cross path -->
+            <path d="M 32,275 L 128,270 L 205,267 L 262,264 L 390,260"
+                  fill="none" stroke="#c8be7a" stroke-width="8" stroke-linecap="round" opacity="0.88"/>
+            <!-- NE diagonal upper -->
+            <path d="M 262,264 L 320,222 L 380,202 L 392,265"
+                  fill="none" stroke="#c8be7a" stroke-width="6" stroke-linecap="round" opacity="0.82"/>
+            <!-- Path to Lagoon west -->
+            <path d="M 262,264 L 298,280 L 268,298"
+                  fill="none" stroke="#c8be7a" stroke-width="6" stroke-linecap="round" opacity="0.8"/>
+            <!-- Path east of Lagoon -->
+            <path d="M 383,325 L 392,390 L 376,534"
+                  fill="none" stroke="#c8be7a" stroke-width="6" stroke-linecap="round" opacity="0.8"/>
+            <!-- NW loop path -->
+            <path d="M 32,275 L 88,298 L 140,345 L 200,362"
+                  fill="none" stroke="#c8be7a" stroke-width="7" stroke-linecap="round" opacity="0.85"/>
+            <!-- SE path to Riverstage -->
+            <path d="M 200,462 L 245,494 L 298,528 L 340,548 L 376,534"
+                  fill="none" stroke="#c8be7a" stroke-width="7" stroke-linecap="round" opacity="0.85"/>
+            <!-- Lagoon south path -->
+            <path d="M 336,370 L 320,400 L 298,528"
+                  fill="none" stroke="#c8be7a" stroke-width="5" stroke-linecap="round" opacity="0.72"/>
+            <!-- George St entrance road -->
+            <path d="M 0,275 L 32,275" fill="none" stroke="#c8be7a" stroke-width="10" stroke-linecap="round" opacity="0.88"/>
+            <!-- River boardwalk (dashed) -->
+            <path d="M 28,482 C 58,512 102,534 148,552 C 192,570 250,572 296,562 C 327,555 358,542 376,534"
+                  fill="none" stroke="#c8be7a" stroke-width="5" stroke-linecap="round" stroke-dasharray="8,5" opacity="0.72"/>
+
+            <!-- ── BRISBANE RIVER ── -->
+            <path d="M 0,595 C 55,575 115,590 175,580 C 235,570 295,586 358,576 C 384,571 404,578 420,574 L 420,620 L 0,620 Z"
+                  fill="url(#riverGrad)" opacity="0.92"/>
+            <!-- River ripples -->
+            <path d="M 28,604 Q 95,595 162,606 Q 228,617 295,604 Q 358,591 412,603" fill="none" stroke="#fff" stroke-width="1.1" opacity="0.32"/>
+            <path d="M 48,613 Q 115,604 182,615 Q 248,626 315,613 Q 378,600 418,612" fill="none" stroke="#fff" stroke-width="0.8" opacity="0.22"/>
+            <text x="210" y="613" text-anchor="middle" font-family="'Work Sans',sans-serif" font-size="8.5" font-weight="700" fill="#1a5a80" opacity="0.82" letter-spacing="1.5">BRISBANE RIVER</text>
+
+            <!-- City Reach Boardwalk label -->
+            <text x="205" y="590" text-anchor="middle" font-family="'Work Sans',sans-serif" font-size="6" font-weight="600" fill="#2a6e52" opacity="0.7">CITY REACH BOARDWALK ENTRANCE</text>
+
+            <!-- ── STREET LABELS ── -->
+            <text x="210" y="61" text-anchor="middle" font-family="'Work Sans',sans-serif" font-size="8" font-weight="700" fill="#6b6050" letter-spacing="2" opacity="0.88">ALICE STREET</text>
+            <text x="16" y="258" text-anchor="middle" font-family="'Work Sans',sans-serif" font-size="7" font-weight="700" fill="#6b6050" letter-spacing="1" opacity="0.82" transform="rotate(-90,16,258)">GEORGE STREET</text>
+            <text x="405" y="248" text-anchor="middle" font-family="'Work Sans',sans-serif" font-size="6.5" font-weight="700" fill="#6b6050" letter-spacing="0.8" opacity="0.75" transform="rotate(90,405,248)">EDWARD STREET</text>
+
+            <!-- Park name watermark -->
+            <text x="160" y="248" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" font-size="9" font-weight="800" fill="#1e5e30" opacity="0.38" letter-spacing="0.5">BRISBANE CITY</text>
+            <text x="160" y="261" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" font-size="9" font-weight="800" fill="#1e5e30" opacity="0.38" letter-spacing="0.5">BOTANIC GARDENS</text>
+
+            <!-- Area labels -->
+            <text x="148" y="198" text-anchor="middle" font-family="'Work Sans',sans-serif" font-size="7" font-weight="700" fill="#1e5e30" opacity="0.62">BALDWIN LAWN</text>
+            <text x="350" y="510" text-anchor="middle" font-family="'Work Sans',sans-serif" font-size="7" font-weight="700" fill="#1e5e30" opacity="0.62">RIVERSTAGE</text>
+            <text x="355" y="130" text-anchor="middle" font-family="'Work Sans',sans-serif" font-size="7" font-weight="700" fill="#1e5e30" opacity="0.55">PALM GROVE</text>
+
+            <!-- ── TRAIL ROUTE LINE ── -->
+            <g id="trail-route-line">
+              <path d="M 212,88 L 302,140 L 145,282 L 200,360 L 270,298 L 345,490"
+                    fill="none" stroke="#0f5238" stroke-width="2.5" stroke-dasharray="6,4"
+                    stroke-linecap="round" opacity="0.65"/>
+            </g>
+
+            <!-- ══════════════════════════════════════════════
+                 FACILITY MARKERS
+                 ══════════════════════════════════════════════ -->
+
+            <!-- ── ENTRANCES ── -->
+            <g class="facility-group" data-type="entrance">
+              <!-- Alice St main entrance -->
+              <circle cx="212" cy="78" r="8" fill="#0f5238" filter="url(#shadow-sm)"/>
+              <text x="212" y="82" text-anchor="middle" font-family="'Work Sans',sans-serif" font-size="8" font-weight="900" fill="#fff">↓</text>
+              <rect x="228" y="72" width="58" height="14" rx="7" fill="#fff" opacity="0.82"/>
+              <text x="257" y="82" text-anchor="middle" font-family="'Work Sans',sans-serif" font-size="6.5" font-weight="700" fill="#0f5238">MAIN ENTRY</text>
+
+              <!-- George St entrance -->
+              <circle cx="32" cy="275" r="8" fill="#0f5238" filter="url(#shadow-sm)"/>
+              <text x="32" y="279" text-anchor="middle" font-family="'Work Sans',sans-serif" font-size="8" font-weight="900" fill="#fff">→</text>
+
+              <!-- River/boardwalk entrance -->
+              <circle cx="206" cy="585" r="7" fill="#0f5238" filter="url(#shadow-sm)"/>
+              <text x="206" y="589" text-anchor="middle" font-family="'Work Sans',sans-serif" font-size="7" font-weight="900" fill="#fff">↑</text>
+            </g>
+
+            <!-- ── TOILETS (WC) ── dark purple circles -->
+            <g class="facility-group" data-type="toilet">
+              <!-- WC near Alice St entrance (east) -->
+              <circle cx="358" cy="112" r="14" fill="#5e3fa0" filter="url(#shadow-sm)"/>
+              <text x="358" y="117" text-anchor="middle" font-family="'Work Sans',sans-serif" font-size="8.5" font-weight="800" fill="#fff">WC</text>
+
+              <!-- WC near Baldwin Lawn / playground -->
+              <circle cx="145" cy="305" r="14" fill="#5e3fa0" filter="url(#shadow-sm)"/>
+              <text x="145" y="310" text-anchor="middle" font-family="'Work Sans',sans-serif" font-size="8.5" font-weight="800" fill="#fff">WC</text>
+
+              <!-- WC near Riverstage (SE area) -->
+              <circle cx="358" cy="488" r="14" fill="#5e3fa0" filter="url(#shadow-sm)"/>
+              <text x="358" y="493" text-anchor="middle" font-family="'Work Sans',sans-serif" font-size="8.5" font-weight="800" fill="#fff">WC</text>
+            </g>
+
+            <!-- ── ACCESSIBLE FACILITIES ── teal circles with ♿ -->
+            <g class="facility-group" data-type="accessible">
+              <!-- Accessible near Alice St toilet -->
+              <circle cx="358" cy="133" r="10" fill="#0a7b60" filter="url(#shadow-sm)"/>
+              <text x="358" y="138" text-anchor="middle" font-family="'Work Sans',sans-serif" font-size="10" fill="#fff">♿</text>
+
+              <!-- Accessible near Baldwin Lawn toilet -->
+              <circle cx="145" cy="325" r="10" fill="#0a7b60" filter="url(#shadow-sm)"/>
+              <text x="145" y="330" text-anchor="middle" font-family="'Work Sans',sans-serif" font-size="10" fill="#fff">♿</text>
+
+              <!-- Accessible near Riverstage toilet -->
+              <circle cx="358" cy="508" r="10" fill="#0a7b60" filter="url(#shadow-sm)"/>
+              <text x="358" y="513" text-anchor="middle" font-family="'Work Sans',sans-serif" font-size="10" fill="#fff">♿</text>
+            </g>
+
+            <!-- ── DRINKING FOUNTAINS ── blue circles with water drop -->
+            <g class="facility-group" data-type="fountain">
+              <!-- Near Alice St entrance (west side) -->
+              <circle cx="115" cy="108" r="12" fill="#1269a8" filter="url(#shadow-sm)"/>
+              <text x="115" y="114" text-anchor="middle" font-size="13" fill="#fff">💧</text>
+
+              <!-- Central path junction -->
+              <circle cx="205" cy="280" r="12" fill="#1269a8" filter="url(#shadow-sm)"/>
+              <text x="205" y="286" text-anchor="middle" font-size="13" fill="#fff">💧</text>
+
+              <!-- North of Lagoon -->
+              <circle cx="280" cy="278" r="12" fill="#1269a8" filter="url(#shadow-sm)"/>
+              <text x="280" y="284" text-anchor="middle" font-size="13" fill="#fff">💧</text>
+
+              <!-- Near Riverstage -->
+              <circle cx="332" cy="510" r="12" fill="#1269a8" filter="url(#shadow-sm)"/>
+              <text x="332" y="516" text-anchor="middle" font-size="13" fill="#fff">💧</text>
+            </g>
+
+            <!-- ── SEATING / BENCHES ── warm brown circles -->
+            <g class="facility-group" data-type="seating">
+              <!-- Near cannon (Stop 2 area) -->
+              <circle cx="296" cy="160" r="11" fill="#7a5530" filter="url(#shadow-sm)"/>
+              <text x="296" y="165" text-anchor="middle" font-size="11">🪑</text>
+
+              <!-- Near Baldwin playground -->
+              <circle cx="170" cy="348" r="11" fill="#7a5530" filter="url(#shadow-sm)"/>
+              <text x="170" y="353" text-anchor="middle" font-size="11">🪑</text>
+
+              <!-- East of lagoon -->
+              <circle cx="374" cy="338" r="11" fill="#7a5530" filter="url(#shadow-sm)"/>
+              <text x="374" y="343" text-anchor="middle" font-size="11">🪑</text>
+
+              <!-- Near south path (central) -->
+              <circle cx="240" cy="534" r="11" fill="#7a5530" filter="url(#shadow-sm)"/>
+              <text x="240" y="539" text-anchor="middle" font-size="11">🪑</text>
+
+              <!-- George St entrance area -->
+              <circle cx="68" cy="292" r="11" fill="#7a5530" filter="url(#shadow-sm)"/>
+              <text x="68" y="297" text-anchor="middle" font-size="11">🪑</text>
+
+              <!-- NE open area -->
+              <circle cx="348" cy="215" r="11" fill="#7a5530" filter="url(#shadow-sm)"/>
+              <text x="348" y="220" text-anchor="middle" font-size="11">🪑</text>
+            </g>
+
+            <!-- ── PICNIC AREAS ── orange circles -->
+            <g class="facility-group" data-type="picnic">
+              <!-- Central lawn -->
+              <circle cx="220" cy="235" r="13" fill="#c45e18" filter="url(#shadow-sm)"/>
+              <text x="220" y="241" text-anchor="middle" font-size="13">🍱</text>
+
+              <!-- Near river, south area -->
+              <circle cx="192" cy="552" r="13" fill="#c45e18" filter="url(#shadow-sm)"/>
+              <text x="192" y="558" text-anchor="middle" font-size="13">🍱</text>
+            </g>
+
+            <!-- ── CAFÉ / KIOSK ── amber circle -->
+            <g class="facility-group" data-type="cafe">
+              <circle cx="230" cy="198" r="13" fill="#b06012" filter="url(#shadow-sm)"/>
+              <text x="230" y="204" text-anchor="middle" font-size="13">☕</text>
+              <rect x="244" y="190" width="40" height="12" rx="6" fill="#fff" opacity="0.78"/>
+              <text x="264" y="200" text-anchor="middle" font-family="'Work Sans',sans-serif" font-size="6" font-weight="700" fill="#7a4000">CAFÉ</text>
+            </g>
+
+            <!-- ── TRAIL QUEST STOPS ── numbered dark green circles -->
+            <g class="facility-group" data-type="trail">
+              <!-- Stop 1: Alice St Entrance -->
+              <circle cx="212" cy="88" r="13" fill="#0f5238" stroke="#fff" stroke-width="2.5" filter="url(#shadow-sm)"/>
+              <text x="212" y="93" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" font-size="10" font-weight="800" fill="#fff">1</text>
+
+              <!-- Stop 2: Cannon landmark -->
+              <circle cx="302" cy="140" r="13" fill="#0f5238" stroke="#fff" stroke-width="2.5" filter="url(#shadow-sm)"/>
+              <text x="302" y="145" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" font-size="10" font-weight="800" fill="#fff">2</text>
+              <!-- Mini cannon silhouette -->
+              <rect x="287" y="127" width="12" height="7" rx="2.5" fill="#7a6a4a" opacity="0.55"/>
+              <rect x="285" y="132" width="4" height="9" rx="1" fill="#7a6a4a" opacity="0.55"/>
+
+              <!-- Stop 3: Baldwin Lawn Playground -->
+              <circle cx="145" cy="282" r="13" fill="#0f5238" stroke="#fff" stroke-width="2.5" filter="url(#shadow-sm)"/>
+              <text x="145" y="287" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" font-size="10" font-weight="800" fill="#fff">3</text>
+              <text x="165" y="278" font-size="12" opacity="0.85">🛝</text>
+
+              <!-- Stop 4: Comfort Stop (toilets) -->
+              <circle cx="200" cy="360" r="13" fill="#0f5238" stroke="#fff" stroke-width="2.5" filter="url(#shadow-sm)"/>
+              <text x="200" y="365" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" font-size="10" font-weight="800" fill="#fff">4</text>
+
+              <!-- Stop 5: Oakman's Lagoon -->
+              <circle cx="270" cy="298" r="13" fill="#0f5238" stroke="#fff" stroke-width="2.5" filter="url(#shadow-sm)"/>
+              <text x="270" y="303" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" font-size="10" font-weight="800" fill="#fff">5</text>
+              <text x="252" y="318" font-size="12" opacity="0.85">🦎</text>
+
+              <!-- Stop 6: Riverstage -->
+              <circle cx="345" cy="490" r="13" fill="#0f5238" stroke="#fff" stroke-width="2.5" filter="url(#shadow-sm)"/>
+              <text x="345" y="495" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" font-size="10" font-weight="800" fill="#fff">6</text>
+              <text x="328" y="510" font-size="12" opacity="0.85">🎭</text>
+            </g>
+
+            <!-- ── My location dot (hidden until activated) ── -->
+            <g id="my-location-group" style="display:none;">
+              <circle id="my-location-ring" cx="205" cy="265" r="8" fill="#006399" opacity="0.25"/>
+              <circle cx="205" cy="265" r="7" fill="#006399" stroke="#fff" stroke-width="2.5"/>
+            </g>
+
+            <!-- ── NORTH ARROW ── -->
+            <g transform="translate(388,98)">
+              <circle r="14" fill="#fff" opacity="0.9" filter="url(#shadow-sm)"/>
+              <path d="M0,-10 L3.5,4 L0,1.5 L-3.5,4 Z" fill="#0f5238"/>
+              <text x="0" y="-2" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" font-size="6.5" font-weight="800" fill="#0f5238">N</text>
+            </g>
+
+            <!-- ── SCALE BAR ── -->
+            <g transform="translate(36,98)">
+              <rect x="0" y="-1" width="64" height="5" rx="2.5" fill="#fff" opacity="0.75"/>
+              <rect x="0" y="-1" width="32" height="5" rx="2.5" fill="#0f5238" opacity="0.75"/>
+              <text x="0" y="-4" font-family="'Work Sans',sans-serif" font-size="5.5" fill="#1e5e30" opacity="0.85">0</text>
+              <text x="29" y="-4" font-family="'Work Sans',sans-serif" font-size="5.5" fill="#1e5e30" opacity="0.85">150m</text>
+              <text x="58" y="-4" font-family="'Work Sans',sans-serif" font-size="5.5" fill="#1e5e30" opacity="0.85">300m</text>
+            </g>
+          </svg>
+
+          <!-- Map control buttons (floating top-right, under north arrow) -->
+          <div class="trail-guide-map__actions" style="top:1.8rem;">
+            <button type="button" class="trail-map-btn" id="btn-zoom-in" aria-label="Zoom in">
+              <span class="material-symbols-outlined" aria-hidden="true">add</span>
+            </button>
+            <button type="button" class="trail-map-btn" id="btn-zoom-out" aria-label="Zoom out">
+              <span class="material-symbols-outlined" aria-hidden="true">remove</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- ── Legend / filter card ── -->
+        <section class="map-legend-card" aria-label="Map filter and legend">
+          <p class="map-legend-card__title">Brisbane City Botanic Gardens</p>
+          <div class="map-filter-row" role="group" aria-label="Filter facilities">
+            <button class="map-filter-chip is-selected" data-filter="all">All</button>
+            <button class="map-filter-chip" data-filter="toilet">🚻 Toilets</button>
+            <button class="map-filter-chip" data-filter="fountain">💧 Water</button>
+            <button class="map-filter-chip" data-filter="seating">🪑 Seating</button>
+            <button class="map-filter-chip" data-filter="picnic">🍱 Picnic</button>
+            <button class="map-filter-chip" data-filter="cafe">☕ Café</button>
+            <button class="map-filter-chip" data-filter="accessible">♿ Access</button>
+            <button class="map-filter-chip" data-filter="trail">🏃 Trail Quest</button>
+          </div>
+          <p class="map-legend-hint">
+            <span class="material-symbols-outlined">info</span>
+            Trail Quest stops <strong>①–⑥</strong> shown as numbered green circles.
+          </p>
+        </section>
+
+      </main>
+
+      <nav class="bottom-nav" aria-label="Primary">
+        <a class="bottom-nav__link" href="discovery.html">
+          <span class="material-symbols-outlined" aria-hidden="true">explore</span>
+          <span>Discover</span>
+        </a>
+        <a class="bottom-nav__link is-active" href="activity.html">
+          <span class="material-symbols-outlined" aria-hidden="true">map</span>
+          <span>Map</span>
+        </a>
+        <a class="bottom-nav__link" href="progress.html">
+          <span class="material-symbols-outlined" aria-hidden="true">military_tech</span>
+          <span>Badges</span>
+        </a>
+      </nav>
+    </div>
+
+    <script>
+    'use strict';
+
+    /* ── Facility filter chips ── */
+    const chips = document.querySelectorAll('.map-filter-chip');
+    const groups = document.querySelectorAll('.facility-group');
+    const routeLine = document.getElementById('trail-route-line');
+
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const type = chip.dataset.filter;
+
+        if (type === 'all') {
+          chips.forEach(c => c.classList.remove('is-selected'));
+          chip.classList.add('is-selected');
+          groups.forEach(g => { g.style.display = ''; });
+          if (routeLine) routeLine.style.display = '';
+        } else {
+          document.querySelector('[data-filter="all"]').classList.remove('is-selected');
+          chip.classList.toggle('is-selected');
+
+          const selected = [...document.querySelectorAll('.map-filter-chip.is-selected')]
+            .map(c => c.dataset.filter);
+
+          if (selected.length === 0) {
+            document.querySelector('[data-filter="all"]').classList.add('is-selected');
+            groups.forEach(g => { g.style.display = ''; });
+            if (routeLine) routeLine.style.display = '';
+          } else {
+            groups.forEach(g => {
+              g.style.display = selected.includes(g.dataset.type) ? '' : 'none';
+            });
+            if (routeLine) {
+              routeLine.style.display = selected.includes('trail') ? '' : 'none';
+            }
+          }
+        }
+      });
+    });
+
+    /* ── My location simulation ── */
+    const locGroup = document.getElementById('my-location-group');
+    document.getElementById('btn-my-loc').addEventListener('click', () => {
+      locGroup.style.display = locGroup.style.display === 'none' ? '' : 'none';
+    });
+
+    /* ── Zoom (SVG viewBox pan/zoom) ── */
+    const svg = document.getElementById('park-map-svg');
+    let vb = { x: 0, y: 0, w: 420, h: 620 };
+
+    function applyVB() {
+      svg.setAttribute('viewBox', `${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
+    }
+
+    document.getElementById('btn-zoom-in').addEventListener('click', () => {
+      const cx = vb.x + vb.w / 2, cy = vb.y + vb.h / 2;
+      vb.w = Math.max(160, vb.w * 0.78);
+      vb.h = Math.max(235, vb.h * 0.78);
+      vb.x = cx - vb.w / 2;
+      vb.y = cy - vb.h / 2;
+      applyVB();
+    });
+
+    document.getElementById('btn-zoom-out').addEventListener('click', () => {
+      const cx = vb.x + vb.w / 2, cy = vb.y + vb.h / 2;
+      vb.w = Math.min(420, vb.w * 1.28);
+      vb.h = Math.min(620, vb.h * 1.28);
+      vb.x = Math.max(0, cx - vb.w / 2);
+      vb.y = Math.max(0, cy - vb.h / 2);
+      applyVB();
+    });
+
+    /* ── Touch pan ── */
+    let isDragging = false, lastX = 0, lastY = 0;
+
+    svg.addEventListener('touchstart', e => {
+      if (e.touches.length === 1) {
+        isDragging = true;
+        lastX = e.touches[0].clientX;
+        lastY = e.touches[0].clientY;
+      }
+    }, { passive: true });
+
+    svg.addEventListener('touchmove', e => {
+      if (!isDragging || e.touches.length !== 1) return;
+      const dx = (lastX - e.touches[0].clientX) * (vb.w / svg.clientWidth);
+      const dy = (lastY - e.touches[0].clientY) * (vb.h / svg.clientHeight);
+      vb.x = Math.max(0, Math.min(420 - vb.w, vb.x + dx));
+      vb.y = Math.max(0, Math.min(620 - vb.h, vb.y + dy));
+      applyVB();
+      lastX = e.touches[0].clientX;
+      lastY = e.touches[0].clientY;
+    }, { passive: true });
+
+    svg.addEventListener('touchend', () => { isDragging = false; });
+    </script>
+  </body>
+</html>

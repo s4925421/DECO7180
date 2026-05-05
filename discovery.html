@@ -1,0 +1,1708 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f8faf7" />
+    <title>Park Quest — Trail Quest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&family=Work+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      /* ── Trail Quest specific styles ── */
+
+      /* Screen container */
+      .tq-screen { display: none; }
+      .tq-screen.is-active { display: block; }
+
+      /* ── Overview screen ── */
+      .tq-overview-hero {
+        background: linear-gradient(160deg, var(--primary) 0%, var(--primary-container) 100%);
+        padding: 2rem 1.25rem 2.5rem;
+        text-align: center;
+        color: var(--on-primary);
+      }
+      .tq-overview-hero__eyebrow {
+        margin: 0 0 0.5rem;
+        font-size: 0.6875rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        opacity: 0.85;
+      }
+      .tq-overview-hero__title {
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: 2.2rem;
+        font-weight: 800;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        color: var(--on-primary);
+      }
+      .tq-overview-hero__sub {
+        margin: 0.6rem 0 0;
+        font-size: 0.9375rem;
+        opacity: 0.9;
+      }
+      .tq-overview-hero__meta {
+        display: flex;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-top: 1.25rem;
+      }
+      .tq-meta-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.45rem 0.85rem;
+        border-radius: var(--radius-pill);
+        background: rgba(255,255,255,0.18);
+        font-size: 0.8125rem;
+        font-weight: 700;
+        color: var(--on-primary);
+      }
+      .tq-meta-pill .material-symbols-outlined { font-size: 1rem; }
+
+      .tq-stop-list {
+        padding: 1.25rem 1.25rem 0;
+      }
+      .tq-stop-list__title {
+        margin: 0 0 0.85rem;
+        font-family: var(--font-display);
+        font-size: 1rem;
+        font-weight: 800;
+        color: var(--on-surface);
+      }
+      .tq-stop-item {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        padding: 0.85rem 0;
+        border-bottom: 1px solid var(--surface-container-high);
+      }
+      .tq-stop-item:last-child { border-bottom: none; }
+      .tq-stop-num {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 0.875rem;
+        background: linear-gradient(145deg, var(--primary), var(--primary-container));
+        color: var(--on-primary);
+      }
+      .tq-stop-name {
+        flex: 1;
+        font-weight: 600;
+        font-size: 0.9375rem;
+        color: var(--on-surface);
+      }
+      .tq-stop-icon { font-size: 1.35rem; }
+
+      .tq-start-section {
+        padding: 1.25rem;
+      }
+      .tq-start-btn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        padding: 1rem;
+        border-radius: var(--radius-pill);
+        border: none;
+        font-family: var(--font-display);
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: var(--on-primary);
+        background: linear-gradient(145deg, var(--primary), var(--primary-container));
+        box-shadow: var(--shadow-card);
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.2s ease;
+      }
+      .tq-start-btn:active { transform: scale(0.97); }
+      .tq-start-btn .material-symbols-outlined { font-size: 1.25rem; }
+
+      .tq-resume-note {
+        margin: 0.75rem 0 0;
+        text-align: center;
+        font-size: 0.8125rem;
+        color: var(--on-surface-variant);
+      }
+      .tq-resume-link {
+        font-weight: 700;
+        color: var(--primary);
+        cursor: pointer;
+        text-decoration: underline;
+        background: none;
+        border: none;
+        font: inherit;
+        padding: 0;
+      }
+
+      /* ── Checkpoint screen ── */
+      .tq-progress-bar-wrap {
+        padding: 0.75rem 1.25rem 0;
+        background: var(--surface);
+      }
+      .tq-progress-steps {
+        display: flex;
+        gap: 0.3rem;
+        margin-bottom: 0.4rem;
+      }
+      .tq-progress-step {
+        flex: 1;
+        height: 0.3rem;
+        border-radius: var(--radius-pill);
+        background: var(--surface-container-high);
+        transition: background 0.3s ease;
+      }
+      .tq-progress-step.done {
+        background: var(--primary);
+      }
+      .tq-progress-step.current {
+        background: color-mix(in srgb, var(--primary) 55%, var(--surface-container-high));
+      }
+      .tq-progress-label {
+        font-size: 0.6875rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--on-surface-variant);
+      }
+
+      /* Checkpoint card */
+      .tq-cp-header {
+        padding: 1rem 1.25rem 0.5rem;
+        background: var(--surface);
+      }
+      .tq-cp-eyebrow {
+        margin: 0 0 0.25rem;
+        font-size: 0.6875rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--primary);
+      }
+      .tq-cp-title {
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: 1.6rem;
+        font-weight: 800;
+        line-height: 1.15;
+        color: var(--on-surface);
+      }
+      .tq-cp-location {
+        margin: 0.3rem 0 0;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.8125rem;
+        color: var(--on-surface-variant);
+      }
+      .tq-cp-location .material-symbols-outlined { font-size: 1rem; }
+
+      /* State panels */
+      .tq-panel { display: none; }
+      .tq-panel.is-active { display: block; }
+
+      /* Pre-checkin panel */
+      .tq-checkin-card {
+        margin: 1rem 1.25rem;
+        padding: 1.35rem;
+        border-radius: var(--radius-xl);
+        background: var(--surface-container-lowest);
+        box-shadow: var(--shadow-card);
+      }
+      .tq-checkin-card__icon {
+        font-size: 3rem;
+        text-align: center;
+        margin-bottom: 0.75rem;
+      }
+      .tq-checkin-card__instruction {
+        margin: 0 0 0.35rem;
+        font-size: 0.9375rem;
+        line-height: 1.5;
+        color: var(--on-surface);
+      }
+      .tq-checkin-card__safety {
+        margin: 0.75rem 0 0;
+        padding: 0.65rem 0.85rem;
+        border-radius: var(--radius-md);
+        background: color-mix(in srgb, #fff3cd 80%, var(--surface));
+        font-size: 0.8125rem;
+        color: #5c4200;
+        line-height: 1.4;
+      }
+
+      .tq-gps-note {
+        margin: 0 1.25rem 0.5rem;
+        padding: 0.55rem 0.85rem;
+        border-radius: var(--radius-md);
+        background: color-mix(in srgb, var(--secondary-container) 20%, var(--surface));
+        font-size: 0.78rem;
+        color: var(--on-secondary-container);
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+      .tq-gps-note .material-symbols-outlined { font-size: 1rem; color: var(--secondary); }
+
+      .tq-btn-checkin {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        width: calc(100% - 2.5rem);
+        margin: 0 1.25rem;
+        padding: 1rem;
+        border-radius: var(--radius-pill);
+        border: none;
+        font-family: var(--font-display);
+        font-size: 1rem;
+        font-weight: 800;
+        color: var(--on-primary);
+        background: linear-gradient(145deg, var(--primary), var(--primary-container));
+        box-shadow: var(--shadow-card);
+        cursor: pointer;
+        transition: transform 0.15s ease;
+      }
+      .tq-btn-checkin:active { transform: scale(0.97); }
+
+      /* Task panel */
+      .tq-task-card {
+        margin: 1rem 1.25rem;
+        padding: 1.25rem;
+        border-radius: var(--radius-xl);
+        background: var(--surface-container-lowest);
+        box-shadow: var(--shadow-card);
+      }
+      .tq-task-card__label {
+        margin: 0 0 0.5rem;
+        font-size: 0.6875rem;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--primary);
+      }
+      .tq-task-card__instruction {
+        margin: 0 0 1rem;
+        font-size: 0.9375rem;
+        line-height: 1.5;
+        color: var(--on-surface);
+      }
+      .tq-photo-zone {
+        width: 100%;
+        aspect-ratio: 4/3;
+        border-radius: var(--radius-xl);
+        border: 2px dashed var(--outline-variant);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        background: var(--surface-container-low);
+        cursor: pointer;
+        overflow: hidden;
+        position: relative;
+        transition: border-color 0.2s ease;
+      }
+      .tq-photo-zone:hover { border-color: var(--primary); }
+      .tq-photo-zone.has-photo { border-style: solid; border-color: var(--primary); }
+      .tq-photo-zone__preview {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: none;
+      }
+      .tq-photo-zone.has-photo .tq-photo-zone__preview { display: block; }
+      .tq-photo-zone.has-photo .tq-photo-zone__placeholder { display: none; }
+      .tq-photo-zone__placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.35rem;
+        pointer-events: none;
+      }
+      .tq-photo-zone__placeholder .material-symbols-outlined {
+        font-size: 2.25rem;
+        color: var(--on-surface-variant);
+      }
+      .tq-photo-zone__placeholder span {
+        font-size: 0.8125rem;
+        color: var(--on-surface-variant);
+        font-weight: 600;
+      }
+      .tq-photo-zone__done-badge {
+        position: absolute;
+        top: 0.6rem;
+        right: 0.6rem;
+        padding: 0.25rem 0.6rem;
+        border-radius: var(--radius-pill);
+        background: var(--primary);
+        color: var(--on-primary);
+        font-size: 0.625rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        display: none;
+      }
+      .tq-photo-zone.has-photo .tq-photo-zone__done-badge { display: block; }
+      .tq-file-input { display: none; }
+
+      .tq-photo-btns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+        margin-top: 0.6rem;
+      }
+      .tq-photo-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.3rem;
+        padding: 0.6rem 0.5rem;
+        border-radius: var(--radius-pill);
+        border: 1.5px solid var(--outline-variant);
+        background: var(--surface-container-low);
+        font-family: var(--font-display);
+        font-size: 0.8125rem;
+        font-weight: 700;
+        color: var(--on-surface);
+        cursor: pointer;
+        transition: background 0.15s ease;
+      }
+      .tq-photo-btn:active { background: var(--surface-container-high); }
+      .tq-photo-btn .material-symbols-outlined { font-size: 1.1rem; }
+
+      .tq-question-wrap {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--surface-container-high);
+      }
+      .tq-question-label {
+        margin: 0 0 0.6rem;
+        font-family: var(--font-display);
+        font-size: 0.9375rem;
+        font-weight: 700;
+        color: var(--on-surface);
+      }
+      .tq-answer-input {
+        width: 100%;
+        padding: 0.75rem 0.85rem;
+        border: 1.5px solid var(--outline-variant);
+        border-radius: var(--radius-md);
+        font: inherit;
+        font-size: 0.9375rem;
+        color: var(--on-surface);
+        background: var(--surface-container-low);
+        transition: border-color 0.2s ease;
+      }
+      .tq-answer-input:focus {
+        outline: none;
+        border-color: var(--primary);
+      }
+      .tq-answer-hint {
+        margin: 0.35rem 0 0;
+        font-size: 0.75rem;
+        color: var(--on-surface-variant);
+      }
+
+      .tq-error-msg {
+        margin: 0.6rem 1.25rem 0;
+        padding: 0.55rem 0.85rem;
+        border-radius: var(--radius-md);
+        background: color-mix(in srgb, #fde8e8 85%, var(--surface));
+        color: var(--error);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        display: none;
+      }
+      .tq-error-msg.is-visible { display: block; }
+
+      .tq-btn-submit {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        width: calc(100% - 2.5rem);
+        margin: 0.75rem 1.25rem 0;
+        padding: 1rem;
+        border-radius: var(--radius-pill);
+        border: none;
+        font-family: var(--font-display);
+        font-size: 1rem;
+        font-weight: 800;
+        color: var(--on-primary);
+        background: linear-gradient(145deg, var(--primary), var(--primary-container));
+        box-shadow: var(--shadow-card);
+        cursor: pointer;
+        transition: transform 0.15s ease;
+      }
+      .tq-btn-submit:active { transform: scale(0.97); }
+
+      /* Unlocked panel */
+      .tq-unlock-banner {
+        margin: 1rem 1.25rem 0;
+        padding: 1.25rem;
+        border-radius: var(--radius-xl);
+        background: linear-gradient(135deg,
+          color-mix(in srgb, var(--primary-fixed) 60%, white),
+          color-mix(in srgb, var(--inverse-primary) 45%, white));
+        box-shadow: var(--shadow-card);
+      }
+      .tq-unlock-banner__badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.25rem 0.65rem;
+        border-radius: var(--radius-pill);
+        background: var(--primary);
+        color: var(--on-primary);
+        font-size: 0.625rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 0.6rem;
+      }
+      .tq-unlock-banner__title {
+        margin: 0 0 0.5rem;
+        font-family: var(--font-display);
+        font-size: 1.15rem;
+        font-weight: 800;
+        color: var(--primary-container);
+      }
+      .tq-unlock-banner__desc {
+        margin: 0;
+        font-size: 0.875rem;
+        line-height: 1.55;
+        color: var(--on-surface);
+      }
+
+      /* Photo collected display */
+      .tq-collected-photo {
+        margin: 0.75rem 1.25rem 0;
+        border-radius: var(--radius-xl);
+        overflow: hidden;
+        box-shadow: var(--shadow-ambient);
+        display: none;
+      }
+      .tq-collected-photo.is-visible { display: block; }
+      .tq-collected-photo img {
+        width: 100%;
+        aspect-ratio: 4/3;
+        object-fit: cover;
+        display: block;
+      }
+      .tq-collected-photo__label {
+        padding: 0.5rem 0.75rem;
+        background: var(--surface-container-low);
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--on-surface-variant);
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+      .tq-collected-photo__label .material-symbols-outlined { font-size: 1rem; color: var(--primary); }
+
+      .tq-facilities-section {
+        margin: 0.85rem 1.25rem 0;
+      }
+      .tq-facilities-title {
+        margin: 0 0 0.6rem;
+        font-family: var(--font-display);
+        font-size: 0.875rem;
+        font-weight: 800;
+        color: var(--on-surface);
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+      }
+      .tq-facilities-title .material-symbols-outlined { font-size: 1rem; color: var(--primary); }
+      .tq-facilities-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.55rem;
+      }
+      .tq-facility-card {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.75rem 0.85rem;
+        border-radius: var(--radius-md);
+        background: var(--surface-container-lowest);
+        box-shadow: var(--shadow-ambient);
+      }
+      .tq-facility-card__icon {
+        width: 2.25rem;
+        height: 2.25rem;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        background: color-mix(in srgb, var(--inverse-primary) 45%, white);
+        color: var(--primary);
+      }
+      .tq-facility-card__icon .material-symbols-outlined { font-size: 1.1rem; }
+      .tq-facility-card__body { min-width: 0; }
+      .tq-facility-card__label {
+        margin: 0;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--on-surface);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .tq-facility-card__detail {
+        margin: 0.1rem 0 0;
+        font-size: 0.6875rem;
+        color: var(--on-surface-variant);
+      }
+
+      .tq-btn-next {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        width: calc(100% - 2.5rem);
+        margin: 1rem 1.25rem 0;
+        padding: 1rem;
+        border-radius: var(--radius-pill);
+        border: none;
+        font-family: var(--font-display);
+        font-size: 1rem;
+        font-weight: 800;
+        color: var(--on-primary);
+        background: linear-gradient(145deg, var(--primary), var(--primary-container));
+        box-shadow: var(--shadow-card);
+        cursor: pointer;
+        transition: transform 0.15s ease;
+      }
+      .tq-btn-next:active { transform: scale(0.97); }
+      .tq-btn-next .material-symbols-outlined { font-size: 1.2rem; }
+
+      /* ── Complete screen ── */
+      .tq-complete-hero {
+        text-align: center;
+        padding: 2rem 1.25rem 1.5rem;
+        background: linear-gradient(160deg, var(--primary) 0%, var(--primary-container) 100%);
+      }
+      .tq-complete-trophy {
+        font-size: 4rem;
+        line-height: 1;
+        margin-bottom: 0.75rem;
+      }
+      .tq-complete-title {
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--on-primary);
+        line-height: 1.1;
+      }
+      .tq-complete-sub {
+        margin: 0.5rem 0 0;
+        font-size: 0.9375rem;
+        color: rgba(255,255,255,0.88);
+      }
+      .tq-complete-stats {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1.25rem;
+      }
+      .tq-complete-stat {
+        padding: 0.5rem 0.85rem;
+        border-radius: var(--radius-pill);
+        background: rgba(255,255,255,0.2);
+        font-size: 0.8125rem;
+        font-weight: 700;
+        color: var(--on-primary);
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+      }
+      .tq-complete-stat .material-symbols-outlined { font-size: 1rem; }
+
+      .tq-photos-section {
+        padding: 1.25rem 1.25rem 0;
+      }
+      .tq-photos-section__title {
+        margin: 0 0 0.75rem;
+        font-family: var(--font-display);
+        font-size: 1rem;
+        font-weight: 800;
+        color: var(--on-surface);
+      }
+      .tq-photos-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+      }
+      .tq-photo-thumb {
+        aspect-ratio: 1;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        background: var(--surface-container-high);
+        position: relative;
+      }
+      .tq-photo-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .tq-photo-thumb__placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.2rem;
+      }
+      .tq-photo-thumb__placeholder .material-symbols-outlined {
+        font-size: 1.5rem;
+        color: var(--on-surface-variant);
+        opacity: 0.5;
+      }
+      .tq-photo-thumb__stop {
+        position: absolute;
+        bottom: 0.3rem;
+        left: 0.3rem;
+        width: 1.4rem;
+        height: 1.4rem;
+        border-radius: 50%;
+        background: var(--primary);
+        color: var(--on-primary);
+        font-size: 0.625rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .tq-next-options {
+        margin: 1rem 1.25rem 0;
+      }
+      .tq-next-options__title {
+        margin: 0 0 0.6rem;
+        font-family: var(--font-display);
+        font-size: 0.875rem;
+        font-weight: 800;
+        color: var(--on-surface);
+      }
+      .tq-next-option {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.85rem 1rem;
+        border-radius: var(--radius-md);
+        background: var(--surface-container-lowest);
+        box-shadow: var(--shadow-ambient);
+        margin-bottom: 0.5rem;
+        text-decoration: none;
+        color: inherit;
+      }
+      .tq-next-option__icon {
+        width: 2.25rem;
+        height: 2.25rem;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .tq-next-option__icon--green {
+        background: color-mix(in srgb, var(--inverse-primary) 45%, white);
+        color: var(--primary);
+      }
+      .tq-next-option__icon--blue {
+        background: color-mix(in srgb, var(--secondary-container) 40%, white);
+        color: var(--secondary);
+      }
+      .tq-next-option__icon .material-symbols-outlined { font-size: 1.1rem; }
+      .tq-next-option__body { flex: 1; min-width: 0; }
+      .tq-next-option__title {
+        margin: 0;
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: var(--on-surface);
+      }
+      .tq-next-option__sub {
+        margin: 0.1rem 0 0;
+        font-size: 0.75rem;
+        color: var(--on-surface-variant);
+      }
+      .tq-next-option .material-symbols-outlined.chevron {
+        color: var(--on-surface-variant);
+        font-size: 1.1rem;
+        flex-shrink: 0;
+      }
+
+      .tq-complete-actions {
+        padding: 0.75rem 1.25rem 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+      .tq-btn-restart {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        padding: 0.9rem;
+        border-radius: var(--radius-pill);
+        border: none;
+        font-family: var(--font-display);
+        font-size: 0.9375rem;
+        font-weight: 800;
+        color: var(--on-primary);
+        background: linear-gradient(145deg, var(--primary), var(--primary-container));
+        box-shadow: var(--shadow-card);
+        cursor: pointer;
+        transition: transform 0.15s ease;
+      }
+      .tq-btn-restart:active { transform: scale(0.97); }
+      .tq-btn-reset {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.3rem;
+        padding: 0.85rem;
+        border-radius: var(--radius-pill);
+        border: 1.5px solid color-mix(in srgb, var(--outline-variant) 55%, transparent);
+        background: transparent;
+        font-family: var(--font-display);
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: var(--on-surface-variant);
+        cursor: pointer;
+        transition: background 0.15s ease;
+      }
+      .tq-btn-reset:hover { background: var(--surface-container-low); }
+
+      /* GPS checkin animation */
+      @keyframes tq-checkin-pulse {
+        0% { box-shadow: 0 0 0 0 rgba(15,82,56,0.4); }
+        70% { box-shadow: 0 0 0 14px rgba(15,82,56,0); }
+        100% { box-shadow: 0 0 0 0 rgba(15,82,56,0); }
+      }
+      .tq-btn-checkin.pulsing { animation: tq-checkin-pulse 0.7s ease-out; }
+    </style>
+  </head>
+  <body data-parkquest-nav="discover">
+    <div class="app app--scroll">
+      <header class="app-header">
+        <h1 class="app-header__title">Park Quest</h1>
+        <button class="icon-btn" id="tq-reset-btn" aria-label="Reset progress" title="Reset progress" style="display:none;">
+          <span class="material-symbols-outlined" aria-hidden="true">restart_alt</span>
+        </button>
+      </header>
+
+      <main id="tq-main" style="flex:1;">
+
+        <!-- ── SCREEN: Overview ── -->
+        <div id="tq-screen-overview" class="tq-screen">
+          <section class="tq-overview-hero">
+            <p class="tq-overview-hero__eyebrow">Brisbane City Botanic Gardens</p>
+            <h2 class="tq-overview-hero__title">Trail Quest</h2>
+            <p class="tq-overview-hero__sub">A self-guided discovery walk through one of Brisbane's most treasured parks.</p>
+            <div class="tq-overview-hero__meta">
+              <span class="tq-meta-pill">
+                <span class="material-symbols-outlined">schedule</span>45–60 min
+              </span>
+              <span class="tq-meta-pill">
+                <span class="material-symbols-outlined">route</span>7 stops
+              </span>
+              <span class="tq-meta-pill">
+                <span class="material-symbols-outlined">accessible</span>Accessible
+              </span>
+            </div>
+          </section>
+
+          <section class="tq-stop-list">
+            <p class="tq-stop-list__title">Your stops</p>
+            <div id="tq-overview-stops"></div>
+          </section>
+
+          <section class="tq-start-section">
+            <button class="tq-start-btn" id="tq-start-btn">
+              <span class="material-symbols-outlined">play_arrow</span>
+              Start Trail
+            </button>
+            <p class="tq-resume-note" id="tq-resume-note" style="display:none;">
+              Progress saved. <button class="tq-resume-link" id="tq-resume-btn">Continue where you left off</button>
+            </p>
+          </section>
+          <div style="height:1.5rem;"></div>
+        </div>
+
+        <!-- ── SCREEN: Checkpoint ── -->
+        <div id="tq-screen-checkpoint" class="tq-screen" style="padding-bottom:6rem;">
+          <!-- Progress bar -->
+          <div class="tq-progress-bar-wrap">
+            <div class="tq-progress-steps" id="tq-progress-steps"></div>
+            <p class="tq-progress-label" id="tq-progress-label"></p>
+          </div>
+
+          <!-- Checkpoint header -->
+          <div class="tq-cp-header">
+            <p class="tq-cp-eyebrow" id="tq-cp-eyebrow"></p>
+            <h2 class="tq-cp-title" id="tq-cp-title"></h2>
+            <p class="tq-cp-location">
+              <span class="material-symbols-outlined">location_on</span>
+              <span id="tq-cp-location"></span>
+            </p>
+          </div>
+
+          <!-- State: Pre check-in -->
+          <div class="tq-panel" id="tq-panel-precheckin">
+            <div class="tq-checkin-card">
+              <div class="tq-checkin-card__icon" id="tq-cp-icon"></div>
+              <p class="tq-checkin-card__instruction" id="tq-checkin-instruction"></p>
+              <div class="tq-checkin-card__safety" id="tq-checkin-safety" style="display:none;"></div>
+            </div>
+            <div class="tq-gps-note">
+              <span class="material-symbols-outlined">my_location</span>
+              GPS simulated — tap the button below to check in at this location.
+            </div>
+            <button class="tq-btn-checkin" id="tq-btn-checkin">
+              <span class="material-symbols-outlined">check_circle</span>
+              <span id="tq-checkin-btn-label">Check In Here</span>
+            </button>
+          </div>
+
+          <!-- State: Task -->
+          <div class="tq-panel" id="tq-panel-task">
+            <div class="tq-task-card">
+              <p class="tq-task-card__label">Your task</p>
+              <p class="tq-task-card__instruction" id="tq-task-instruction"></p>
+
+              <!-- Photo area (shown for photo/photo-and-question tasks) -->
+              <div id="tq-photo-area" style="display:none;">
+                <div class="tq-photo-zone" id="tq-photo-zone">
+                  <img class="tq-photo-zone__preview" id="tq-photo-preview" src="" alt="Your uploaded photo" />
+                  <div class="tq-photo-zone__placeholder">
+                    <span class="material-symbols-outlined">add_photo_alternate</span>
+                    <span>Tap to add photo</span>
+                  </div>
+                  <span class="tq-photo-zone__done-badge">✓ Photo added</span>
+                </div>
+                <div class="tq-photo-btns">
+                  <button class="tq-photo-btn" id="tq-btn-camera">
+                    <span class="material-symbols-outlined">photo_camera</span>
+                    Camera
+                  </button>
+                  <button class="tq-photo-btn" id="tq-btn-upload">
+                    <span class="material-symbols-outlined">upload</span>
+                    Upload
+                  </button>
+                </div>
+                <input class="tq-file-input" type="file" id="tq-file-camera" accept="image/*" capture="environment" />
+                <input class="tq-file-input" type="file" id="tq-file-upload" accept="image/*" />
+              </div>
+
+              <!-- Question area (shown for photo-and-question tasks) -->
+              <div id="tq-question-area" style="display:none;" class="tq-question-wrap">
+                <p class="tq-question-label" id="tq-question-text"></p>
+                <input class="tq-answer-input" type="text" id="tq-answer-input"
+                  placeholder="Type your answer…" autocomplete="off" />
+                <p class="tq-answer-hint">Enter any number — there's no wrong answer here!</p>
+              </div>
+            </div>
+
+            <div class="tq-error-msg" id="tq-error-msg"></div>
+            <button class="tq-btn-submit" id="tq-btn-submit">
+              <span class="material-symbols-outlined">lock_open</span>
+              Unlock Discover Card
+            </button>
+          </div>
+
+          <!-- State: Unlocked -->
+          <div class="tq-panel" id="tq-panel-unlocked">
+            <div class="tq-unlock-banner">
+              <div class="tq-unlock-banner__badge">
+                <span class="material-symbols-outlined" style="font-size:0.8rem;">auto_awesome</span>
+                Unlocked
+              </div>
+              <h3 class="tq-unlock-banner__title" id="tq-unlock-title"></h3>
+              <p class="tq-unlock-banner__desc" id="tq-unlock-desc"></p>
+            </div>
+
+            <!-- Collected photo display -->
+            <div class="tq-collected-photo" id="tq-collected-photo">
+              <img id="tq-collected-img" src="" alt="Your photo" />
+              <div class="tq-collected-photo__label">
+                <span class="material-symbols-outlined">photo_camera</span>
+                Your photo
+              </div>
+            </div>
+
+            <!-- Nearby facilities -->
+            <div class="tq-facilities-section">
+              <p class="tq-facilities-title">
+                <span class="material-symbols-outlined">near_me</span>
+                Nearby facilities
+              </p>
+              <div class="tq-facilities-grid" id="tq-facilities-grid"></div>
+            </div>
+
+            <button class="tq-btn-next" id="tq-btn-next">
+              <span id="tq-next-label">Next stop</span>
+              <span class="material-symbols-outlined">arrow_forward</span>
+            </button>
+            <div style="height:0.5rem;"></div>
+          </div>
+        </div>
+
+        <!-- ── SCREEN: Complete ── -->
+        <div id="tq-screen-complete" class="tq-screen" style="padding-bottom:6rem;">
+          <div class="tq-complete-hero">
+            <div class="tq-complete-trophy">🏆</div>
+            <h2 class="tq-complete-title">Trail Complete!</h2>
+            <p class="tq-complete-sub">You've explored all 7 stops in the Brisbane City Botanic Gardens.</p>
+            <div class="tq-complete-stats">
+              <span class="tq-complete-stat">
+                <span class="material-symbols-outlined">flag</span>7 stops
+              </span>
+              <span class="tq-complete-stat">
+                <span class="material-symbols-outlined">photo_camera</span>
+                <span id="tq-photo-count">0 photos</span>
+              </span>
+            </div>
+          </div>
+
+          <section class="tq-photos-section">
+            <p class="tq-photos-section__title">Your trail photos</p>
+            <div class="tq-photos-grid" id="tq-photos-grid"></div>
+          </section>
+
+          <section class="tq-next-options" style="margin-top:1.25rem;">
+            <p class="tq-next-options__title">What's nearby</p>
+            <div class="tq-next-option">
+              <div class="tq-next-option__icon tq-next-option__icon--green">
+                <span class="material-symbols-outlined">wc</span>
+              </div>
+              <div class="tq-next-option__body">
+                <p class="tq-next-option__title">Nearest toilet</p>
+                <p class="tq-next-option__sub">2 min walk · Near Alice St entrance</p>
+              </div>
+              <span class="material-symbols-outlined chevron">chevron_right</span>
+            </div>
+            <div class="tq-next-option">
+              <div class="tq-next-option__icon tq-next-option__icon--blue">
+                <span class="material-symbols-outlined">water_drop</span>
+              </div>
+              <div class="tq-next-option__body">
+                <p class="tq-next-option__title">Nearest drinking fountain</p>
+                <p class="tq-next-option__sub">1 min walk · At entrance plaza</p>
+              </div>
+              <span class="material-symbols-outlined chevron">chevron_right</span>
+            </div>
+            <div class="tq-next-option">
+              <div class="tq-next-option__icon tq-next-option__icon--green">
+                <span class="material-symbols-outlined">exit_to_app</span>
+              </div>
+              <div class="tq-next-option__body">
+                <p class="tq-next-option__title">Nearest exit</p>
+                <p class="tq-next-option__sub">Alice Street · George Street</p>
+              </div>
+              <span class="material-symbols-outlined chevron">chevron_right</span>
+            </div>
+          </section>
+
+          <div class="tq-complete-actions">
+            <button class="tq-btn-restart" id="tq-btn-restart">
+              <span class="material-symbols-outlined">replay</span>
+              Start Another Trail
+            </button>
+            <button class="tq-btn-reset" id="tq-btn-clear">
+              <span class="material-symbols-outlined">delete_sweep</span>
+              Clear saved progress
+            </button>
+          </div>
+          <div style="height:0.5rem;"></div>
+        </div>
+
+      </main>
+
+      <nav class="bottom-nav" aria-label="Primary">
+        <a class="bottom-nav__link is-active" href="discovery.html">
+          <span class="material-symbols-outlined" aria-hidden="true">explore</span>
+          <span>Discover</span>
+        </a>
+        <a class="bottom-nav__link" href="activity.html">
+          <span class="material-symbols-outlined" aria-hidden="true">map</span>
+          <span>Map</span>
+        </a>
+        <a class="bottom-nav__link" href="progress.html">
+          <span class="material-symbols-outlined" aria-hidden="true">military_tech</span>
+          <span>Badges</span>
+        </a>
+      </nav>
+    </div>
+
+    <script>
+    'use strict';
+
+    /* ── Data ── */
+    const CHECKPOINTS = [
+      {
+        id: 1,
+        title: 'Start Check-in',
+        locationName: 'Alice Street Entrance',
+        icon: '🌿',
+        taskType: 'checkin-only',
+        taskInstruction: 'Welcome! Tap "Start Trail" below to begin your adventure at the Brisbane City Botanic Gardens.',
+        unlockTitle: 'Welcome to the Gardens!',
+        unlockDescription: "You're exploring one of Brisbane's oldest parks, established in 1855. This trail takes approximately 45–60 minutes and guides you through 7 stops covering history, wildlife, play areas, and public art. Estimated walk: 2–3 km total.",
+        nearbyFacilities: [
+          { icon: 'wc', label: 'Toilets', detail: 'Near entrance' },
+          { icon: 'water_drop', label: 'Drinking Fountain', detail: 'At entrance' },
+          { icon: 'accessible', label: 'Accessible Route', detail: 'Available' },
+          { icon: 'exit_to_app', label: 'Exits', detail: 'Alice St & George St' }
+        ],
+        safetyNote: null,
+        nextCheckpointId: 2
+      },
+      {
+        id: 2,
+        title: 'Cannon Landmark',
+        locationName: 'Historic Cannon Area',
+        icon: '🏛️',
+        taskType: 'photo',
+        taskInstruction: 'Take or upload a photo of the cannon landmark you can see here.',
+        unlockTitle: 'Historical Landmark Unlocked',
+        unlockDescription: "This cannon reflects the gardens' connection to Brisbane's colonial and civic history. The Brisbane City Botanic Gardens were established in 1855 and remain one of the city's most treasured green spaces. More detailed historical information can be added after source verification.",
+        nearbyFacilities: [
+          { icon: 'park', label: 'Shade Trees', detail: 'Nearby' },
+          { icon: 'chair', label: 'Seating', detail: 'Available' },
+          { icon: 'water_drop', label: 'Water', detail: 'Short walk' }
+        ],
+        safetyNote: null,
+        nextCheckpointId: 3
+      },
+      {
+        id: 3,
+        title: 'Baldwin Lawn Playground',
+        locationName: 'Baldwin Lawn',
+        icon: '🛝',
+        taskType: 'photo-and-question',
+        taskInstruction: 'Take or upload a photo of the playground.',
+        question: 'How many slides can you see?',
+        unlockTitle: 'Family Playground Unlocked',
+        unlockDescription: "Baldwin Lawn playground is a great spot for families! The area features slides, climbing structures, and open play space — perfect for kids of all ages. Picnic tables and accessible toilets are nearby for everyone's comfort.",
+        nearbyFacilities: [
+          { icon: 'accessible', label: 'Accessible Toilets', detail: 'Very close' },
+          { icon: 'chair', label: 'Seating', detail: 'On site' },
+          { icon: 'deck', label: 'Picnic Tables', detail: 'Available' },
+          { icon: 'water_drop', label: 'Drinking Fountain', detail: 'Nearby' }
+        ],
+        safetyNote: null,
+        nextCheckpointId: 4
+      },
+      {
+        id: 4,
+        title: 'Comfort Stop',
+        locationName: 'Public Amenities Area',
+        icon: '🚻',
+        taskType: 'photo',
+        taskInstruction: 'Take or upload a photo of the outside of the toilet facility only. Do not photograph people or the inside of toilet areas.',
+        unlockTitle: 'Then & Now: Park Comfort',
+        unlockDescription: "Public park facilities like these have transformed how people experience outdoor spaces. Today's accessible amenities support everyone from young families to elderly visitors — a far cry from Brisbane's earliest park days when such facilities were rare or non-existent.",
+        nearbyFacilities: [
+          { icon: 'wc', label: 'Toilet', detail: "You're here!" },
+          { icon: 'accessible', label: 'Accessible Toilet', detail: 'Available' },
+          { icon: 'chair', label: 'Seating', detail: 'Nearby' },
+          { icon: 'water_drop', label: 'Water', detail: 'Close by' }
+        ],
+        safetyNote: 'Privacy reminder: Please do not photograph people or the inside of toilet areas.',
+        nextCheckpointId: 5
+      },
+      {
+        id: 5,
+        title: "Oakman's Lagoon",
+        locationName: "Oakman's Lagoon",
+        icon: '🦎',
+        taskType: 'photo',
+        taskInstruction: 'Primary: Take or upload a photo of a lizard if one is visible near the lagoon. Backup: Take or upload a photo of the lagoon if no lizard appears.',
+        unlockTitle: 'Wildlife Encounter Unlocked',
+        unlockDescription: "Brisbane parks are home to water dragons, skinks, and other reptiles. These animals are a vital part of the local ecosystem. Observe from a distance — do not touch or feed wildlife.",
+        nearbyFacilities: [
+          { icon: 'park', label: 'Shade', detail: 'Available' },
+          { icon: 'chair', label: 'Seating', detail: 'Nearby' },
+          { icon: 'directions_walk', label: 'Walking Path', detail: 'Well-marked' }
+        ],
+        safetyNote: 'Do not disturb wildlife. Stay on marked paths at all times.',
+        nextCheckpointId: 6
+      },
+      {
+        id: 6,
+        title: 'Riverstage',
+        locationName: 'Riverstage Venue',
+        icon: '🎭',
+        taskType: 'photo',
+        taskInstruction: 'Take or upload a photo of the Riverstage venue area.',
+        unlockTitle: 'Riverstage Unlocked',
+        unlockDescription: "Riverstage is one of Brisbane's most iconic outdoor performance venues. Used for concerts, festivals, live performances, and community events, it sits within the botanic gardens with stunning river views as a backdrop.",
+        nearbyFacilities: [
+          { icon: 'exit_to_app', label: 'Exit Routes', detail: 'Multiple exits' },
+          { icon: 'wc', label: 'Toilets', detail: 'Nearby' },
+          { icon: 'water_drop', label: 'Drinking Fountain', detail: 'Available' }
+        ],
+        safetyNote: null,
+        nextCheckpointId: 7
+      },
+      {
+        id: 7,
+        title: 'Trail Complete!',
+        locationName: 'Brisbane City Botanic Gardens',
+        icon: '🏆',
+        taskType: 'checkin-only',
+        taskInstruction: 'You\'ve reached the final stop. Tap "Finish Trail" to complete your Trail Quest!',
+        unlockTitle: 'You finished the Trail Quest!',
+        unlockDescription: "Congratulations! You've explored all 7 stops through the Brisbane City Botanic Gardens — from the historic entrance to the iconic Riverstage. We hope you discovered something new today.",
+        nearbyFacilities: [
+          { icon: 'wc', label: 'Nearest Toilet', detail: '2 min walk' },
+          { icon: 'water_drop', label: 'Nearest Fountain', detail: '1 min walk' },
+          { icon: 'exit_to_app', label: 'Nearest Exit', detail: 'Alice St' }
+        ],
+        safetyNote: null,
+        nextCheckpointId: null
+      }
+    ];
+
+    /* ── Storage helpers ── */
+    const LS_KEY = 'trailquest_v1';
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(LS_KEY);
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function saveState(state) {
+      try {
+        localStorage.setItem(LS_KEY, JSON.stringify(state));
+      } catch (e) {
+        // localStorage unavailable — progress won't persist
+      }
+    }
+
+    function clearState() {
+      try { localStorage.removeItem(LS_KEY); } catch (e) {}
+    }
+
+    /* ── App state ── */
+    let appState = {
+      screen: 'overview',       // 'overview' | 'checkpoint' | 'complete'
+      currentCheckpointId: 1,
+      completedIds: [],
+      panel: 'precheckin',      // 'precheckin' | 'task' | 'unlocked'
+      photos: {},               // { checkpointId: base64 | 'placeholder' }
+      answers: {}               // { checkpointId: string }
+    };
+
+    /* ── DOM refs ── */
+    const screens = {
+      overview:   document.getElementById('tq-screen-overview'),
+      checkpoint: document.getElementById('tq-screen-checkpoint'),
+      complete:   document.getElementById('tq-screen-complete')
+    };
+    const panels = {
+      precheckin: document.getElementById('tq-panel-precheckin'),
+      task:       document.getElementById('tq-panel-task'),
+      unlocked:   document.getElementById('tq-panel-unlocked')
+    };
+
+    function getCheckpoint(id) {
+      return CHECKPOINTS.find(c => c.id === id);
+    }
+
+    /* ── Show screen ── */
+    function showScreen(name) {
+      Object.keys(screens).forEach(k => {
+        screens[k].classList.toggle('is-active', k === name);
+      });
+      appState.screen = name;
+      const resetBtn = document.getElementById('tq-reset-btn');
+      resetBtn.style.display = name !== 'overview' ? 'inline-flex' : 'none';
+    }
+
+    /* ── Show panel (within checkpoint screen) ── */
+    function showPanel(name) {
+      Object.keys(panels).forEach(k => {
+        panels[k].classList.toggle('is-active', k === name);
+      });
+      appState.panel = name;
+    }
+
+    /* ── Render overview screen ── */
+    function renderOverview() {
+      const stopsEl = document.getElementById('tq-overview-stops');
+      stopsEl.innerHTML = CHECKPOINTS.map(cp => `
+        <div class="tq-stop-item">
+          <div class="tq-stop-num">${cp.id}</div>
+          <span class="tq-stop-name">${cp.title}</span>
+          <span class="tq-stop-icon">${cp.icon}</span>
+        </div>
+      `).join('');
+
+      const resumeNote = document.getElementById('tq-resume-note');
+      const saved = loadState();
+      if (saved && saved.completedIds && saved.completedIds.length > 0) {
+        resumeNote.style.display = 'block';
+      } else {
+        resumeNote.style.display = 'none';
+      }
+    }
+
+    /* ── Render progress bar ── */
+    function renderProgressBar(currentId) {
+      const stepsEl = document.getElementById('tq-progress-steps');
+      const labelEl = document.getElementById('tq-progress-label');
+      const total = CHECKPOINTS.length;
+      const doneCount = appState.completedIds.length;
+
+      stepsEl.innerHTML = CHECKPOINTS.map(cp => {
+        const isDone = appState.completedIds.includes(cp.id);
+        const isCurrent = cp.id === currentId;
+        let cls = 'tq-progress-step';
+        if (isDone) cls += ' done';
+        else if (isCurrent) cls += ' current';
+        return `<div class="${cls}" aria-hidden="true"></div>`;
+      }).join('');
+
+      labelEl.textContent = `Stop ${currentId} of ${total} · ${doneCount} completed`;
+    }
+
+    /* ── Render checkpoint ── */
+    function renderCheckpoint(id) {
+      const cp = getCheckpoint(id);
+      if (!cp) return;
+
+      document.getElementById('tq-cp-eyebrow').textContent = `Stop ${cp.id}`;
+      document.getElementById('tq-cp-title').textContent = cp.title;
+      document.getElementById('tq-cp-location').textContent = cp.locationName;
+      renderProgressBar(id);
+
+      // Pre-checkin panel
+      document.getElementById('tq-cp-icon').textContent = cp.icon;
+      document.getElementById('tq-checkin-instruction').textContent = cp.taskInstruction;
+      const safetyEl = document.getElementById('tq-checkin-safety');
+      if (cp.safetyNote) {
+        safetyEl.style.display = 'block';
+        safetyEl.textContent = '⚠️ ' + cp.safetyNote;
+      } else {
+        safetyEl.style.display = 'none';
+      }
+      const checkinLabel = document.getElementById('tq-checkin-btn-label');
+      checkinLabel.textContent = cp.id === 1 ? 'Start Trail' : (cp.id === 7 ? 'Finish Trail' : 'Check In Here');
+
+      // Task panel
+      document.getElementById('tq-task-instruction').textContent = cp.taskInstruction;
+      const photoArea = document.getElementById('tq-photo-area');
+      const questionArea = document.getElementById('tq-question-area');
+
+      if (cp.taskType === 'photo' || cp.taskType === 'photo-and-question') {
+        photoArea.style.display = 'block';
+        // Restore photo if already captured
+        const savedPhoto = appState.photos[id];
+        const zone = document.getElementById('tq-photo-zone');
+        const preview = document.getElementById('tq-photo-preview');
+        if (savedPhoto && savedPhoto !== 'placeholder') {
+          preview.src = savedPhoto;
+          zone.classList.add('has-photo');
+        } else if (savedPhoto === 'placeholder') {
+          zone.classList.add('has-photo');
+          preview.src = '';
+        } else {
+          zone.classList.remove('has-photo');
+          preview.src = '';
+        }
+      } else {
+        photoArea.style.display = 'none';
+      }
+
+      if (cp.taskType === 'photo-and-question') {
+        questionArea.style.display = 'block';
+        document.getElementById('tq-question-text').textContent = cp.question;
+        const answerEl = document.getElementById('tq-answer-input');
+        answerEl.value = appState.answers[id] || '';
+      } else {
+        questionArea.style.display = 'none';
+      }
+
+      // Unlocked panel
+      document.getElementById('tq-unlock-title').textContent = cp.unlockTitle;
+      document.getElementById('tq-unlock-desc').textContent = cp.unlockDescription;
+
+      // Collected photo
+      const collectedDiv = document.getElementById('tq-collected-photo');
+      const collectedImg = document.getElementById('tq-collected-img');
+      const photo = appState.photos[id];
+      if (photo && photo !== 'placeholder') {
+        collectedImg.src = photo;
+        collectedDiv.classList.add('is-visible');
+      } else {
+        collectedDiv.classList.remove('is-visible');
+      }
+
+      // Facilities
+      const facilitiesGrid = document.getElementById('tq-facilities-grid');
+      facilitiesGrid.innerHTML = cp.nearbyFacilities.map(f => `
+        <div class="tq-facility-card">
+          <div class="tq-facility-card__icon">
+            <span class="material-symbols-outlined">${f.icon}</span>
+          </div>
+          <div class="tq-facility-card__body">
+            <p class="tq-facility-card__label">${f.label}</p>
+            <p class="tq-facility-card__detail">${f.detail}</p>
+          </div>
+        </div>
+      `).join('');
+
+      // Next button label
+      const nextLabel = document.getElementById('tq-next-label');
+      if (!cp.nextCheckpointId) {
+        nextLabel.textContent = 'View summary';
+      } else {
+        const next = getCheckpoint(cp.nextCheckpointId);
+        nextLabel.textContent = next ? `Next: ${next.title}` : 'Next stop';
+      }
+
+      clearError();
+    }
+
+    /* ── Render complete screen ── */
+    function renderComplete() {
+      const photoCount = Object.keys(appState.photos).length;
+      document.getElementById('tq-photo-count').textContent =
+        photoCount === 1 ? '1 photo' : `${photoCount} photos`;
+
+      const grid = document.getElementById('tq-photos-grid');
+      grid.innerHTML = CHECKPOINTS.map(cp => {
+        const photo = appState.photos[cp.id];
+        if (photo && photo !== 'placeholder') {
+          return `
+            <div class="tq-photo-thumb">
+              <img src="${photo}" alt="Photo from stop ${cp.id}" />
+              <div class="tq-photo-thumb__stop">${cp.id}</div>
+            </div>`;
+        } else {
+          return `
+            <div class="tq-photo-thumb">
+              <div class="tq-photo-thumb__placeholder">
+                <span class="material-symbols-outlined">photo_camera</span>
+              </div>
+              <div class="tq-photo-thumb__stop">${cp.id}</div>
+            </div>`;
+        }
+      }).join('');
+    }
+
+    /* ── Error helpers ── */
+    function showError(msg) {
+      const el = document.getElementById('tq-error-msg');
+      el.textContent = msg;
+      el.classList.add('is-visible');
+    }
+    function clearError() {
+      document.getElementById('tq-error-msg').classList.remove('is-visible');
+    }
+
+    /* ── Photo handling ── */
+    function handleFileInput(file) {
+      if (!file) return;
+      const zone = document.getElementById('tq-photo-zone');
+      const preview = document.getElementById('tq-photo-preview');
+      const id = appState.currentCheckpointId;
+
+      // Try to store as base64; fall back to placeholder if too large
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const b64 = e.target.result;
+        // Rough size check: don't store if > 1MB base64
+        if (b64.length > 1024 * 1024) {
+          appState.photos[id] = 'placeholder';
+          preview.src = '';
+        } else {
+          appState.photos[id] = b64;
+          preview.src = b64;
+        }
+        zone.classList.add('has-photo');
+        clearError();
+        persistState();
+      };
+      reader.onerror = function() {
+        appState.photos[id] = 'placeholder';
+        zone.classList.add('has-photo');
+        clearError();
+        persistState();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    /* ── Persist state ── */
+    function persistState() {
+      saveState({
+        currentCheckpointId: appState.currentCheckpointId,
+        completedIds: appState.completedIds,
+        panel: appState.panel,
+        screen: appState.screen,
+        photos: appState.photos,
+        answers: appState.answers
+      });
+    }
+
+    /* ── Navigation ── */
+    function goToCheckpoint(id) {
+      appState.currentCheckpointId = id;
+      const alreadyDone = appState.completedIds.includes(id);
+      const panelName = alreadyDone ? 'unlocked' : 'precheckin';
+      renderCheckpoint(id);
+      showPanel(panelName);
+      showScreen('checkpoint');
+      persistState();
+      window.scrollTo(0, 0);
+    }
+
+    function completeCurrentAndAdvance() {
+      const id = appState.currentCheckpointId;
+      if (!appState.completedIds.includes(id)) {
+        appState.completedIds.push(id);
+      }
+      persistState();
+
+      const cp = getCheckpoint(id);
+      if (!cp.nextCheckpointId) {
+        // Last checkpoint
+        showScreen('complete');
+        renderComplete();
+        persistState();
+      } else {
+        goToCheckpoint(cp.nextCheckpointId);
+      }
+    }
+
+    /* ── Event handlers ── */
+
+    // Start trail
+    document.getElementById('tq-start-btn').addEventListener('click', function() {
+      appState = {
+        screen: 'checkpoint',
+        currentCheckpointId: 1,
+        completedIds: [],
+        panel: 'precheckin',
+        photos: {},
+        answers: {}
+      };
+      persistState();
+      renderCheckpoint(1);
+      showPanel('precheckin');
+      showScreen('checkpoint');
+      window.scrollTo(0, 0);
+    });
+
+    // Resume
+    document.getElementById('tq-resume-btn').addEventListener('click', function() {
+      const saved = loadState();
+      if (!saved) return;
+      Object.assign(appState, saved);
+      if (appState.screen === 'complete') {
+        showScreen('complete');
+        renderComplete();
+      } else {
+        renderCheckpoint(appState.currentCheckpointId);
+        showPanel(appState.panel || 'precheckin');
+        showScreen('checkpoint');
+      }
+      window.scrollTo(0, 0);
+    });
+
+    // Check in
+    document.getElementById('tq-btn-checkin').addEventListener('click', function() {
+      const btn = this;
+      btn.classList.add('pulsing');
+      setTimeout(() => btn.classList.remove('pulsing'), 700);
+
+      const cp = getCheckpoint(appState.currentCheckpointId);
+      // GPS simulation message handled visually by the note above button
+
+      if (cp.taskType === 'checkin-only') {
+        // Mark as complete immediately and show unlock card
+        if (!appState.completedIds.includes(cp.id)) {
+          appState.completedIds.push(cp.id);
+        }
+        renderCheckpoint(cp.id); // re-render so unlocked panel is current
+        showPanel('unlocked');
+        persistState();
+      } else {
+        // Move to task
+        renderCheckpoint(cp.id);
+        showPanel('task');
+        persistState();
+      }
+      window.scrollTo(0, 0);
+    });
+
+    // Camera button
+    document.getElementById('tq-btn-camera').addEventListener('click', function() {
+      document.getElementById('tq-file-camera').click();
+    });
+    // Upload button
+    document.getElementById('tq-btn-upload').addEventListener('click', function() {
+      document.getElementById('tq-file-upload').click();
+    });
+    // Tap photo zone
+    document.getElementById('tq-photo-zone').addEventListener('click', function() {
+      document.getElementById('tq-file-upload').click();
+    });
+
+    document.getElementById('tq-file-camera').addEventListener('change', function() {
+      handleFileInput(this.files[0]);
+      this.value = '';
+    });
+    document.getElementById('tq-file-upload').addEventListener('change', function() {
+      handleFileInput(this.files[0]);
+      this.value = '';
+    });
+
+    // Submit task
+    document.getElementById('tq-btn-submit').addEventListener('click', function() {
+      clearError();
+      const id = appState.currentCheckpointId;
+      const cp = getCheckpoint(id);
+
+      // Validate photo
+      if (cp.taskType === 'photo' || cp.taskType === 'photo-and-question') {
+        if (!appState.photos[id]) {
+          showError('Please add a photo before continuing.');
+          return;
+        }
+      }
+
+      // Validate question answer
+      if (cp.taskType === 'photo-and-question') {
+        const answerVal = document.getElementById('tq-answer-input').value.trim();
+        if (!answerVal) {
+          showError('Please answer the question before continuing.');
+          return;
+        }
+        appState.answers[id] = answerVal;
+      }
+
+      // Mark complete and show unlock card
+      if (!appState.completedIds.includes(id)) {
+        appState.completedIds.push(id);
+      }
+      renderCheckpoint(id);
+      showPanel('unlocked');
+      persistState();
+      window.scrollTo(0, 0);
+    });
+
+    // Next stop
+    document.getElementById('tq-btn-next').addEventListener('click', function() {
+      const cp = getCheckpoint(appState.currentCheckpointId);
+      if (!cp.nextCheckpointId) {
+        showScreen('complete');
+        renderComplete();
+        persistState();
+      } else {
+        goToCheckpoint(cp.nextCheckpointId);
+      }
+      window.scrollTo(0, 0);
+    });
+
+    // Restart (from complete screen)
+    document.getElementById('tq-btn-restart').addEventListener('click', function() {
+      appState = {
+        screen: 'overview', currentCheckpointId: 1,
+        completedIds: [], panel: 'precheckin',
+        photos: {}, answers: {}
+      };
+      clearState();
+      renderOverview();
+      showScreen('overview');
+      window.scrollTo(0, 0);
+    });
+
+    // Clear progress (from complete screen)
+    document.getElementById('tq-btn-clear').addEventListener('click', function() {
+      if (confirm('Clear all saved progress and photos?')) {
+        appState = {
+          screen: 'overview', currentCheckpointId: 1,
+          completedIds: [], panel: 'precheckin',
+          photos: {}, answers: {}
+        };
+        clearState();
+        renderOverview();
+        showScreen('overview');
+        window.scrollTo(0, 0);
+      }
+    });
+
+    // Reset button in header
+    document.getElementById('tq-reset-btn').addEventListener('click', function() {
+      if (confirm('Reset your trail progress?')) {
+        appState = {
+          screen: 'overview', currentCheckpointId: 1,
+          completedIds: [], panel: 'precheckin',
+          photos: {}, answers: {}
+        };
+        clearState();
+        renderOverview();
+        showScreen('overview');
+        window.scrollTo(0, 0);
+      }
+    });
+
+    /* ── Init ── */
+    function init() {
+      const saved = loadState();
+      if (saved && saved.completedIds && saved.completedIds.length > 0) {
+        Object.assign(appState, saved);
+      }
+
+      renderOverview();
+
+      if (appState.screen === 'complete') {
+        showScreen('complete');
+        renderComplete();
+      } else if (appState.screen === 'checkpoint' && appState.currentCheckpointId) {
+        renderCheckpoint(appState.currentCheckpointId);
+        showPanel(appState.panel || 'precheckin');
+        showScreen('checkpoint');
+      } else {
+        showScreen('overview');
+      }
+    }
+
+    init();
+    </script>
+  </body>
+</html>

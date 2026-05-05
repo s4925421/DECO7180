@@ -1,0 +1,63 @@
+:root {
+    --primary-green: #2E7D32;
+    --bg-glass: rgba(255, 255, 255, 0.7);
+}
+
+.survey-container {
+    padding: 20px;
+    background: var(--bg-glass);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.survey-group { margin-bottom: 32px; }
+
+.question-text {
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #333;
+}
+
+.rating-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    padding: 0 10px;
+}
+
+.options-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Hide native radio and draw custom circle */
+input[type="radio"] {
+    appearance: none;
+    border: 2px solid var(--primary-green);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+input[type="radio"]:checked {
+    background-color: var(--primary-green);
+    transform: scale(1.1);
+}
+
+/* Button size variants */
+.btn--large { width: 28px; height: 28px; }
+.btn--small { width: 18px; height: 18px; }
+.btn--dot   { width: 6px;  height: 6px;  background: #ccc; border: none !important; }
+
+/* Label styles */
+.label {
+    position: absolute;
+    font-size: 11px;
+    color: #666;
+    bottom: -20px;
+}
+.label--left   { left: 10px; color: #d32f2f; } /* Slight red tint for negative pole */
+.label--center { left: 50%; transform: translateX(-50%); }
+.label--right  { right: 10px; color: var(--primary-green); }
